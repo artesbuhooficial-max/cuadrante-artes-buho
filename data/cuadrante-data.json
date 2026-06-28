@@ -4,57 +4,126 @@
     "endHour": 22,
     "currency": "€"
   },
-  "projects": [
-    {
-      "id": "p1",
-      "name": "Escuela / Mini Kydemy",
-      "color": "#1d4ed8"
-    },
-    {
-      "id": "p2",
-      "name": "Pavoneo 360°",
-      "color": "#d97706"
-    },
-    {
-      "id": "p3",
-      "name": "Bella Bestia · eventos",
-      "color": "#0891b2"
-    },
-    {
-      "id": "p4",
-      "name": "Noches de Neón",
-      "color": "#db2777"
-    },
-    {
-      "id": "p5",
-      "name": "Marketing / RRSS",
-      "color": "#16a34a"
-    },
-    {
-      "id": "p6",
-      "name": "M.A.P.A. Musical",
-      "color": "#7c3aed"
-    },
-    {
-      "id": "p7",
-      "name": "Booking / Management",
-      "color": "#0ea5e9"
-    },
-    {
-      "id": "p8",
-      "name": "Administración",
-      "color": "#475569"
-    }
-  ],
+  "projects": [],
   "team": [
     {
       "id": "u1",
       "name": "David",
       "role": "Director Operativo · AI/Tech",
       "color": "#1d4ed8",
-      "salary": 1600,
-      "rate": 18,
-      "grid": {}
+      "salary": 900,
+      "rate": 10,
+      "grid": {
+        "2026-06-29": {
+          "0-11": {
+            "p": "xle8jpb"
+          },
+          "0-12": {
+            "p": "xk6kruc"
+          },
+          "0-13": {
+            "p": "xle8jpb"
+          },
+          "0-14": {
+            "p": "xle8jpb"
+          },
+          "0-10": {
+            "p": "xle8jpb"
+          },
+          "1-10": {
+            "p": "xle8jpb"
+          },
+          "1-11": {
+            "p": "xle8jpb"
+          },
+          "1-12": {
+            "p": "xle8jpb"
+          },
+          "1-13": {
+            "p": "xle8jpb"
+          },
+          "1-14": {
+            "p": "xle8jpb"
+          },
+          "2-10": {
+            "p": "xa3kx1b"
+          },
+          "2-11": {
+            "p": "xa3kx1b"
+          },
+          "2-12": {
+            "p": "p8"
+          },
+          "2-13": {
+            "p": "p8"
+          },
+          "2-14": {
+            "p": "p2"
+          }
+        }
+      },
+      "projects": [
+        {
+          "id": "p1",
+          "name": "Escuela / Mini Kydemy",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "p2",
+          "name": "Pavoneo 360°",
+          "color": "#d97706"
+        },
+        {
+          "id": "p3",
+          "name": "Bella Bestia · eventos",
+          "color": "#0891b2"
+        },
+        {
+          "id": "p4",
+          "name": "Noches de Neón",
+          "color": "#db2777"
+        },
+        {
+          "id": "p5",
+          "name": "Marketing / RRSS",
+          "color": "#16a34a"
+        },
+        {
+          "id": "p6",
+          "name": "M.A.P.A. Musical",
+          "color": "#7c3aed"
+        },
+        {
+          "id": "p7",
+          "name": "Booking / Management",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "p8",
+          "name": "Administración",
+          "color": "#475569"
+        },
+        {
+          "id": "xa3kx1b",
+          "name": "IA",
+          "color": "#dc2626"
+        },
+        {
+          "id": "xle8jpb",
+          "name": "Respond IO + Financiación AB",
+          "color": "#ca8a04"
+        },
+        {
+          "id": "xk6kruc",
+          "name": "Reunion Grupal AB",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "xh48dhj",
+          "name": "Gestion Técnica",
+          "color": "#d97706"
+        }
+      ]
     },
     {
       "id": "u2",
@@ -63,7 +132,69 @@
       "color": "#db2777",
       "salary": 1200,
       "rate": 14,
-      "grid": {}
+      "grid": {},
+      "projects": [
+        {
+          "id": "p1",
+          "name": "Escuela / Mini Kydemy",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "p2",
+          "name": "Pavoneo 360°",
+          "color": "#d97706"
+        },
+        {
+          "id": "p3",
+          "name": "Bella Bestia · eventos",
+          "color": "#0891b2"
+        },
+        {
+          "id": "p4",
+          "name": "Noches de Neón",
+          "color": "#db2777"
+        },
+        {
+          "id": "p5",
+          "name": "Marketing / RRSS",
+          "color": "#16a34a"
+        },
+        {
+          "id": "p6",
+          "name": "M.A.P.A. Musical",
+          "color": "#7c3aed"
+        },
+        {
+          "id": "p7",
+          "name": "Booking / Management",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "p8",
+          "name": "Administración",
+          "color": "#475569"
+        },
+        {
+          "id": "xa3kx1b",
+          "name": "IA",
+          "color": "#dc2626"
+        },
+        {
+          "id": "xle8jpb",
+          "name": "Respond IO + Financiación AB",
+          "color": "#ca8a04"
+        },
+        {
+          "id": "xk6kruc",
+          "name": "Reunion Grupal AB",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "xh48dhj",
+          "name": "Gestion Técnica",
+          "color": "#d97706"
+        }
+      ]
     },
     {
       "id": "u3",
@@ -72,7 +203,69 @@
       "color": "#0891b2",
       "salary": 1300,
       "rate": 14,
-      "grid": {}
+      "grid": {},
+      "projects": [
+        {
+          "id": "p1",
+          "name": "Escuela / Mini Kydemy",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "p2",
+          "name": "Pavoneo 360°",
+          "color": "#d97706"
+        },
+        {
+          "id": "p3",
+          "name": "Bella Bestia · eventos",
+          "color": "#0891b2"
+        },
+        {
+          "id": "p4",
+          "name": "Noches de Neón",
+          "color": "#db2777"
+        },
+        {
+          "id": "p5",
+          "name": "Marketing / RRSS",
+          "color": "#16a34a"
+        },
+        {
+          "id": "p6",
+          "name": "M.A.P.A. Musical",
+          "color": "#7c3aed"
+        },
+        {
+          "id": "p7",
+          "name": "Booking / Management",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "p8",
+          "name": "Administración",
+          "color": "#475569"
+        },
+        {
+          "id": "xa3kx1b",
+          "name": "IA",
+          "color": "#dc2626"
+        },
+        {
+          "id": "xle8jpb",
+          "name": "Respond IO + Financiación AB",
+          "color": "#ca8a04"
+        },
+        {
+          "id": "xk6kruc",
+          "name": "Reunion Grupal AB",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "xh48dhj",
+          "name": "Gestion Técnica",
+          "color": "#d97706"
+        }
+      ]
     }
   ],
   "objectives": [
@@ -94,11 +287,11 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u1",
-    "weekId": "2026-06-22",
+    "weekId": "2026-06-29",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 5
+      "m": 6
     },
     "resRef": {
       "y": 2026,
