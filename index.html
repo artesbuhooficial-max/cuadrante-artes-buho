@@ -207,8 +207,7 @@
     </div>
     <div class="top-actions">
       <span class="save-pill" id="saveStatus">✓ Guardado local</span>
-      <button class="btn" id="saveBtn" onclick="saveToProject()">💾 Guardar en proyecto</button>
-      <button class="btn" id="autoBtn" onclick="toggleAuto()">Auto: OFF</button>
+      <button class="btn" id="publishBtn" onclick="publishToGitHub()" style="background:rgba(255,255,255,.92);color:var(--blue-deep);font-weight:700;border-color:rgba(255,255,255,.9)">☁ Publicar</button>
       <button class="btn" onclick="openSettings()">⚙ Ajustes</button>
     </div>
   </div>
@@ -325,6 +324,53 @@ const KEY='cuadrante_artesbuho_v2';
 let memFallback=false;
 function storeGet(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){memFallback=true;return window.__mem||null;}}
 function storeSet(d){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){memFallback=true;window.__mem=d;}}
+
+/* ============ GITHUB PUBLISH ============ */
+const GH_KEY='cuadrante_gh_cfg';
+function ghGet(){try{return JSON.parse(localStorage.getItem(GH_KEY)||'{}')}catch(e){return {}}}
+function ghSet(c){try{localStorage.setItem(GH_KEY,JSON.stringify(c))}catch(e){}}
+
+async function publishToGitHub(){
+  const cfg=ghGet();
+  if(!cfg.token){openSettings();toast('Configura el token de GitHub en Ajustes');return;}
+  const owner=cfg.owner||'artesbuhooficial-max';
+  const repo=cfg.repo||'cuadrante-artes-buho';
+  const branch=cfg.branch||'master';
+  const path='data/cuadrante-data.json';
+  const btn=document.getElementById('publishBtn');
+  if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
+  try{
+    const headers={'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json'};
+    // Obtener SHA actual del archivo
+    const getR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path+'?ref='+branch,{headers});
+    let sha=null;
+    if(getR.ok){const d=await getR.json();sha=d.sha;}
+    else if(getR.status!==404){const e=await getR.json().catch(()=>({}));throw new Error(e.message||'Error '+getR.status);}
+    // Codificar contenido en base64 (compatible con UTF-8)
+    const json=JSON.stringify(state,null,2);
+    const bytes=new TextEncoder().encode(json);
+    const binStr=Array.from(bytes,b=>String.fromCodePoint(b)).join('');
+    const content=btoa(binStr);
+    // Commit vía API
+    const body={message:'Cuadrante actualizado · '+new Date().toLocaleString('es-ES'),content,branch};
+    if(sha)body.sha=sha;
+    const putR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{
+      method:'PUT',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(putR.ok){
+      toast('✓ Publicado — todos verán los cambios en ~1 min');
+      if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
+      updateSaveUI();
+    }else{
+      const err=await putR.json().catch(()=>({}));
+      if(putR.status===409)throw new Error('Conflicto: recarga la página y vuelve a intentarlo');
+      if(putR.status===401)throw new Error('Token inválido o caducado');
+      throw new Error(err.message||'Error '+putR.status);
+    }
+  }catch(e){
+    toast('Error: '+e.message);
+    if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
+  }
+}
 
 /* ============ DATE HELPERS ============ */
 function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -678,18 +724,33 @@ function saveObjective(id){const title=document.getElementById('oTitle').value.t
   save();closeModal();renderCalendar();toast('Objetivo guardado');}
 function delObjective(id){state.objectives=state.objectives.filter(o=>o.id!==id);save();closeModal();renderCalendar();}
 
-function openSettings(){const c=state.config;
+function openSettings(){const c=state.config;const gh=ghGet();
   modal('<div class="modal"><header><h3>Ajustes y datos</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+
     '<div class="inp row"><div><label>Hora inicio</label><input id="sStart" type="number" min="0" max="23" value="'+c.startHour+'"></div><div><label>Hora fin</label><input id="sEnd" type="number" min="1" max="24" value="'+c.endHour+'"></div></div>'+
     '<div class="inp"><label>Moneda</label><input id="sCur" value="'+esc(c.currency)+'"></div>'+
     '<p class="hint">Cada bloque del cuadrante equivale a 1 hora. El rango define las filas (lunes a domingo de cada semana).</p>'+
     '<div class="divider"></div>'+
-    '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">Copias de seguridad</label>'+
+    '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">☁ Publicar en GitHub</label>'+
+    '<p class="hint">El botón <b>Publicar</b> guarda los datos directamente en el repositorio para que todo el equipo vea los cambios al recargar. Necesitas un <b>Personal Access Token</b> de GitHub con permiso <b>Contents: Read &amp; Write</b> en este repositorio.</p>'+
+    '<div class="inp"><label>Token de GitHub</label><input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="'+esc(gh.token||'')+'"></div>'+
+    '<div class="inp row"><div><label>Usuario / Org</label><input id="ghOwner" value="'+esc(gh.owner||'artesbuhooficial-max')+'"></div><div><label>Repositorio</label><input id="ghRepo" value="'+esc(gh.repo||'cuadrante-artes-buho')+'"></div></div>'+
+    '<div class="inp"><label>Rama</label><input id="ghBranch" value="'+esc(gh.branch||'master')+'"></div>'+
+    '<div class="divider"></div>'+
+    '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">Copias de seguridad locales</label>'+
     '<div class="inp row"><button class="btn" onclick="exportJSON()">↓ Descargar backup (.json)</button><button class="btn" onclick="importJSON()">↑ Restaurar backup</button></div>'+
-    '<p class="hint">El <b>guardado en proyecto</b> (botón de arriba) escribe directamente <b>data/cuadrante-data.json</b> del repositorio. Actívalo una vez y, con <b>Auto: ON</b>, cada cambio se guarda solo en ese archivo.</p></div>'+
-    '<footer><button class="btn ghost danger" onclick="resetAll()">Reiniciar todo</button><button class="btn primary" onclick="saveSettings()">Aplicar</button></footer></div>');}
-function saveSettings(){const s=parseInt(document.getElementById('sStart').value),e=parseInt(document.getElementById('sEnd').value);if(e<=s){toast('La hora fin debe ser mayor');return;}
-  state.config.startHour=s;state.config.endHour=e;state.config.currency=document.getElementById('sCur').value.trim()||'€';save();closeModal();render();toast('Ajustes aplicados');}
+    '</div>'+
+    '<footer><button class="btn ghost danger" onclick="resetAll()">Reiniciar todo</button><button class="btn primary" onclick="saveSettings()">Guardar ajustes</button></footer></div>');}
+function saveSettings(){
+  const s=parseInt(document.getElementById('sStart').value),e=parseInt(document.getElementById('sEnd').value);
+  if(e<=s){toast('La hora fin debe ser mayor');return;}
+  state.config.startHour=s;state.config.endHour=e;state.config.currency=document.getElementById('sCur').value.trim()||'€';
+  ghSet({
+    token:document.getElementById('ghToken').value.trim(),
+    owner:document.getElementById('ghOwner').value.trim()||'artesbuhooficial-max',
+    repo:document.getElementById('ghRepo').value.trim()||'cuadrante-artes-buho',
+    branch:document.getElementById('ghBranch').value.trim()||'master'
+  });
+  save();closeModal();render();toast('Ajustes guardados');}
 function resetAll(){if(!confirm('Esto borra TODOS los datos y vuelve al ejemplo inicial. ¿Seguro?'))return;state=seed();save();closeModal();render();}
 
 /* ============ TABS ============ */
