@@ -88,11 +88,11 @@
   table.grid thead th .sub{display:block;font-size:.64rem;color:var(--blue);font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px}
   table.grid thead th.col-today{background:#D9E6FF;box-shadow:inset 0 -3px 0 var(--blue)}
   .hourcell{background:var(--cream);color:var(--navy-soft);font-size:.74rem;font-weight:700;text-align:center;padding:0 8px;white-space:nowrap;width:78px;font-variant-numeric:tabular-nums}
-  td.slot{height:42px;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
+  td.slot{min-height:52px;height:auto;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
   td.slot:hover{outline:2px solid var(--blue);outline-offset:-2px}
   td.slot.col-today{background:#F4F8FF}
-  td.slot .chip{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:3px 8px;font-size:.72rem;font-weight:700;color:#fff}
-  td.slot .chip .nt{font-size:.62rem;font-weight:500;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  td.slot .chip{min-height:52px;width:100%;display:flex;flex-direction:column;justify-content:flex-start;gap:3px;padding:5px 8px;font-size:.72rem;font-weight:700;color:#fff;line-height:1.3;word-break:break-word}
+  td.slot .chip .nt{font-size:.65rem;font-weight:500;color:rgba(255,255,255,.9);white-space:pre-wrap;word-break:break-word;line-height:1.35;margin-top:2px}
   td.slot.weekend{background:#FCFAF2}
   tfoot td{background:var(--cream);text-align:center;font-weight:800;font-size:.84rem;color:var(--blue);padding:9px 4px;font-variant-numeric:tabular-nums}
   tfoot td.lbl{color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;text-align:right;padding-right:12px}
@@ -163,13 +163,14 @@
   .nm-cell .dot{width:11px;height:11px;border-radius:50%;flex:none}
   .nm-cell .rl{color:var(--muted-2);font-size:.72rem;font-weight:400}
 
-  .pop{position:fixed;z-index:60;background:var(--paper-card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:10px;width:240px}
+  .pop{position:fixed;z-index:60;background:var(--paper-card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:10px;width:300px}
   .pop h4{margin:0 0 9px;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:700}
   .pop .opt{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;font-size:.82rem;font-weight:600;color:var(--navy);cursor:pointer}
   .pop .opt:hover{background:var(--blue-light)}.pop .opt .sw{width:13px;height:13px;border-radius:4px;flex:none}
   .pop .opt.clear{color:var(--muted)}.pop .note-in{margin-top:8px}
-  .pop .note-in input{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:8px;color:var(--navy);padding:7px 10px;font-size:.78rem;outline:none}
-  .pop .note-in input:focus{border-color:var(--blue)}
+  .pop .note-in textarea{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:8px;color:var(--navy);padding:7px 10px;font-size:.78rem;outline:none;resize:vertical;min-height:70px;font-family:inherit;line-height:1.45}
+  .pop .note-in textarea:focus{border-color:var(--blue)}
+  .pop .note-in .hint-key{font-size:.64rem;color:var(--muted-2);margin-top:4px;text-align:right}
 
   .scrim{position:fixed;inset:0;background:rgba(14,33,72,.45);backdrop-filter:blur(3px);z-index:70;display:grid;place-items:center;padding:18px}
   .modal{background:var(--paper-card);border:1px solid var(--line);border-radius:18px;width:100%;max-width:460px;box-shadow:0 30px 70px -20px rgba(14,33,72,.5);overflow:hidden;max-height:92vh;overflow-y:auto}
@@ -458,7 +459,7 @@ function renderGrid(){
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
       const v=(p.grid[state.ui.weekId]||{})[di+'-'+hr];
       if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';
-        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"><div class="chip" style="background:'+col+'">'+(pr?pr.name.split(' ')[0]:'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
+        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"><div class="chip" style="background:'+col+'">'+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
       else{h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"></td>';}});
     h+='</tr>';});
   h+='</tbody><tfoot><tr><td class="lbl">Horas/día →</td>';
@@ -574,7 +575,7 @@ function openPop(ev,di,hr){ev.stopPropagation();closePop();popCtx={di,hr};
   const pop=document.createElement('div');pop.className='pop';let h='<h4>'+DAY_FULL[di]+' · '+String(hr).padStart(2,'0')+':00</h4>';
   state.projects.forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(cur.p===pr.id?' ✓':'')+'</div>';});
   h+='<div class="opt clear" onclick="assign(null)">○ Vaciar bloque</div>';
-  h+='<div class="note-in"><input id="popNote" placeholder="Nota / momento concreto…" value="'+esc(cur.n||'')+'" onkeydown="if(event.key===\'Enter\')saveNote()"></div>';
+  h+='<div class="note-in"><textarea id="popNote" placeholder="Nota o especificación del momento concreto…" onkeydown="if(event.key===\'Enter\'&&event.ctrlKey)saveNote()">'+esc(cur.n||'')+'</textarea><div class="hint-key">Ctrl + Enter para guardar nota</div></div>';
   pop.innerHTML=h;host.appendChild(pop);
   const r=ev.currentTarget.getBoundingClientRect();let x=r.left,y=r.bottom+6;const pw=240,ph=pop.offsetHeight;
   if(x+pw>window.innerWidth-10)x=window.innerWidth-pw-10;if(y+ph>window.innerHeight-10)y=r.top-ph-6;
