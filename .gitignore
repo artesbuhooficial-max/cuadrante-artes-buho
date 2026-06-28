@@ -1,0 +1,10 @@
+# OS
+.DS_Store
+Thumbs.db
+# Editores
+*.swp
+*~
+# Logs
+*.log
+# Dependencias (este proyecto es estático; no deberían existir)
+node_modules/
