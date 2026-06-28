@@ -82,11 +82,14 @@
 
   .grid-card{background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
   .grid-scroll{overflow-x:auto}
-  table.grid{border-collapse:collapse;width:100%;min-width:790px}
+  table.grid{border-collapse:collapse;table-layout:fixed;width:auto}
   table.grid th,table.grid td{border:1px solid var(--line)}
-  table.grid thead th{background:var(--blue-light);padding:9px 8px;font-size:.78rem;font-weight:700;color:var(--navy);text-align:center;position:sticky;top:0}
+  table.grid thead th{background:var(--blue-light);padding:9px 8px;font-size:.78rem;font-weight:700;color:var(--navy);text-align:center;position:sticky;top:0;overflow:hidden;user-select:none}
   table.grid thead th .sub{display:block;font-size:.64rem;color:var(--blue);font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px}
   table.grid thead th.col-today{background:#D9E6FF;box-shadow:inset 0 -3px 0 var(--blue)}
+  .col-resizer{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:col-resize;z-index:5}
+  .col-resizer::after{content:'';position:absolute;right:1px;top:15%;bottom:15%;width:2px;border-radius:2px;background:transparent;transition:.12s}
+  .col-resizer:hover::after,.col-resizer.active::after{background:var(--blue)}
   .hourcell{background:var(--cream);color:var(--navy-soft);font-size:.74rem;font-weight:700;text-align:center;padding:0 8px;white-space:nowrap;width:78px;font-variant-numeric:tabular-nums}
   td.slot{min-height:52px;height:auto;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
   td.slot:hover{outline:2px solid var(--blue);outline-offset:-2px}
@@ -449,11 +452,17 @@ function renderPersonStrip(){
 function field(label,key,val,suffix){return '<div class="field"><label>'+label+'</label><div class="val"><input type="number" value="'+(val||0)+'" onchange="updPerson(\''+key+'\',this.value)"><span class="suffix">'+suffix+'</span></div></div>';}
 function updPerson(key,v){curPerson()[key]=parseFloat(v)||0;save();renderPersonStrip();renderStats();renderMonth();renderSummary();}
 
+const _HOUR_COL_W=78,_DAY_COL_DEF=150;
+let _colW=Array(7).fill(null);
+
 function renderGrid(){
   const p=curPerson();const t=document.getElementById('gridTable');const mon=parseId(state.ui.weekId);const todayStr=dStr(new Date());
-  let h='<thead><tr><th class="hourcell">Hora</th>';
+  let h='<colgroup><col style="width:'+_HOUR_COL_W+'px">';
+  DAYS.forEach((_,i)=>{h+='<col data-col="'+i+'" style="width:'+(_colW[i]||_DAY_COL_DEF)+'px">';});
+  h+='</colgroup>';
+  h+='<thead><tr><th class="hourcell">Hora</th>';
   DAYS.forEach((d,i)=>{const date=addDays(mon,i);const isT=dStr(date)===todayStr;
-    h+='<th class="'+(isT?'col-today':'')+'">'+d+'<span class="sub">'+date.toLocaleDateString('es-ES',{day:'numeric',month:'short'})+'</span></th>';});
+    h+='<th class="'+(isT?'col-today':'')+'">'+d+'<span class="sub">'+date.toLocaleDateString('es-ES',{day:'numeric',month:'short'})+'</span><div class="col-resizer" onmousedown="startColResize(event,'+i+')"></div></th>';});
   h+='</tr></thead><tbody>';
   hours().forEach(hr=>{h+='<tr><td class="hourcell">'+String(hr).padStart(2,'0')+':00</td>';
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
@@ -465,6 +474,29 @@ function renderGrid(){
   h+='</tbody><tfoot><tr><td class="lbl">Horas/día →</td>';
   const st=weekStats(p,state.ui.weekId);st.daily.forEach(d=>{h+='<td>'+(d||0)+'</td>';});
   h+='</tr></tfoot>';t.innerHTML=h;
+}
+
+let _rsCtx=null;
+function startColResize(e,ci){
+  e.preventDefault();e.stopPropagation();
+  const th=e.currentTarget.parentElement;
+  _rsCtx={ci,x0:e.clientX,w0:th.offsetWidth};
+  e.currentTarget.classList.add('active');
+  document.addEventListener('mousemove',_onColMove);
+  document.addEventListener('mouseup',_onColUp);
+}
+function _onColMove(e){
+  if(!_rsCtx)return;
+  const w=Math.max(80,_rsCtx.w0+(e.clientX-_rsCtx.x0));
+  _colW[_rsCtx.ci]=w;
+  const col=document.querySelector('col[data-col="'+_rsCtx.ci+'"]');
+  if(col)col.style.width=w+'px';
+}
+function _onColUp(){
+  document.querySelectorAll('.col-resizer.active').forEach(el=>el.classList.remove('active'));
+  _rsCtx=null;
+  document.removeEventListener('mousemove',_onColMove);
+  document.removeEventListener('mouseup',_onColUp);
 }
 
 function renderStats(){
