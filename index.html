@@ -342,21 +342,22 @@ function uid(){return 'x'+Math.random().toString(36).slice(2,8);}
 const PALETTE=['#1d4ed8','#d97706','#0891b2','#db2777','#16a34a','#7c3aed','#0ea5e9','#475569','#dc2626','#ca8a04'];
 function seed(){
   const todayMon=weekId(mondayOf(new Date()));const now=new Date();
+  const dp=()=>[
+    {id:'p1',name:'Escuela / Mini Kydemy',color:'#1d4ed8'},
+    {id:'p2',name:'Pavoneo 360°',color:'#d97706'},
+    {id:'p3',name:'Bella Bestia · eventos',color:'#0891b2'},
+    {id:'p4',name:'Noches de Neón',color:'#db2777'},
+    {id:'p5',name:'Marketing / RRSS',color:'#16a34a'},
+    {id:'p6',name:'M.A.P.A. Musical',color:'#7c3aed'},
+    {id:'p7',name:'Booking / Management',color:'#0ea5e9'},
+    {id:'p8',name:'Administración',color:'#475569'}];
   return {
     config:{startHour:9,endHour:22,currency:'€'},
-    projects:[
-      {id:'p1',name:'Escuela / Mini Kydemy',color:'#1d4ed8'},
-      {id:'p2',name:'Pavoneo 360°',color:'#d97706'},
-      {id:'p3',name:'Bella Bestia · eventos',color:'#0891b2'},
-      {id:'p4',name:'Noches de Neón',color:'#db2777'},
-      {id:'p5',name:'Marketing / RRSS',color:'#16a34a'},
-      {id:'p6',name:'M.A.P.A. Musical',color:'#7c3aed'},
-      {id:'p7',name:'Booking / Management',color:'#0ea5e9'},
-      {id:'p8',name:'Administración',color:'#475569'}],
+    projects:[],
     team:[
-      {id:'u1',name:'David',role:'Director Operativo · AI/Tech',color:'#1d4ed8',salary:1600,rate:18,grid:{}},
-      {id:'u2',name:'Miriam',role:'Social Media · Marketing',color:'#db2777',salary:1200,rate:14,grid:{}},
-      {id:'u3',name:'Manu',role:'Escuela · Bella Bestia',color:'#0891b2',salary:1300,rate:14,grid:{}}],
+      {id:'u1',name:'David',role:'Director Operativo · AI/Tech',color:'#1d4ed8',salary:1600,rate:18,projects:dp(),grid:{}},
+      {id:'u2',name:'Miriam',role:'Social Media · Marketing',color:'#db2777',salary:1200,rate:14,projects:dp(),grid:{}},
+      {id:'u3',name:'Manu',role:'Escuela · Bella Bestia',color:'#0891b2',salary:1300,rate:14,projects:dp(),grid:{}}],
     objectives:[
       {id:'o1',owner:'empresa',title:'Cierre temporada Noches de Neón',date:dStr(now),status:'curso'},
       {id:'o2',owner:'u2',title:'Plan de contenidos mensual',date:dStr(addDays(now,3)),status:'pend'}],
@@ -384,12 +385,19 @@ function migrate(){
     const flat=Object.keys(p.grid).filter(k=>/^[0-6]-\d+$/.test(k));
     if(flat.length){const wk=u.weekId;p.grid[wk]=p.grid[wk]||{};flat.forEach(k=>{p.grid[wk][k]=p.grid[k];delete p.grid[k];});}
   });
+  // migrate global projects → per-person
+  if(state.projects&&state.projects.length){
+    const gp=state.projects;
+    state.team.forEach(p=>{if(!p.projects||!p.projects.length)p.projects=gp.map(pr=>Object.assign({},pr));});
+    state.projects=[];
+  }
+  state.team.forEach(p=>{if(!p.projects)p.projects=[];});
 }
 
 /* ============ FORMAT ============ */
 function money(n){return (n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+state.config.currency;}
 function num(n){return (n||0).toLocaleString('es-ES',{maximumFractionDigits:1});}
-function proj(id){return state.projects.find(p=>p.id===id);}
+function proj(id,person){return ((person||curPerson()).projects||[]).find(p=>p.id===id);}
 function person(id){return state.team.find(t=>t.id===id);}
 function curPerson(){return person(state.ui.person)||state.team[0];}
 function hours(){const a=[];for(let h=state.config.startHour;h<state.config.endHour;h++)a.push(h);return a;}
@@ -515,8 +523,9 @@ function stat(k,v,cls){return '<div class="stat"><div class="k">'+k+'</div><div 
 
 function renderLegend(){
   const p=curPerson();const st=weekStats(p,state.ui.weekId);const host=document.getElementById('legend');host.innerHTML='';
-  if(!state.projects.length){host.innerHTML='<p class="hint">Sin proyectos todavía.</p>';return;}
-  state.projects.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const row=document.createElement('div');row.className='legend-row';
+  const projs=p.projects||[];
+  if(!projs.length){host.innerHTML='<p class="hint">Sin proyectos todavía.</p>';return;}
+  projs.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const row=document.createElement('div');row.className='legend-row';
     row.innerHTML='<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+'</span><span class="hrs">'+hrs+' h · '+money(hrs*(p.rate||0))+' <button class="btn ghost danger" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
     host.appendChild(row);});
 }
@@ -605,7 +614,7 @@ let popCtx=null;
 function openPop(ev,di,hr){ev.stopPropagation();closePop();popCtx={di,hr};
   const p=curPerson();const cur=(p.grid[state.ui.weekId]||{})[di+'-'+hr]||{};const host=document.getElementById('popHost');
   const pop=document.createElement('div');pop.className='pop';let h='<h4>'+DAY_FULL[di]+' · '+String(hr).padStart(2,'0')+':00</h4>';
-  state.projects.forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(cur.p===pr.id?' ✓':'')+'</div>';});
+  (p.projects||[]).forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(cur.p===pr.id?' ✓':'')+'</div>';});
   h+='<div class="opt clear" onclick="assign(null)">○ Vaciar bloque</div>';
   h+='<div class="note-in"><textarea id="popNote" placeholder="Nota o especificación del momento concreto…" onkeydown="if(event.key===\'Enter\'&&event.ctrlKey)saveNote()">'+esc(cur.n||'')+'</textarea><div class="hint-key">Ctrl + Enter para guardar nota</div></div>';
   pop.innerHTML=h;host.appendChild(pop);
@@ -625,10 +634,12 @@ function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.
 
 /* ============ PROJECTS ============ */
 function addProject(){const inp=document.getElementById('newProj');const n=inp.value.trim();if(!n)return;
-  state.projects.push({id:uid(),name:n,color:PALETTE[state.projects.length%PALETTE.length]});inp.value='';save();renderLegend();toast('Proyecto añadido');}
+  const p=curPerson();if(!p.projects)p.projects=[];
+  p.projects.push({id:uid(),name:n,color:PALETTE[p.projects.length%PALETTE.length]});inp.value='';save();renderLegend();toast('Proyecto añadido');}
 function delProject(id){if(!confirm('¿Eliminar proyecto? Se vaciarán los bloques que lo usen.'))return;
-  state.projects=state.projects.filter(p=>p.id!==id);
-  state.team.forEach(t=>{Object.keys(t.grid).forEach(wk=>{Object.keys(t.grid[wk]).forEach(k=>{if(t.grid[wk][k]&&t.grid[wk][k].p===id)delete t.grid[wk][k];});});});
+  const p=curPerson();
+  p.projects=(p.projects||[]).filter(pr=>pr.id!==id);
+  Object.keys(p.grid).forEach(wk=>{Object.keys(p.grid[wk]).forEach(k=>{if(p.grid[wk][k]&&p.grid[wk][k].p===id)delete p.grid[wk][k];});});
   save();render();}
 
 /* ============ MODALS ============ */
