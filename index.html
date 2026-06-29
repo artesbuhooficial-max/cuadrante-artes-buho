@@ -202,6 +202,8 @@
   ::-webkit-scrollbar-track{background:transparent}
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);border:1px solid var(--blue);color:#fff;padding:11px 18px;border-radius:11px;font-size:.84rem;font-weight:600;z-index:90;box-shadow:var(--shadow);opacity:0;transition:.25s;pointer-events:none}
   .toast.show{opacity:1}
+  body.hide-money .mv{visibility:hidden}
+  body.hide-money .mv-field{visibility:hidden}
 </style>
 </head>
 <body>
@@ -215,6 +217,7 @@
     <div class="top-actions">
       <span class="save-pill" id="saveStatus">✓ Guardado local</span>
       <button class="btn" id="publishBtn" onclick="publishToGitHub()" style="background:rgba(255,255,255,.92);color:var(--blue-deep);font-weight:700;border-color:rgba(255,255,255,.9)">☁ Publicar</button>
+      <button class="btn" id="moneyToggleBtn" onclick="toggleMoney()">👁 Ocultar €</button>
       <button class="btn" onclick="openSettings()">⚙ Ajustes</button>
     </div>
   </div>
@@ -337,6 +340,11 @@ const GH_KEY='cuadrante_gh_cfg';
 function ghGet(){try{return JSON.parse(localStorage.getItem(GH_KEY)||'{}')}catch(e){return {}}}
 function ghSet(c){try{localStorage.setItem(GH_KEY,JSON.stringify(c))}catch(e){}}
 
+function toggleMoney(){
+  const hidden=document.body.classList.toggle('hide-money');
+  document.getElementById('moneyToggleBtn').textContent=hidden?'👁 Mostrar €':'👁 Ocultar €';
+}
+
 async function publishToGitHub(){
   const cfg=ghGet();
   if(!cfg.token){openSettings();toast('Configura el token de GitHub en Ajustes');return;}
@@ -448,7 +456,7 @@ function migrate(){
 }
 
 /* ============ FORMAT ============ */
-function money(n){return (n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+state.config.currency;}
+function money(n){return '<span class="mv">'+(n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+state.config.currency+'</span>';}
 function num(n){return (n||0).toLocaleString('es-ES',{maximumFractionDigits:1});}
 function proj(id,person){return ((person||curPerson()).projects||[]).find(p=>p.id===id);}
 function person(id){return state.team.find(t=>t.id===id);}
@@ -501,16 +509,16 @@ function renderPersonStrip(){
       field('Salario / mes','salary',p.salary,state.config.currency)+
       field('Precio / hora','rate',p.rate,state.config.currency)+
       '<div class="field calc"><label>Horas / semana</label><div class="val"><span class="num">'+num(st.week)+'</span><span class="suffix">h</span></div></div>'+
-      '<div class="field calc"><label>Coste / mes (real)</label><div class="val"><span class="num">'+money(mm.cost)+'</span></div></div>'+
+      '<div class="field calc mv-field"><label>Coste / mes (real)</label><div class="val"><span class="num">'+money(mm.cost)+'</span></div></div>'+
       '<button class="btn ghost" style="align-self:center" onclick="openPerson(\''+p.id+'\')">✎ editar</button>'+
     '</div>';
   document.getElementById('personStrip').style.setProperty('--accent',p.color);
   document.getElementById('personStripCal').innerHTML=
     '<div class="ps-id"><span class="nm">'+p.name+'</span><span class="rl">'+p.role+'</span></div>'+
-    '<div class="ps-fields"><div class="field calc"><label>Salario / mes</label><div class="val"><span class="num">'+money(p.salary)+'</span></div></div></div>';
+    '<div class="ps-fields"><div class="field calc mv-field"><label>Salario / mes</label><div class="val"><span class="num">'+money(p.salary)+'</span></div></div></div>';
   document.getElementById('personStripCal').style.setProperty('--accent',p.color);
 }
-function field(label,key,val,suffix){return '<div class="field"><label>'+label+'</label><div class="val"><input type="number" value="'+(val||0)+'" onchange="updPerson(\''+key+'\',this.value)"><span class="suffix">'+suffix+'</span></div></div>';}
+function field(label,key,val,suffix){const mvc=(key==='salary'||key==='rate')?' mv-field':'';return '<div class="field'+mvc+'"><label>'+label+'</label><div class="val"><input type="number" value="'+(val||0)+'" onchange="updPerson(\''+key+'\',this.value)"><span class="suffix">'+suffix+'</span></div></div>';}
 function updPerson(key,v){curPerson()[key]=parseFloat(v)||0;save();renderPersonStrip();renderStats();renderMonth();renderSummary();}
 
 const _HOUR_COL_W=78,_DAY_COL_DEF=150;
@@ -563,7 +571,7 @@ function _onColUp(){
 function renderStats(){
   const p=curPerson();const mon=parseId(state.ui.weekId);const info=weekInfo(mon);
   const st=weekStats(p,state.ui.weekId);const mm=personMonth(p,info.year,info.month);
-  const delta=(p.salary||0)-mm.cost;const dCls=delta>=0?'ok':'';const dSign=delta>=0?'+':'−';
+  const delta=(p.salary||0)-mm.cost;const dCls=delta>=0?'ok':'';const dSign='<span class="mv">'+(delta>=0?'+':'−')+'</span>';
   document.getElementById('statGrid').innerHTML=
     stat('Horas / semana',num(st.week)+' h')+
     stat('Coste / semana',money(st.weekCost),'accent')+
@@ -585,7 +593,7 @@ function renderLegend(){
         '<div class="prog-bar"><div class="fill" style="width:'+pct+'%;background:'+pr.color+'"></div></div>'+
         '<span class="prog-pct" onclick="editPct(\''+pr.id+'\',this)" title="Clic para editar">'+pct+'%</span>'+
       '</div>'+
-      '<span class="hrs">'+hrs+' h · '+money(hrs*(p.rate||0))+' <button class="btn ghost danger" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
+      '<span class="hrs">'+hrs+' h<span class="mv"> · '+money(hrs*(p.rate||0))+'</span> <button class="btn ghost danger" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
     host.appendChild(row);});
 }
 
@@ -602,7 +610,7 @@ function renderMonth(){
   document.getElementById('scEmpresa').classList.toggle('active',state.ui.monthScope==='empresa');
   // weeks
   const weeks=weeksOfMonth(y,m);let totH=0,totC=0;
-  let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th>Coste</th></tr></thead><tbody>';
+  let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th class="mv">Coste</th></tr></thead><tbody>';
   weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h++;c+=p.rate||0;}}});});totH+=h;totC+=c;
     const r1=w.mon.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=addDays(w.mon,6).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     wh+='<tr><td>Semana '+w.info.weekNum+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+money(c)+'</td></tr>';});
@@ -613,7 +621,7 @@ function renderMonth(){
   document.getElementById('mesTotals').innerHTML=
     '<div class="mt-card"><div class="k">Ámbito</div><div class="v">'+esc(scopeLabel)+'</div></div>'+
     '<div class="mt-card"><div class="k">Horas de oficina · mes</div><div class="v">'+num(totH)+' h</div></div>'+
-    '<div class="mt-card gold"><div class="k">Coste total · mes</div><div class="v blue">'+money(totC)+'</div></div>';
+    '<div class="mt-card gold mv"><div class="k">Coste total · mes</div><div class="v blue">'+money(totC)+'</div></div>';
   // day distribution
   const dowHost=document.getElementById('mesDow');if(!dowHost.innerHTML){DAYS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;dowHost.appendChild(e);});}
   const first=new Date(y,m,1);const startDow=(first.getDay()+6)%7;const dim=new Date(y,m+1,0).getDate();
@@ -625,7 +633,7 @@ function renderMonth(){
     if(o.h)cell.style.background='rgba(29,78,216,'+alpha.toFixed(3)+')';
     if(dStr(date)===todayStr)cell.style.boxShadow='0 0 0 2px var(--blue) inset';
     cell.innerHTML='<div class="d"><span class="wd">'+DAYS[(date.getDay()+6)%7]+'</span><span>'+d+'</span></div>'+
-      '<div><div class="h">'+(o.h?o.h+' h':'—')+'</div><div class="c">'+(o.h?money(o.c):'')+'</div></div>';
+      '<div><div class="h">'+(o.h?o.h+' h':'—')+'</div><div class="c mv">'+(o.h?money(o.c):'')+'</div></div>';
     grid.appendChild(cell);}
 }
 
@@ -657,14 +665,14 @@ function resMove(n){let m=state.ui.resRef.m+n,y=state.ui.resRef.y;if(m<0){m=11;y
 function resToday(){const d=new Date();state.ui.resRef={y:d.getFullYear(),m:d.getMonth()};save();renderSummary();}
 function renderSummary(){
   const {y,m}=state.ui.resRef;document.getElementById('resTitle').textContent='Resumen · '+monthName(y,m);
-  let h='<thead><tr><th>Persona</th><th>Salario/mes</th><th>€/hora</th><th>Horas (mes)</th><th>Coste (mes)</th><th>Δ vs salario</th></tr></thead><tbody>';
+  let h='<thead><tr><th>Persona</th><th class="mv">Salario/mes</th><th class="mv">€/hora</th><th>Horas (mes)</th><th class="mv">Coste (mes)</th><th class="mv">Δ vs salario</th></tr></thead><tbody>';
   let tSal=0,tH=0,tC=0;
   state.team.forEach(p=>{const mm=personMonth(p,y,m);const delta=(p.salary||0)-mm.cost;tSal+=p.salary||0;tH+=mm.hours;tC+=mm.cost;
     const dCol=delta>=0?'var(--green)':'#db2777';
     h+='<tr><td><div class="nm-cell"><span class="dot" style="background:'+p.color+'"></span><div>'+p.name+'<div class="rl">'+esc(p.role)+'</div></div></div></td>'+
       '<td class="num">'+money(p.salary)+'</td><td class="num">'+money(p.rate)+'</td><td class="num">'+num(mm.hours)+' h</td><td class="num">'+money(mm.cost)+'</td>'+
-      '<td class="num" style="color:'+dCol+'">'+(delta>=0?'+':'−')+money(Math.abs(delta))+'</td></tr>';});
-  h+='</tbody><tfoot><tr><td>TOTAL ('+state.team.length+')</td><td>'+money(tSal)+'</td><td>—</td><td>'+num(tH)+' h</td><td>'+money(tC)+'</td><td>'+(tSal-tC>=0?'+':'−')+money(Math.abs(tSal-tC))+'</td></tr></tfoot>';
+      '<td class="num" style="color:'+dCol+'"><span class="mv">'+(delta>=0?'+':'−')+'</span>'+money(Math.abs(delta))+'</td></tr>';});
+  h+='</tbody><tfoot><tr><td>TOTAL ('+state.team.length+')</td><td>'+money(tSal)+'</td><td class="mv">—</td><td>'+num(tH)+' h</td><td>'+money(tC)+'</td><td><span class="mv">'+(tSal-tC>=0?'+':'−')+'</span>'+money(Math.abs(tSal-tC))+'</td></tr></tfoot>';
   document.getElementById('summaryTable').innerHTML=h;
 }
 
