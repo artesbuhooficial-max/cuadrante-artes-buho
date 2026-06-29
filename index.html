@@ -204,6 +204,24 @@
   .toast.show{opacity:1}
   body.hide-money .mv{visibility:hidden}
   body.hide-money .mv-field{visibility:hidden}
+  .notes-compose{background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .nc-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .nc-fields{display:flex;gap:10px;flex:1;flex-wrap:wrap;align-items:flex-end}
+  .nc-field{display:flex;flex-direction:column;gap:4px}
+  .nc-field label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gold)}
+  .nc-field input[type=date],.nc-field select{background:var(--cream);border:1px solid var(--cream-line);border-radius:9px;padding:8px 11px;color:var(--navy);font-size:.88rem;font-weight:600;outline:none;font-family:inherit;cursor:pointer}
+  .nc-field input[type=date]:focus,.nc-field select:focus{border-color:var(--blue)}
+  #noteText{width:100%;background:var(--cream);border:1px solid var(--cream-line);border-radius:9px;padding:10px 13px;color:var(--navy);font-size:.9rem;font-family:inherit;resize:vertical;outline:none;line-height:1.6;min-height:90px}
+  #noteText:focus{border-color:var(--blue)}
+  .note-card{background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow);transition:.1s}
+  .note-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;flex-wrap:wrap}
+  .note-date-badge{font-size:.79rem;font-weight:800;color:var(--blue);background:var(--blue-light);padding:4px 11px;border-radius:8px;white-space:nowrap}
+  .note-who{display:flex;align-items:center;gap:5px;font-size:.77rem;font-weight:600;color:var(--muted);white-space:nowrap}
+  .note-who .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .note-actions{margin-left:auto;display:flex;gap:6px}
+  .note-body{font-size:.91rem;line-height:1.65;color:var(--text);white-space:pre-wrap;word-break:break-word}
+  .note-edit-area{width:100%;background:var(--cream);border:1px solid var(--blue);border-radius:9px;padding:9px 12px;font-size:.9rem;font-family:inherit;color:var(--navy);resize:vertical;outline:none;line-height:1.6;margin-top:4px;min-height:80px}
+  .notes-empty{padding:24px 0;text-align:center;color:var(--muted);font-size:.88rem}
 </style>
 </head>
 <body>
@@ -233,6 +251,7 @@
     <button class="tab" data-tab="mes" onclick="switchTab('mes')">Mes · horas y coste</button>
     <button class="tab" data-tab="calendario" onclick="switchTab('calendario')">Calendario · objetivos</button>
     <button class="tab" data-tab="resumen" onclick="switchTab('resumen')">Resumen · empresa</button>
+    <button class="tab" data-tab="notas" onclick="switchTab('notas')">Notas · diario</button>
   </div>
 
   <div class="people" id="people"></div>
@@ -321,6 +340,28 @@
     </div>
     <div class="panel" style="padding:0;overflow:hidden"><table class="summary" id="summaryTable"></table></div>
     <p class="hint" style="margin-top:14px">Horas y coste <b>reales del mes</b> (suma de las semanas con bloques asignados). El <b>delta</b> compara el coste con el salario: positivo = el salario cubre las horas pautadas; negativo = las horas valen más.</p>
+  </section>
+</div>
+
+  <!-- ===== NOTAS ===== -->
+  <section id="view-notas" style="display:none">
+    <div class="notes-compose">
+      <div class="nc-row">
+        <div class="nc-fields">
+          <div class="nc-field">
+            <label>Fecha</label>
+            <input type="date" id="noteDate">
+          </div>
+          <div class="nc-field">
+            <label>Autor</label>
+            <select id="noteOwner"></select>
+          </div>
+        </div>
+        <button class="btn primary" onclick="saveNewNote()">Guardar nota</button>
+      </div>
+      <textarea id="noteText" placeholder="Escribe aquí la nota, aviso o especificación del día… (Enter para saltos de línea, Ctrl+Enter para guardar)" onkeydown="if(event.key==='Enter'&&event.ctrlKey)saveNewNote()"></textarea>
+    </div>
+    <div id="notesList"></div>
   </section>
 </div>
 
@@ -422,6 +463,7 @@ function seed(){
     objectives:[
       {id:'o1',owner:'empresa',title:'Cierre temporada Noches de Neón',date:dStr(now),status:'curso'},
       {id:'o2',owner:'u2',title:'Plan de contenidos mensual',date:dStr(addDays(now,3)),status:'pend'}],
+    notes:[],
     ui:{tab:'cuadrante',person:'u1',weekId:todayMon,monthScope:'person',
         monthRef:{y:now.getFullYear(),m:now.getMonth()},resRef:{y:now.getFullYear(),m:now.getMonth()}}
   };
@@ -453,6 +495,7 @@ function migrate(){
     state.projects=[];
   }
   state.team.forEach(p=>{if(!p.projects)p.projects=[];});
+  if(!state.notes)state.notes=[];
 }
 
 /* ============ FORMAT ============ */
@@ -476,11 +519,12 @@ function dayHours(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{}
 function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours++;cost+=p.rate||0;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
-function render(){renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();updateSaveUI();}
+function render(){renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderNotas();updateSaveUI();}
 
 function renderPeople(){
   const host=document.getElementById('people');
   if(state.ui.tab==='resumen'){host.style.display='none';return;}
+  if(state.ui.tab==='notas'){host.style.display='none';return;}
   host.style.display='flex';host.innerHTML='';
   state.team.forEach(t=>{const b=document.createElement('button');
     b.className='pill'+(state.ui.person===t.id?' active':'');
@@ -787,11 +831,88 @@ function saveSettings(){
   save();closeModal();render();toast('Ajustes guardados');}
 function resetAll(){if(!confirm('Esto borra TODOS los datos y vuelve al ejemplo inicial. ¿Seguro?'))return;state=seed();save();closeModal();render();}
 
+/* ============ NOTAS ============ */
+function renderNotas(){
+  if(state.ui.tab!=='notas')return;
+  // Poblar selector de autor
+  const sel=document.getElementById('noteOwner');
+  if(sel&&!sel.dataset.ready){
+    sel.innerHTML='';
+    state.team.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.name;sel.appendChild(o);});
+    const oe=document.createElement('option');oe.value='empresa';oe.textContent='Empresa (todos)';sel.appendChild(oe);
+    sel.dataset.ready='1';
+  }
+  // Fecha por defecto: hoy
+  const nd=document.getElementById('noteDate');
+  if(nd&&!nd.value)nd.value=dStr(new Date());
+  // Lista de notas: todas (empresa siempre visible)
+  const notes=(state.notes||[]).slice().sort((a,b)=>b.date.localeCompare(a.date)||b.created-a.created);
+  const host=document.getElementById('notesList');if(!host)return;
+  if(!notes.length){host.innerHTML='<p class="notes-empty">Sin notas todavía. Escribe la primera arriba.</p>';return;}
+  host.innerHTML='';
+  notes.forEach(n=>{
+    const own=n.owner==='empresa'?{name:'Empresa',color:'var(--gold)'}:(person(n.owner)||{name:'?',color:'#888'});
+    const card=document.createElement('div');card.className='note-card';
+    const dateLabel=parseId(n.date).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    card.innerHTML=
+      '<div class="note-head">'+
+        '<span class="note-date-badge">'+dateLabel+'</span>'+
+        '<span class="note-who"><span class="dot" style="background:'+own.color+'"></span>'+esc(own.name)+'</span>'+
+        '<span class="note-actions">'+
+          '<button class="btn ghost" style="padding:4px 9px;font-size:.74rem" onclick="editNote(\''+n.id+'\')">✎ editar</button>'+
+          '<button class="btn ghost danger" style="padding:4px 9px;font-size:.74rem" onclick="delNote(\''+n.id+'\')">✕</button>'+
+        '</span>'+
+      '</div>'+
+      '<div class="note-body" id="nb-'+n.id+'">'+esc(n.text)+'</div>';
+    host.appendChild(card);
+  });
+}
+
+function saveNewNote(){
+  const dateEl=document.getElementById('noteDate');
+  const textEl=document.getElementById('noteText');
+  const ownerEl=document.getElementById('noteOwner');
+  const date=dateEl?dateEl.value:'';
+  const text=textEl?textEl.value.trim():'';
+  const owner=ownerEl?ownerEl.value:(curPerson().id);
+  if(!text){toast('Escribe algo antes de guardar');return;}
+  if(!date){toast('Selecciona una fecha');return;}
+  if(!state.notes)state.notes=[];
+  state.notes.push({id:uid(),owner,date,text,created:Date.now()});
+  if(textEl)textEl.value='';
+  save();renderNotas();toast('Nota guardada');
+}
+
+function editNote(id){
+  const n=(state.notes||[]).find(x=>x.id===id);if(!n)return;
+  const body=document.getElementById('nb-'+id);if(!body)return;
+  body.innerHTML=
+    '<textarea class="note-edit-area" id="nea-'+id+'" rows="4">'+esc(n.text)+'</textarea>'+
+    '<div style="display:flex;gap:8px;margin-top:8px">'+
+      '<button class="btn primary" style="font-size:.78rem;padding:6px 14px" onclick="saveEditNote(\''+id+'\')">Guardar</button>'+
+      '<button class="btn" style="font-size:.78rem;padding:6px 14px" onclick="renderNotas()">Cancelar</button>'+
+    '</div>';
+  const ta=document.getElementById('nea-'+id);
+  if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}
+}
+
+function saveEditNote(id){
+  const n=(state.notes||[]).find(x=>x.id===id);if(!n)return;
+  const ta=document.getElementById('nea-'+id);if(!ta)return;
+  const t=ta.value.trim();if(!t){toast('La nota no puede estar vacía');return;}
+  n.text=t;save();renderNotas();toast('Nota actualizada');
+}
+
+function delNote(id){
+  if(!confirm('¿Eliminar esta nota?'))return;
+  state.notes=(state.notes||[]).filter(x=>x.id!==id);save();renderNotas();
+}
+
 /* ============ TABS ============ */
 function switchTab(t){state.ui.tab=t;storeSet(state);
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
-  ['cuadrante','mes','calendario','resumen'].forEach(v=>{document.getElementById('view-'+v).style.display=(v===t)?'':'none';});
-  renderPeople();if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();}
+  ['cuadrante','mes','calendario','resumen','notas'].forEach(v=>{document.getElementById('view-'+v).style.display=(v===t)?'':'none';});
+  renderPeople();if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();if(t==='notas')renderNotas();}
 
 /* ============ BACKUP (download/upload) ============ */
 function exportJSON(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cuadrante_artesbuho_'+dStr(new Date())+'.json';a.click();toast('Backup descargado');}
