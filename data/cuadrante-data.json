@@ -111,12 +111,14 @@
         {
           "id": "xle8jpb",
           "name": "Respond IO + Financiación AB",
-          "color": "#ca8a04"
+          "color": "#ca8a04",
+          "progress": 80
         },
         {
           "id": "xk6kruc",
           "name": "Reunion Grupal AB",
-          "color": "#1d4ed8"
+          "color": "#1d4ed8",
+          "progress": 100
         },
         {
           "id": "xh48dhj",
