@@ -110,11 +110,18 @@
   .stat .k{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);font-weight:700}
   .stat .v{font-size:1.4rem;font-weight:800;margin-top:4px;color:var(--navy);font-variant-numeric:tabular-nums}
   .stat .v.accent{color:var(--blue)}.stat .v.gold{color:var(--gold)}.stat .v.ok{color:var(--green)}
-  .legend-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:.85rem}
+  .legend-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.85rem}
   .legend-row:last-child{border-bottom:none}
-  .legend-row .lg-name{display:flex;align-items:center;gap:9px;color:var(--navy);font-weight:600}
+  .legend-row .lg-name{display:flex;align-items:center;gap:9px;color:var(--navy);font-weight:600;min-width:0;flex:1}
+  .legend-row .lg-name-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .legend-row .sw{width:13px;height:13px;border-radius:4px;flex:none}
-  .legend-row .hrs{font-weight:600;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+  .legend-row .hrs{font-weight:600;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .prog-wrap{display:flex;align-items:center;gap:6px;width:130px;flex:none}
+  .prog-bar{flex:1;height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+  .prog-bar .fill{height:100%;border-radius:6px;transition:.3s}
+  .prog-pct{font-size:.74rem;font-weight:700;color:var(--navy);min-width:34px;text-align:right;cursor:pointer;padding:2px 5px;border-radius:6px;white-space:nowrap}
+  .prog-pct:hover{background:var(--cream)}
+  .prog-pct input{width:40px;background:var(--paper);border:1px solid var(--blue);border-radius:5px;color:var(--navy);font-size:.74rem;font-weight:700;padding:1px 3px;outline:none;text-align:right;font-family:inherit}
   .proj-add{margin-top:13px;display:flex;gap:6px}
   .proj-add input{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:9px;color:var(--navy);padding:9px 12px;font-size:.82rem;outline:none}
   .proj-add input:focus{border-color:var(--blue)}
@@ -571,8 +578,14 @@ function renderLegend(){
   const p=curPerson();const st=weekStats(p,state.ui.weekId);const host=document.getElementById('legend');host.innerHTML='';
   const projs=p.projects||[];
   if(!projs.length){host.innerHTML='<p class="hint">Sin proyectos todavía.</p>';return;}
-  projs.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const row=document.createElement('div');row.className='legend-row';
-    row.innerHTML='<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+'</span><span class="hrs">'+hrs+' h · '+money(hrs*(p.rate||0))+' <button class="btn ghost danger" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
+  projs.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const pct=pr.progress||0;const row=document.createElement('div');row.className='legend-row';
+    row.innerHTML=
+      '<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span><span class="lg-name-text">'+esc(pr.name)+'</span></span>'+
+      '<div class="prog-wrap">'+
+        '<div class="prog-bar"><div class="fill" style="width:'+pct+'%;background:'+pr.color+'"></div></div>'+
+        '<span class="prog-pct" onclick="editPct(\''+pr.id+'\',this)" title="Clic para editar">'+pct+'%</span>'+
+      '</div>'+
+      '<span class="hrs">'+hrs+' h · '+money(hrs*(p.rate||0))+' <button class="btn ghost danger" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
     host.appendChild(row);});
 }
 
@@ -677,6 +690,19 @@ function assign(pid){if(!popCtx)return;const p=curPerson();const c=cells(p,state
   save();closePop();renderGrid();renderStats();renderLegend();renderPersonStrip();}
 function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);const k=popCtx.di+'-'+popCtx.hr;
   const note=(document.getElementById('popNote')||{}).value||'';if(c[k]){c[k].n=note.trim()||undefined;save();renderGrid();}closePop();}
+
+/* ============ PROJECT PROGRESS ============ */
+function editPct(projId,el){
+  const pr=proj(projId);if(!pr)return;
+  const cur=pr.progress||0;
+  el.innerHTML='<input type="number" min="0" max="100" value="'+cur+'" onblur="savePct(\''+projId+'\',this)" onkeydown="if(event.key===\'Enter\')this.blur();if(event.key===\'Escape\')renderLegend()">';
+  const inp=el.querySelector('input');inp.focus();inp.select();
+}
+function savePct(projId,inp){
+  const pr=proj(projId);if(!pr)return;
+  pr.progress=Math.max(0,Math.min(100,parseInt(inp.value)||0));
+  save();renderLegend();
+}
 
 /* ============ PROJECTS ============ */
 function addProject(){const inp=document.getElementById('newProj');const n=inp.value.trim();if(!n)return;
