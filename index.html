@@ -465,7 +465,7 @@ function weekStats(p,id){
 }
 function dayHours(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;
   return Object.keys(c).filter(k=>k.indexOf(di+'-')===0&&c[k]&&c[k].p).length;}
-function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const s=weekStats(p,w.id);hours+=s.week;cost+=s.weekCost;});return {hours,cost};}
+function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours++;cost+=p.rate||0;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
 function render(){renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();updateSaveUI();}
@@ -603,7 +603,7 @@ function renderMonth(){
   // weeks
   const weeks=weeksOfMonth(y,m);let totH=0,totC=0;
   let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th>Coste</th></tr></thead><tbody>';
-  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const s=weekStats(p,w.id);h+=s.week;c+=s.weekCost;});totH+=h;totC+=c;
+  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h++;c+=p.rate||0;}}});});totH+=h;totC+=c;
     const r1=w.mon.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=addDays(w.mon,6).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     wh+='<tr><td>Semana '+w.info.weekNum+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+money(c)+'</td></tr>';});
   wh+='</tbody><tfoot><tr><td>TOTAL MES</td><td></td><td>'+num(totH)+' h</td><td>'+money(totC)+'</td></tr></tfoot>';
