@@ -112,7 +112,7 @@
           "id": "xle8jpb",
           "name": "Respond IO + Financiación AB",
           "color": "#ca8a04",
-          "progress": 80
+          "progress": 20
         },
         {
           "id": "xk6kruc",
@@ -263,6 +263,32 @@
           "color": "#d97706"
         }
       ]
+    },
+    {
+      "id": "xasd2wb",
+      "name": "Daniel",
+      "role": "Administrativo",
+      "color": "#0891b2",
+      "salary": 1200,
+      "rate": 10,
+      "grid": {
+        "2026-06-29": {
+          "1-10": {
+            "p": "x09g91h"
+          },
+          "1-11": {
+            "p": "x09g91h"
+          }
+        }
+      },
+      "projects": [
+        {
+          "id": "x09g91h",
+          "name": "Contabiliad Escuela",
+          "color": "#1d4ed8",
+          "progress": 35
+        }
+      ]
     }
   ],
   "objectives": [
@@ -283,7 +309,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
+    "person": "xasd2wb",
     "weekId": "2026-06-29",
     "monthScope": "person",
     "monthRef": {
@@ -294,5 +320,6 @@
       "y": 2026,
       "m": 5
     }
-  }
+  },
+  "notes": []
 }
