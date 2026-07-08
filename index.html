@@ -488,17 +488,63 @@ let _unlocked={};
 function loadPins(){try{_pins=JSON.parse(localStorage.getItem(PIN_KEY)||'{}')}catch(e){_pins={};}}
 function savePins(){try{localStorage.setItem(PIN_KEY,JSON.stringify(_pins))}catch(e){}}
 function masterPerson(){return state.team.find(p=>p.master);}
-function isMasterUnlocked(){return state.team.some(p=>p.master&&_unlocked[p.id]);}
-function isLocked(pid){return !!_pins[pid]&&!_unlocked[pid]&&!isMasterUnlocked();}
+function appsMode(){return !!(ghGet().appsUrl);}
+function isMasterUnlocked(){
+  if(appsMode())return !!_unlocked.__master__;
+  return state.team.some(p=>p.master&&_unlocked[p.id]);
+}
+function isLocked(pid){
+  if(appsMode())return !_unlocked[pid]&&!isMasterUnlocked();
+  return !!_pins[pid]&&!_unlocked[pid]&&!isMasterUnlocked();
+}
 function updateLockClass(){
   document.body.classList.toggle('money-locked',isLocked(curPerson().id));
   document.body.classList.toggle('no-team-money',!isMasterUnlocked());
 }
+/* --- JSONP para leer del Web App de Apps Script (evita el bloqueo CORS) --- */
+function jsonp(url){return new Promise((res,rej)=>{
+  const cb='__cb'+Math.random().toString(36).slice(2);
+  const s=document.createElement('script');
+  const to=setTimeout(()=>{cleanup();rej(new Error('Timeout'));},13000);
+  function cleanup(){clearTimeout(to);delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);}
+  window[cb]=(data)=>{cleanup();res(data);};
+  s.onerror=()=>{cleanup();rej(new Error('No se pudo conectar'));};
+  s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;
+  document.body.appendChild(s);
+});}
+async function unlockOnline(pid,pin,master){
+  const u=ghGet().appsUrl;
+  const q='action=unlock'+(master?'&master='+encodeURIComponent(master):'&pid='+encodeURIComponent(pid)+'&pin='+encodeURIComponent(pin));
+  return jsonp(u+(u.indexOf('?')>=0?'&':'?')+q);
+}
+function applyEcon(econ){if(!econ)return;Object.keys(econ).forEach(id=>{const p=person(id);if(p&&econ[id]){p.salary=econ[id].salary||0;p.rate=econ[id].rate||0;}});}
+async function testAppsScript(){
+  const u=ghGet().appsUrl;if(!u){toast('Pega primero la URL');return;}
+  toast('Probando conexión…');
+  try{const d=await jsonp(u+(u.indexOf('?')>=0?'&':'?')+'action=ping');
+    toast(d&&d.ok?'✓ Conexión correcta con Apps Script':'Respuesta inesperada');
+  }catch(e){toast('No se pudo conectar: '+e.message);}
+}
 function tryMasterUnlock(){
+  if(appsMode()){openMasterModal();return;}
   const m=masterPerson();
   if(!m){toast('No hay master configurado');return;}
   if(!_pins[m.id]){openSettings();toast('Configura la clave maestra de '+m.name+' en Ajustes');return;}
   tryUnlock(m.id);
+}
+function openMasterModal(){
+  modal('<div class="modal" style="max-width:340px"><header><h3>👑 Clave maestra</h3><button class="btn ghost" onclick="closeModal()">✕</button></header>'+
+    '<div class="body"><p class="hint">Introduce la <b>clave maestra</b> (Roman) para ver los datos económicos de todo el equipo.</p>'+
+    '<div class="inp"><label>Clave maestra</label><input id="pinInput" type="password" placeholder="••••" autocomplete="off" onkeydown="if(event.key===\'Enter\')confirmMaster()"></div></div>'+
+    '<footer><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="confirmMaster()">Desbloquear</button></footer></div>');
+  setTimeout(()=>{const el=document.getElementById('pinInput');if(el)el.focus();},80);
+}
+async function confirmMaster(){
+  const el=document.getElementById('pinInput');if(!el)return;const key=el.value;
+  try{const d=await unlockOnline(null,null,key);
+    if(d&&d.ok&&d.master){applyEcon(d.econ);_unlocked.__master__=true;state.team.forEach(p=>_unlocked[p.id]=true);closeModal();save();render();toast('✓ Clave maestra correcta — ves todo el equipo');}
+    else{toast((d&&d.error)||'Clave maestra incorrecta');el.value='';el.focus();}
+  }catch(e){toast('Sin conexión con el servidor');}
 }
 function clearPin(pid){delete _pins[pid];delete _unlocked[pid];savePins();toast('PIN eliminado');openSettings();}
 function tryUnlock(pid){
@@ -508,8 +554,15 @@ function tryUnlock(pid){
     '<div class="inp"><label>PIN</label><input id="pinInput" type="password" placeholder="••••" autocomplete="off" onkeydown="if(event.key===\'Enter\')confirmPin(\''+pid+'\')"></div></div>'+
     '<footer><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="confirmPin(\''+pid+'\')">Desbloquear</button></footer></div>');
   setTimeout(()=>{const el=document.getElementById('pinInput');if(el)el.focus();},80);}
-function confirmPin(pid){
+async function confirmPin(pid){
   const el=document.getElementById('pinInput');if(!el)return;
+  if(appsMode()){
+    try{const d=await unlockOnline(pid,el.value,null);
+      if(d&&d.ok){applyEcon(d.econ);_unlocked[pid]=true;closeModal();save();render();toast('✓ Datos económicos desbloqueados');}
+      else{toast((d&&d.error)||'PIN incorrecto');el.value='';el.focus();}
+    }catch(e){toast('Sin conexión con el servidor');}
+    return;
+  }
   if(el.value===_pins[pid]){_unlocked[pid]=true;closeModal();updateLockClass();render();
     toast(person(pid)&&person(pid).master?'✓ Clave maestra correcta — ves todo el equipo':'✓ Datos económicos desbloqueados');}
   else{toast('PIN incorrecto');el.value='';el.focus();}}
@@ -519,9 +572,26 @@ function toggleMoney(){
   document.getElementById('moneyToggleBtn').textContent=hidden?'👁 Mostrar €':'👁 Ocultar €';
 }
 
+async function publishViaAppsScript(){
+  const url=ghGet().appsUrl;
+  const btn=document.getElementById('publishBtn');
+  if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
+  try{
+    state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
+    // no-cors: la respuesta es opaca (no legible), pero el commit se hace en el servidor.
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state})});
+    toast('✓ Enviado a publicar — el equipo lo verá al recargar (~1 min)');
+    updateSaveUI();
+  }catch(e){
+    toast('Error al publicar: '+e.message);
+  }finally{
+    if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
+  }
+}
 async function publishToGitHub(){
   const cfg=ghGet();
-  if(!cfg.token){openSettings();toast('Configura el token de GitHub en Ajustes');return;}
+  if(cfg.appsUrl)return publishViaAppsScript();
+  if(!cfg.token){openSettings();toast('Configura la publicación en Ajustes (Apps Script o token)');return;}
   const owner=cfg.owner||'artesbuhooficial-max';
   const repo=cfg.repo||'cuadrante-artes-buho';
   const branch=cfg.branch||'master';
@@ -894,7 +964,7 @@ function resToday(){const d=new Date();state.ui.resRef={y:d.getFullYear(),m:d.ge
 function renderSummary(){
   const {y,m}=state.ui.resRef;document.getElementById('resTitle').textContent='Resumen · '+monthName(y,m);
   if(!isMasterUnlocked()){
-    const mp=masterPerson();const hasKey=mp&&_pins[mp.id];
+    const mp=masterPerson();const hasKey=appsMode()||(mp&&_pins[mp.id]);
     document.getElementById('summaryTable').innerHTML=
       '<tbody><tr><td style="padding:34px 24px;text-align:center">'+
       '<div style="font-size:2rem;margin-bottom:8px">🔒</div>'+
@@ -1016,8 +1086,13 @@ function openSettings(){const c=state.config;const gh=ghGet();
     '<div class="inp"><label>Moneda</label><input id="sCur" value="'+esc(c.currency)+'"></div>'+
     '<p class="hint">Cada bloque del cuadrante equivale a 1 hora. El rango define las filas (lunes a domingo de cada semana).</p>'+
     '<div class="divider"></div>'+
-    '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">☁ Publicar en GitHub</label>'+
-    '<p class="hint">El botón <b>Publicar</b> guarda los datos directamente en el repositorio para que todo el equipo vea los cambios al recargar. Necesitas un <b>Personal Access Token</b> de GitHub con permiso <b>Contents: Read &amp; Write</b> en este repositorio.</p>'+
+    '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">☁ Publicar vía Apps Script (recomendado)</label>'+
+    '<p class="hint">Con Apps Script el <b>token de GitHub queda oculto</b> en el script y los <b>sueldos NO se publican</b> en el archivo público (quedan guardados en el propio script, solo accesibles con PIN o clave maestra). Pega aquí la <b>URL del Web App</b> que obtienes al desplegar <code>Codigo.gs</code> (ver <code>apps-script/INSTRUCCIONES.md</code>).</p>'+
+    '<div class="inp"><label>URL del Web App de Apps Script</label><input id="ghAppsUrl" type="text" placeholder="https://script.google.com/macros/s/…/exec" value="'+esc(gh.appsUrl||'')+'"></div>'+
+    (gh.appsUrl?'<div class="inp row"><button class="btn" onclick="testAppsScript()">✓ Probar conexión</button></div>':'')+
+    '<div class="divider"></div>'+
+    '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">Alternativa: token en el navegador</label>'+
+    '<p class="hint">Solo si <b>no</b> usas Apps Script. Menos privado: el token queda visible y los sueldos se publican. Necesitas un <b>Personal Access Token</b> con permiso <b>Contents: Read &amp; Write</b>.</p>'+
     '<div class="inp"><label>Token de GitHub</label><input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="'+esc(gh.token||'')+'"></div>'+
     '<div class="inp row"><div><label>Usuario / Org</label><input id="ghOwner" value="'+esc(gh.owner||'artesbuhooficial-max')+'"></div><div><label>Repositorio</label><input id="ghRepo" value="'+esc(gh.repo||'cuadrante-artes-buho')+'"></div></div>'+
     '<div class="inp"><label>Rama</label><input id="ghBranch" value="'+esc(gh.branch||'master')+'"></div>'+
@@ -1026,7 +1101,9 @@ function openSettings(){const c=state.config;const gh=ghGet();
     '<div class="divider"></div>'+
     '<div class="divider"></div>'+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">🔒 PINs de seguridad económica</label>'+
-    '<p class="hint">Cada persona puede proteger sus datos económicos con un PIN. Solo quien lo conozca podrá verlos. El PIN de <b>Roman (master)</b> es la <b>clave maestra</b>: desbloquea el Resumen y los sueldos de todo el equipo. Los PINs se guardan <b>solo en este dispositivo</b> y nunca se publican en GitHub.</p>'+
+    (gh.appsUrl
+      ?'<p class="hint">Estás en <b>modo Apps Script</b>: los PIN de cada persona y la <b>clave maestra</b> (MASTER_KEY) se gestionan en el propio script (Propiedades del script), no aquí. Así los sueldos nunca salen del servidor. Estos campos locales solo se usan si desactivas Apps Script.</p>'
+      :'<p class="hint">Cada persona puede proteger sus datos económicos con un PIN. Solo quien lo conozca podrá verlos. El PIN de <b>Roman (master)</b> es la <b>clave maestra</b>: desbloquea el Resumen y los sueldos de todo el equipo. Los PINs se guardan <b>solo en este dispositivo</b> y nunca se publican en GitHub.</p>')+
     state.team.map(t=>'<div class="inp row" style="align-items:center;gap:8px"><label style="min-width:65px;font-weight:700;color:var(--navy);font-size:.85rem">'+esc(t.name)+(t.master?' 👑':'')+'</label>'+
       '<input type="password" id="pin_'+t.id+'" placeholder="'+(_pins[t.id]?'Tiene PIN — reescribe para cambiar':'Sin PIN — escribe uno para crearlo')+'" autocomplete="new-password" style="flex:1">'+
       (_pins[t.id]?'<button class="btn ghost danger" style="padding:5px 9px;font-size:.73rem;white-space:nowrap" onclick="clearPin(\''+t.id+'\')">Quitar PIN</button>':'')+
@@ -1040,6 +1117,7 @@ function saveSettings(){
   if(e<=s){toast('La hora fin debe ser mayor');return;}
   state.config.startHour=s;state.config.endHour=e;state.config.currency=document.getElementById('sCur').value.trim()||'€';
   ghSet({
+    appsUrl:document.getElementById('ghAppsUrl').value.trim(),
     token:document.getElementById('ghToken').value.trim(),
     owner:document.getElementById('ghOwner').value.trim()||'artesbuhooficial-max',
     repo:document.getElementById('ghRepo').value.trim()||'cuadrante-artes-buho',

@@ -23,7 +23,11 @@ Identidad corporativa de Artes Búho (azul cobalto + dorado sobre crema). No req
 
 Al abrir la app, se compara la copia local (localStorage) con la publicada (`data/cuadrante-data.json`) y se adopta **la más reciente** (marca de tiempo `meta.updatedAt`). Así, cuando alguien pulsa **Publicar**, el resto ve sus cambios al recargar. Si no aparecen, usa **Ajustes → ↻ Traer cambios publicados** para forzar la última versión del repositorio.
 
-> Nota de privacidad: los datos económicos viven dentro del JSON publicado. La clave maestra y los PIN ocultan las cifras en la interfaz (se guardan solo en cada dispositivo, nunca se publican), pero no cifran el archivo. Para privacidad real habría que no publicar los sueldos o cifrarlos.
+### Publicar con Apps Script (recomendado — token oculto y sueldos privados)
+
+Para que el **token de GitHub no aparezca en la web** y los **sueldos no se publiquen** en el archivo público, usa la publicación vía Google Apps Script: el token queda en el script y los sueldos se guardan allí, accesibles solo con PIN o clave maestra (Roman). Guía paso a paso en [`apps-script/INSTRUCCIONES.md`](apps-script/INSTRUCCIONES.md). Una vez desplegado, pega la URL en **Ajustes → URL del Web App**.
+
+> Nota de privacidad: en el modo *token en el navegador*, los datos económicos viven dentro del JSON publicado y la clave maestra/PIN solo los ocultan en la interfaz. Para privacidad real de los sueldos usa el modo Apps Script.
 
 ## Cómo usarlo en VS Code
 
