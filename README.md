@@ -10,8 +10,10 @@ Identidad corporativa de Artes Búho (azul cobalto + dorado sobre crema). No req
 - **Por persona.** Pulsa David / Miriam / Manu para ver y editar el cuadrante de cada uno. Salario y precio/hora editables; horas y coste se recalculan solos.
 - **Proyectos por bloque.** Clic en un bloque para asignarle un proyecto y una nota del momento concreto.
 - **Mes · horas y coste.** Total de horas y coste del mes, desglose por semanas y un calendario con las horas/coste de cada día (intensidad por carga). Conmutable entre *Persona* y *Empresa* (equipo completo).
-- **Calendario de objetivos.** Objetivos por persona o de empresa (en dorado), con estado pendiente / en curso / hecho.
-- **Resumen de empresa.** Tabla mensual con salario, €/hora, horas, coste y delta vs. salario por persona, con totales.
+- **Calendario de objetivos.** Objetivos por persona o de empresa (en dorado), **vinculables a un proyecto**, con fecha límite y estado pendiente / en curso / hecho.
+- **Tareas.** Pestaña con cuatro secciones: **To-Do** (con proyecto y deadline), **Recurrentes** (diaria/semanal/mensual), **Extraordinarias** (dejando constancia de quién las manda) e **Hitos** de proyecto con fecha límite. Los vencimientos se resaltan en rojo.
+- **Cajón de tareas en el cuadrante.** Bajo la rejilla semanal hay una fila 📋 con una casilla por día: las tareas, hitos y **recurrentes** de ese día aparecen ahí como chips. Se marcan como hechas con un clic (la recurrente se marca solo esa semana, sin borrarse) y desde `+ tarea` se crea una nueva sin salir del cuadrante.
+- **Resumen de empresa (privado).** Tabla mensual con salario, €/hora, horas, coste y delta por persona. **Solo lo ve Roman (master)** con su clave maestra; cada persona ve únicamente sus propios datos económicos. En la vista *Mes · Empresa*, el coste del equipo también queda reservado al master.
 
 ## Guardado
 
@@ -19,7 +21,9 @@ Identidad corporativa de Artes Búho (azul cobalto + dorado sobre crema). No req
 - **Guardado en el proyecto:** el botón `💾 Guardar en proyecto` escribe directamente el archivo `data/cuadrante-data.json` de este repositorio (mediante la File System Access API de Chrome/Edge). Actívalo una vez, deja `Auto: ON` y cada cambio se guarda solo en ese archivo. Después solo tienes que hacer commit.
 - **Backup manual:** en `⚙ Ajustes` puedes descargar/restaurar un `.json` (útil en Firefox/Safari, que no soportan el guardado directo a archivo).
 
-Al abrir la app, los datos se cargan en este orden: localStorage → `data/cuadrante-data.json` → datos de ejemplo.
+Al abrir la app, se compara la copia local (localStorage) con la publicada (`data/cuadrante-data.json`) y se adopta **la más reciente** (marca de tiempo `meta.updatedAt`). Así, cuando alguien pulsa **Publicar**, el resto ve sus cambios al recargar. Si no aparecen, usa **Ajustes → ↻ Traer cambios publicados** para forzar la última versión del repositorio.
+
+> Nota de privacidad: los datos económicos viven dentro del JSON publicado. La clave maestra y los PIN ocultan las cifras en la interfaz (se guardan solo en cada dispositivo, nunca se publican), pero no cifran el archivo. Para privacidad real habría que no publicar los sueldos o cifrarlos.
 
 ## Cómo usarlo en VS Code
 
