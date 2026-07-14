@@ -306,7 +306,7 @@
       <button class="btn" id="publishBtn" onclick="publishToGitHub()" style="background:rgba(255,255,255,.92);color:var(--blue-deep);font-weight:700;border-color:rgba(255,255,255,.9)">☁ Publicar</button>
       <button class="btn" id="moneyToggleBtn" onclick="toggleMoney()">👁 Ocultar €</button>
       <button class="btn" onclick="openSettings()">⚙ Ajustes</button>
-      <a class="btn" href="../../vision-global.html" target="_blank" rel="noopener" style="text-decoration:none">🌍 Visión Global ↗</a>
+      <button class="btn" onclick="openVisionGlobal()">🌍 Visión Global</button>
     </div>
   </div>
 
@@ -745,6 +745,11 @@ function curPerson(){return person(state.ui.person)||state.team[0];}
 function hours(){const a=[];for(let h=state.config.startHour;h<state.config.endHour;h++)a.push(h);return a;}
 function cells(p,id){return p.grid[id]||(p.grid[id]={});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
+function openVisionGlobal(){
+  const local=location.protocol==='file:'||['localhost','127.0.0.1'].includes(location.hostname);
+  if(local)window.open('../../vision-global.html','_blank');
+  else toast('🌍 Visión Global solo está disponible en tu equipo local (carpeta VISION GLOBAL), aún no está publicada online');
+}
 
 /* ============ STATS ============ */
 function weekStats(p,id){
