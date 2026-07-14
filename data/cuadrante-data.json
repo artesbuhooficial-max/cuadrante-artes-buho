@@ -98,6 +98,44 @@
           "4-15": {
             "p": "x8vl3wj"
           }
+        },
+        "2026-07-13": {
+          "0-10": {
+            "p": "xftbejv"
+          },
+          "0-11": {
+            "p": "xftbejv"
+          },
+          "0-12": {
+            "p": "xftbejv"
+          },
+          "0-13": {
+            "p": "xftbejv"
+          },
+          "0-14": {
+            "p": "xftbejv"
+          },
+          "0-15": {
+            "p": "xftbejv"
+          },
+          "1-10": {
+            "p": "xle8jpb"
+          },
+          "1-11": {
+            "p": "xle8jpb"
+          },
+          "1-12": {
+            "p": "p8"
+          },
+          "1-13": {
+            "p": "p8"
+          },
+          "1-14": {
+            "p": "p8"
+          },
+          "1-15": {
+            "p": "xa3kx1b"
+          }
         }
       },
       "projects": [
@@ -167,6 +205,13 @@
           "id": "x8vl3wj",
           "name": "Recoger Material Producción",
           "color": "#0891b2"
+        },
+        {
+          "id": "xftbejv",
+          "name": "Live Session",
+          "color": "#db2777",
+          "rate": 25,
+          "billable": false
         }
       ]
     },
@@ -438,11 +483,11 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u1",
-    "weekId": "2026-07-06",
+    "weekId": "2026-07-13",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 5
+      "m": 6
     },
     "resRef": {
       "y": 2026,
@@ -478,6 +523,15 @@
       "done": false,
       "createdBy": "u1",
       "created": 1783515014389
+    },
+    {
+      "id": "xin64gf",
+      "text": "Seguir Mejorando Cuadrate",
+      "owner": "u1",
+      "deadline": "2026-07-14",
+      "done": false,
+      "createdBy": "u1",
+      "created": 1784019853665
     }
   ],
   "recurring": [
@@ -500,6 +554,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1784017834805
+    "updatedAt": 1784019861690
   }
 }
