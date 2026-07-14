@@ -729,6 +729,8 @@ function proj(id,person){return ((person||curPerson()).projects||[]).find(p=>p.i
 function allProjects(){const seen={};const out=[];state.team.forEach(p=>(p.projects||[]).forEach(pr=>{if(!seen[pr.id]){seen[pr.id]=1;out.push(pr);}}));return out;}
 function projById(id){for(const p of state.team){const f=(p.projects||[]).find(x=>x.id===id);if(f)return f;}return null;}
 function projName(id){const p=projById(id);return p?p.name:'';}
+function projEffRate(pr,p){return (pr&&pr.rate!=null&&pr.rate!=='')?(parseFloat(pr.rate)||0):((p&&p.rate)||0);}
+function projBillable(pr){return !pr||pr.billable!==false;}
 function todayStr(){return dStr(new Date());}
 function dueInfo(dateStr,done){if(!dateStr)return null;if(done)return{cls:'',label:fmtDue(dateStr)};
   const t=todayStr();if(dateStr<t)return{cls:'over',label:'Vencida · '+fmtDue(dateStr)};
@@ -745,13 +747,17 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 
 /* ============ STATS ============ */
 function weekStats(p,id){
-  const c=p.grid[id]||{};const daily=DAYS.map(()=>0);const projHrs={};let week=0;
-  Object.keys(c).forEach(k=>{const v=c[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);daily[di]++;week++;projHrs[v.p]=(projHrs[v.p]||0)+1;}});
-  return {daily,week,projHrs,weekCost:week*(p.rate||0)};
+  const c=p.grid[id]||{};const daily=DAYS.map(()=>0);const projHrs={};let week=0,weekCost=0;
+  Object.keys(c).forEach(k=>{const v=c[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);daily[di]++;week++;projHrs[v.p]=(projHrs[v.p]||0)+1;
+    const pr=proj(v.p,p);if(projBillable(pr))weekCost+=projEffRate(pr,p);}});
+  return {daily,week,projHrs,weekCost};
 }
 function dayHours(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;
   return Object.keys(c).filter(k=>k.indexOf(di+'-')===0&&c[k]&&c[k].p).length;}
-function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours++;cost+=p.rate||0;}}});});return {hours,cost};}
+function dayCost(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;let cost=0;
+  Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')!==0)return;const v=c[k];if(!v||!v.p)return;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p);});
+  return cost;}
+function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours++;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p);}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
 function render(){updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
@@ -822,8 +828,8 @@ function renderGrid(){
   hours().forEach(hr=>{h+='<tr><td class="hourcell">'+String(hr).padStart(2,'0')+':00</td>';
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
       const v=(p.grid[state.ui.weekId]||{})[di+'-'+hr];
-      if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';
-        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"><div class="chip" style="background:'+col+'">'+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
+      if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';const off=pr&&!projBillable(pr);
+        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"><div class="chip" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
       else{h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"></td>';}});
     h+='</tr>';});
   h+='</tbody><tfoot><tr><td class="lbl">Horas/día →</td>';
@@ -881,14 +887,16 @@ function renderLegend(){
   const p=curPerson();const st=weekStats(p,state.ui.weekId);const host=document.getElementById('legend');host.innerHTML='';
   const projs=p.projects||[];
   if(!projs.length){host.innerHTML='<p class="hint">Sin proyectos todavía.</p>';return;}
-  projs.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const pct=pr.progress||0;const row=document.createElement('div');row.className='legend-row';
+  projs.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const pct=pr.progress||0;const eff=projEffRate(pr,p);const billOff=!projBillable(pr);const row=document.createElement('div');row.className='legend-row';
+    const customTag=pr.rate!=null?' <span class="tag" style="background:var(--blue-light);color:var(--blue-deep)" title="Precio/hora personalizado de este proyecto">'+num(eff)+' '+state.config.currency+'/h</span>':'';
+    const offTag=billOff?' <span class="tag" style="background:var(--cream);color:var(--muted);border:1px solid var(--cream-line)" title="No computa al coste ni al Δ salario de Artes Búho">🔒 aparte</span>':'';
     row.innerHTML=
-      '<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span><span class="lg-name-text">'+esc(pr.name)+'</span></span>'+
+      '<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span><span class="lg-name-text">'+esc(pr.name)+'</span>'+customTag+offTag+'</span>'+
       '<div class="prog-wrap">'+
         '<div class="prog-bar"><div class="fill" style="width:'+pct+'%;background:'+pr.color+'"></div></div>'+
         '<span class="prog-pct" onclick="editPct(\''+pr.id+'\',this)" title="Clic para editar">'+pct+'%</span>'+
       '</div>'+
-      '<span class="hrs">'+hrs+' h<span class="mv"> · '+money(hrs*(p.rate||0))+'</span> <button class="btn ghost" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="openProject(\''+pr.id+'\')" title="Editar proyecto">✎</button><button class="btn ghost danger" style="padding:2px 7px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
+      '<span class="hrs">'+hrs+' h<span class="mv"> · '+money(hrs*eff)+'</span> <button class="btn ghost" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="openProject(\''+pr.id+'\')" title="Editar proyecto">✎</button><button class="btn ghost danger" style="padding:2px 7px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
     host.appendChild(row);});
 }
 
@@ -907,7 +915,7 @@ function renderMonth(){
   // weeks
   const weeks=weeksOfMonth(y,m);let totH=0,totC=0;
   let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th class="'+MC+'">Coste</th></tr></thead><tbody>';
-  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h++;c+=p.rate||0;}}});});totH+=h;totC+=c;
+  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h++;const pr=proj(v.p,p);if(projBillable(pr))c+=projEffRate(pr,p);}}});});totH+=h;totC+=c;
     const r1=w.mon.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=addDays(w.mon,6).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     wh+='<tr><td>Semana '+w.info.weekNum+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+M(c)+'</td></tr>';});
   wh+='</tbody><tfoot><tr><td>TOTAL MES</td><td></td><td>'+num(totH)+' h</td><td>'+M(totC)+'</td></tr></tfoot>';
@@ -921,7 +929,7 @@ function renderMonth(){
   // day distribution
   const dowHost=document.getElementById('mesDow');if(!dowHost.innerHTML){DAYS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;dowHost.appendChild(e);});}
   const first=new Date(y,m,1);const startDow=(first.getDay()+6)%7;const dim=new Date(y,m+1,0).getDate();
-  let maxH=0;const dayMap={};for(let d=1;d<=dim;d++){const date=new Date(y,m,d);let h=0,c=0;ppl.forEach(p=>{const dh=dayHours(p,date);h+=dh;c+=dh*(p.rate||0);});dayMap[d]={h,c};if(h>maxH)maxH=h;}
+  let maxH=0;const dayMap={};for(let d=1;d<=dim;d++){const date=new Date(y,m,d);let h=0,c=0;ppl.forEach(p=>{h+=dayHours(p,date);c+=dayCost(p,date);});dayMap[d]={h,c};if(h>maxH)maxH=h;}
   const grid=document.getElementById('mesDays');grid.innerHTML='';const todayStr=dStr(new Date());
   for(let i=0;i<startDow;i++){const e=document.createElement('div');e.className='mday out';grid.appendChild(e);}
   for(let d=1;d<=dim;d++){const date=new Date(y,m,d);const o=dayMap[d];const alpha=maxH?(0.05+0.45*(o.h/maxH)):0;
@@ -1032,16 +1040,25 @@ function delProject(id){if(!confirm('¿Eliminar proyecto? Se vaciarán los bloqu
   p.projects=(p.projects||[]).filter(pr=>pr.id!==id);
   Object.keys(p.grid).forEach(wk=>{Object.keys(p.grid[wk]).forEach(k=>{if(p.grid[wk][k]&&p.grid[wk][k].p===id)delete p.grid[wk][k];});});
   save();render();}
-function openProject(id){const pr=proj(id);if(!pr)return;pickColor=pr.color;
+function openProject(id){const pr=proj(id);if(!pr)return;pickColor=pr.color;const p=curPerson();
   modal('<div class="modal"><header><h3>Editar proyecto</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+
     '<div class="inp"><label>Nombre</label><input id="pName" value="'+esc(pr.name)+'"></div>'+
     '<div class="inp"><label>Color</label><div class="swatches" id="pSw"></div></div>'+
+    '<div class="inp"><label>Precio / hora personalizado <span style="text-transform:none;color:var(--muted-2);font-weight:500">(opcional)</span></label>'+
+      '<input id="pRate" type="number" step="0.01" min="0" placeholder="Usar el precio de la persona ('+num(p.rate||0)+' '+state.config.currency+'/h)" value="'+(pr.rate!=null?pr.rate:'')+'"></div>'+
+    '<div class="inp" style="flex-direction:row;align-items:center;gap:9px">'+
+      '<input id="pBillable" type="checkbox" style="width:17px;height:17px;padding:0;border-radius:5px;flex:none;accent-color:var(--blue)" '+(pr.billable===false?'':'checked')+'>'+
+      '<span style="font-size:.85rem;color:var(--navy);font-weight:600;line-height:1.35">Cuenta para el coste y el Δ salario de Artes Búho</span>'+
+    '</div>'+
+    '<p class="hint">Si lo desmarcas, las horas del proyecto se siguen viendo en el cuadrante y en "horas esta semana", pero <b>no</b> suman al coste ni al Δ salario de la persona ni de la empresa — útil cuando el proyecto lo paga el cliente aparte.</p>'+
     '<p class="hint">El cambio se aplica al proyecto en <b>toda la oficina</b> (todas las personas que lo tengan).</p></div>'+
     '<footer><span></span><button class="btn primary" onclick="saveProject(\''+id+'\')">Guardar</button></footer></div>');
   paintSwatches('pSw');}
 function saveProject(id){const name=(document.getElementById('pName').value||'').trim();if(!name){toast('Pon un nombre');return;}
+  const rateRaw=document.getElementById('pRate').value;const rate=rateRaw===''?null:Math.max(0,parseFloat(rateRaw)||0);
+  const billable=document.getElementById('pBillable').checked;
   // aplicar a todas las personas que tengan este proyecto (catálogo compartido de la oficina)
-  state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{if(pr.id===id){pr.name=name;pr.color=pickColor;}});});
+  state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{if(pr.id===id){pr.name=name;pr.color=pickColor;pr.rate=rate;pr.billable=billable;}});});
   save();closeModal();render();toast('Proyecto actualizado');}
 
 /* ============ MODALS ============ */
