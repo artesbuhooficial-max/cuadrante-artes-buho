@@ -31,34 +31,72 @@
             "p": "xle8jpb"
           },
           "1-10": {
-            "p": "xle8jpb"
+            "p": "p8"
           },
           "1-11": {
-            "p": "xle8jpb"
+            "p": "p8"
           },
           "1-12": {
-            "p": "xle8jpb"
+            "p": "p8"
           },
           "1-13": {
-            "p": "xle8jpb"
+            "p": "p8"
           },
           "1-14": {
-            "p": "xle8jpb"
+            "p": "p8"
           },
           "2-10": {
-            "p": "xa3kx1b"
+            "p": "x8vl3wj"
           },
           "2-11": {
-            "p": "xa3kx1b"
+            "p": "x8vl3wj"
           },
           "2-12": {
-            "p": "p8"
+            "p": "xle8jpb"
           },
           "2-13": {
-            "p": "p8"
+            "p": "xle8jpb"
           },
           "2-14": {
-            "p": "p2"
+            "p": "xle8jpb"
+          }
+        },
+        "2026-07-06": {
+          "3-10": {
+            "p": "x8vl3wj"
+          },
+          "3-11": {
+            "p": "x8vl3wj"
+          },
+          "3-12": {
+            "p": "x8vl3wj"
+          },
+          "3-13": {
+            "p": "x8vl3wj"
+          },
+          "3-14": {
+            "p": "x8vl3wj"
+          },
+          "3-15": {
+            "p": "x8vl3wj"
+          },
+          "4-10": {
+            "p": "x8vl3wj"
+          },
+          "4-11": {
+            "p": "x8vl3wj"
+          },
+          "4-12": {
+            "p": "x8vl3wj"
+          },
+          "4-13": {
+            "p": "x8vl3wj"
+          },
+          "4-14": {
+            "p": "x8vl3wj"
+          },
+          "4-15": {
+            "p": "x8vl3wj"
           }
         }
       },
@@ -124,6 +162,11 @@
           "id": "xh48dhj",
           "name": "Gestion Técnica",
           "color": "#d97706"
+        },
+        {
+          "id": "x8vl3wj",
+          "name": "Recoger Material Producción",
+          "color": "#0891b2"
         }
       ]
     },
@@ -289,6 +332,83 @@
           "progress": 35
         }
       ]
+    },
+    {
+      "id": "u4",
+      "name": "Roman",
+      "role": "Dirección · Master",
+      "color": "#7c3aed",
+      "salary": 0,
+      "rate": 0,
+      "master": true,
+      "projects": [
+        {
+          "id": "p1",
+          "name": "Escuela / Mini Kydemy",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "p2",
+          "name": "Pavoneo 360°",
+          "color": "#d97706"
+        },
+        {
+          "id": "p3",
+          "name": "Bella Bestia · eventos",
+          "color": "#0891b2"
+        },
+        {
+          "id": "p4",
+          "name": "Noches de Neón",
+          "color": "#db2777"
+        },
+        {
+          "id": "p5",
+          "name": "Marketing / RRSS",
+          "color": "#16a34a"
+        },
+        {
+          "id": "p6",
+          "name": "M.A.P.A. Musical",
+          "color": "#7c3aed"
+        },
+        {
+          "id": "p7",
+          "name": "Booking / Management",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "p8",
+          "name": "Administración",
+          "color": "#475569"
+        },
+        {
+          "id": "xa3kx1b",
+          "name": "IA",
+          "color": "#dc2626"
+        },
+        {
+          "id": "xle8jpb",
+          "name": "Respond IO + Financiación AB",
+          "color": "#ca8a04"
+        },
+        {
+          "id": "xk6kruc",
+          "name": "Reunion Grupal AB",
+          "color": "#1d4ed8"
+        },
+        {
+          "id": "xh48dhj",
+          "name": "Gestion Técnica",
+          "color": "#d97706"
+        },
+        {
+          "id": "x8vl3wj",
+          "name": "Recoger Material Producción",
+          "color": "#0891b2"
+        }
+      ],
+      "grid": {}
     }
   ],
   "objectives": [
@@ -305,21 +425,81 @@
       "title": "Plan de contenidos mensual",
       "date": "2026-07-01",
       "status": "pend"
+    },
+    {
+      "id": "x2w82po",
+      "title": "Organizar objetivo Generales de Escuela",
+      "owner": "empresa",
+      "date": "2026-06-29",
+      "status": "done",
+      "notes": ""
     }
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
-    "weekId": "2026-06-29",
+    "person": "u1",
+    "weekId": "2026-07-06",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 5
     },
     "resRef": {
       "y": 2026,
       "m": 5
-    }
+    },
+    "taskSub": "recur"
   },
-  "notes": []
+  "notes": [],
+  "tasks": [
+    {
+      "id": "x6ok9st",
+      "text": "Limpiar el no se que",
+      "owner": "u1",
+      "deadline": "2026-06-29",
+      "done": false,
+      "createdBy": "u1",
+      "created": 1783514992874
+    },
+    {
+      "id": "xe2qyf9",
+      "text": "Hablar con proveedores",
+      "owner": "u1",
+      "deadline": "2026-06-29",
+      "done": false,
+      "createdBy": "u1",
+      "created": 1783514999722
+    },
+    {
+      "id": "xvdzh0l",
+      "text": "Orgnizar cosas de Roman",
+      "owner": "u1",
+      "deadline": "2026-06-29",
+      "done": false,
+      "createdBy": "u1",
+      "created": 1783515014389
+    }
+  ],
+  "recurring": [
+    {
+      "id": "x9x56mq",
+      "text": "Publicar el tipo reel semanal",
+      "owner": "u1",
+      "projectId": "xa3kx1b",
+      "freq": "semanal",
+      "weekday": 2,
+      "monthday": 1,
+      "active": true,
+      "done": {
+        "2026-07-08": true
+      },
+      "createdBy": "u1",
+      "created": 1783515061688
+    }
+  ],
+  "extraTasks": [],
+  "milestones": [],
+  "meta": {
+    "updatedAt": 1784017834805
+  }
 }
