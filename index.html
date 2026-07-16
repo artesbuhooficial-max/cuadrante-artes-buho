@@ -91,11 +91,13 @@
   .col-resizer::after{content:'';position:absolute;right:1px;top:15%;bottom:15%;width:2px;border-radius:2px;background:transparent;transition:.12s}
   .col-resizer:hover::after,.col-resizer.active::after{background:var(--blue)}
   .hourcell{background:var(--cream);color:var(--navy-soft);font-size:.74rem;font-weight:700;text-align:center;vertical-align:middle;padding:0 8px;white-space:nowrap;width:78px;font-variant-numeric:tabular-nums}
-  td.slot{min-height:34px;height:auto;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
+  td.slot{height:26px;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
   td.slot:hover{outline:2px solid var(--blue);outline-offset:-2px;z-index:2}
   td.slot.col-today{background:#F4F8FF}
-  td.slot .chip{min-height:34px;width:100%;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:4px 8px;font-size:.7rem;font-weight:700;color:#fff;line-height:1.25;word-break:break-word}
-  td.slot .chip .nt{font-size:.63rem;font-weight:500;color:rgba(255,255,255,.9);white-space:pre-wrap;word-break:break-word;line-height:1.3;margin-top:1px}
+  td.slot .chip{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 8px;font-size:.72rem;font-weight:700;color:#fff;line-height:1.3;word-break:break-word}
+  td.slot .chip .nt{font-size:.65rem;font-weight:500;color:rgba(255,255,255,.9);white-space:pre-wrap;word-break:break-word;line-height:1.35;margin-top:2px}
+  td.slot .chip.half{font-size:.62rem;padding:1px 6px;gap:0;line-height:1.15}
+  td.slot .chip.half .nt{display:none}
   td.slot.weekend{background:#FCFAF2}
   tr.hour-row td{border-top:2px solid var(--navy-soft)}
   tr.hour-row:first-child td{border-top:1px solid var(--line)}
@@ -180,6 +182,8 @@
   .pop .opt{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;font-size:.82rem;font-weight:600;color:var(--navy);cursor:pointer}
   .pop .opt:hover{background:var(--blue-light)}.pop .opt .sw{width:13px;height:13px;border-radius:4px;flex:none}
   .pop .opt.clear{color:var(--muted)}.pop .note-in{margin-top:8px}
+  .pop .pop-split{font-size:.72rem;font-weight:700;color:var(--blue);padding:7px 9px;cursor:pointer;border-top:1px dashed var(--line);margin-top:5px;border-radius:8px}
+  .pop .pop-split:hover{background:var(--blue-light)}
   .pop .note-in textarea{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:8px;color:var(--navy);padding:7px 10px;font-size:.78rem;outline:none;resize:vertical;min-height:70px;font-family:inherit;line-height:1.45}
   .pop .note-in textarea:focus{border-color:var(--blue)}
   .pop .note-in .hint-key{font-size:.64rem;color:var(--muted-2);margin-top:4px;text-align:right}
@@ -839,6 +843,11 @@ function updPerson(key,v){curPerson()[key]=parseFloat(v)||0;save();renderPersonS
 const _HOUR_COL_W=78,_DAY_COL_DEF=150;
 let _colW=Array(7).fill(null);
 
+function slotCell(v,we,tc,attrs,onclick,chipMod){
+  if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';const off=pr&&!projBillable(pr);
+    return '<td class="slot'+we+tc+'"'+attrs+' onclick="'+onclick+'"><div class="chip'+chipMod+'" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
+  return '<td class="slot'+we+tc+'"'+attrs+' onclick="'+onclick+'"></td>';
+}
 function renderGrid(){
   const p=curPerson();const t=document.getElementById('gridTable');const mon=parseId(state.ui.weekId);const todayStr=dStr(new Date());
   let h='<colgroup><col style="width:'+_HOUR_COL_W+'px">';
@@ -848,15 +857,20 @@ function renderGrid(){
   DAYS.forEach((d,i)=>{const date=addDays(mon,i);const isT=dStr(date)===todayStr;
     h+='<th class="'+(isT?'col-today':'')+'">'+d+'<span class="sub">'+date.toLocaleDateString('es-ES',{day:'numeric',month:'short'})+'</span><div class="col-resizer" onmousedown="startColResize(event,'+i+')"></div></th>';});
   h+='</tr></thead><tbody>';
-  hourList().forEach(hrIdx=>{[0,1].forEach(half=>{const slot=hrIdx*2+half;
-    h+='<tr class="'+(half?'half-row':'hour-row')+'">';
-    if(half===0)h+='<td class="hourcell" rowspan="2">'+String(hrIdx).padStart(2,'0')+':00</td>';
+  const wgrid=p.grid[state.ui.weekId]||{};
+  hourList().forEach(hrIdx=>{const slot0=hrIdx*2,slot1=hrIdx*2+1;
+    const dayData=DAYS.map((_,di)=>{const v0=wgrid[di+'-'+slot0]||null,v1=wgrid[di+'-'+slot1]||null;
+      return {v0,v1,merged:(v0&&v0.p||null)===(v1&&v1.p||null)};});
+    h+='<tr class="hour-row"><td class="hourcell" rowspan="2">'+String(hrIdx).padStart(2,'0')+':00</td>';
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
-      const v=(p.grid[state.ui.weekId]||{})[di+'-'+slot];
-      if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';const off=pr&&!projBillable(pr);
-        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+slot+')"><div class="chip" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
-      else{h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+slot+')"></td>';}});
-    h+='</tr>';});});
+      const {v0,merged}=dayData[di];
+      h+=merged?slotCell(v0,we,tc,' rowspan="2"','openPop(event,'+di+',['+slot0+','+slot1+'])',''):
+                slotCell(v0,we,tc,'','openPop(event,'+di+',['+slot0+'])',' half');});
+    h+='</tr><tr class="half-row">';
+    DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
+      const {v1,merged}=dayData[di];if(merged)return;
+      h+=slotCell(v1,we,tc,'','openPop(event,'+di+',['+slot1+'])',' half');});
+    h+='</tr>';});
   h+='</tbody><tfoot><tr><td class="lbl">Horas/día →</td>';
   const st=weekStats(p,state.ui.weekId);st.daily.forEach(d=>{h+='<td>'+num(d)+'</td>';});
   h+='</tr>';
@@ -1022,26 +1036,45 @@ function renderSummary(){
 
 /* ============ POPOVER ============ */
 let popCtx=null;
-function openPop(ev,di,hr){ev.stopPropagation();closePop();popCtx={di,hr};
-  const p=curPerson();const cur=(p.grid[state.ui.weekId]||{})[di+'-'+hr]||{};const host=document.getElementById('popHost');
-  const pop=document.createElement('div');pop.className='pop';let h='<h4>'+DAY_FULL[di]+' · '+slotLabel(hr)+'</h4>';
+function slotRangeLabel(slots){return slotLabel(slots[0])+' – '+slotLabel(slots[slots.length-1]+1);}
+function popBody(){
+  const {di,slots}=popCtx;const p=curPerson();const cur=(p.grid[state.ui.weekId]||{})[di+'-'+slots[0]]||{};
+  let h='<h4>'+DAY_FULL[di]+' · '+slotRangeLabel(slots)+'</h4>';
   (p.projects||[]).forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(cur.p===pr.id?' ✓':'')+'</div>';});
   h+='<div class="opt clear" onclick="assign(null)">○ Vaciar bloque</div>';
+  h+=slots.length===2
+    ?'<div class="pop-split" onclick="togglePopScope(event)">🔀 Usar un proyecto distinto en cada media hora</div>'
+    :'<div class="pop-split" onclick="togglePopScope(event)">🔗 Unir con la otra media hora</div>';
   h+='<div class="note-in"><textarea id="popNote" placeholder="Nota o especificación del momento concreto…" onkeydown="if(event.key===\'Enter\'&&event.ctrlKey)saveNote()">'+esc(cur.n||'')+'</textarea><div class="hint-key">Ctrl + Enter para guardar nota</div></div>';
-  pop.innerHTML=h;host.appendChild(pop);
+  return h;
+}
+function openPop(ev,di,slots){ev.stopPropagation();closePop();popCtx={di,slots};
+  const host=document.getElementById('popHost');
+  const pop=document.createElement('div');pop.className='pop';pop.id='popEl';pop.innerHTML=popBody();
+  host.appendChild(pop);
   const r=ev.currentTarget.getBoundingClientRect();let x=r.left,y=r.bottom+6;const pw=240,ph=pop.offsetHeight;
   if(x+pw>window.innerWidth-10)x=window.innerWidth-pw-10;if(y+ph>window.innerHeight-10)y=r.top-ph-6;
   pop.style.left=Math.max(10,x)+'px';pop.style.top=Math.max(10,y)+'px';
   setTimeout(()=>document.addEventListener('click',closePopOnce),0);
 }
+function togglePopScope(ev){ev.stopPropagation();if(!popCtx)return;
+  let slots;
+  if(popCtx.slots.length===2){slots=[popCtx.slots[0]];}
+  else{const s=popCtx.slots[0],sib=s%2===0?s+1:s-1;slots=[Math.min(s,sib),Math.max(s,sib)];}
+  popCtx={di:popCtx.di,slots};
+  const pop=document.getElementById('popEl');if(pop)pop.innerHTML=popBody();
+}
 function closePopOnce(e){const p=document.querySelector('.pop');if(p&&!p.contains(e.target))closePop();}
-function closePop(){document.getElementById('popHost').innerHTML='';document.removeEventListener('click',closePopOnce);}
-function assign(pid){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);const k=popCtx.di+'-'+popCtx.hr;
+function closePop(){document.getElementById('popHost').innerHTML='';document.removeEventListener('click',closePopOnce);popCtx=null;}
+function assign(pid){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
   const note=(document.getElementById('popNote')||{}).value||'';
-  if(pid===null)delete c[k];else c[k]={p:pid,n:note.trim()||undefined};
+  popCtx.slots.forEach(s=>{const k=popCtx.di+'-'+s;
+    if(pid===null)delete c[k];else c[k]={p:pid,n:note.trim()||undefined};});
   save();closePop();renderGrid();renderStats();renderLegend();renderPersonStrip();}
-function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);const k=popCtx.di+'-'+popCtx.hr;
-  const note=(document.getElementById('popNote')||{}).value||'';if(c[k]){c[k].n=note.trim()||undefined;save();renderGrid();}closePop();}
+function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
+  const note=(document.getElementById('popNote')||{}).value||'';
+  popCtx.slots.forEach(s=>{const k=popCtx.di+'-'+s;if(c[k])c[k].n=note.trim()||undefined;});
+  save();closePop();renderGrid();}
 
 /* ============ PROJECT PROGRESS ============ */
 function editPct(projId,el){
