@@ -3,7 +3,8 @@
     "startHour": 9,
     "endHour": 22,
     "currency": "€",
-    "granularity": "half"
+    "granularity": "half",
+    "appsUrl": ""
   },
   "projects": [],
   "team": [
@@ -670,7 +671,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "xasd2wb",
-    "weekId": "2026-07-06",
+    "weekId": "2026-06-29",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -741,6 +742,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1784198794820
+    "updatedAt": 1784200054093
   }
 }
