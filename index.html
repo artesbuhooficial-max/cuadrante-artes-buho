@@ -689,6 +689,7 @@ const SLOT_HOURS=0.5; // cada bloque del cuadrante dura media hora
 
 function migrate(){
   state.config=state.config||{startHour:9,endHour:22,currency:'€'};
+  if(state.config.appsUrl==null)state.config.appsUrl='';
   const now=new Date();
   state.ui=state.ui||{};
   const u=state.ui;
@@ -1189,13 +1190,18 @@ function saveSettings(){
   const s=parseInt(document.getElementById('sStart').value),e=parseInt(document.getElementById('sEnd').value);
   if(e<=s){toast('La hora fin debe ser mayor');return;}
   state.config.startHour=s;state.config.endHour=e;state.config.currency=document.getElementById('sCur').value.trim()||'€';
+  const appsUrl=document.getElementById('ghAppsUrl').value.trim();
   ghSet({
-    appsUrl:document.getElementById('ghAppsUrl').value.trim(),
+    appsUrl,
     token:document.getElementById('ghToken').value.trim(),
     owner:document.getElementById('ghOwner').value.trim()||'artesbuhooficial-max',
     repo:document.getElementById('ghRepo').value.trim()||'cuadrante-artes-buho',
     branch:document.getElementById('ghBranch').value.trim()||'master'
   });
+  // la URL del Web App no es secreta (el token de GitHub sigue oculto en el propio script):
+  // se guarda también en el estado publicado para que cualquier ordenador nuevo la reciba solo,
+  // sin tener que pegarla a mano en cada dispositivo.
+  state.config.appsUrl=appsUrl;
   state.team.forEach(t=>{const inp=document.getElementById('pin_'+t.id);if(inp&&inp.value.trim()){_pins[t.id]=inp.value.trim();}});
   savePins();
   save();closeModal();render();toast('Ajustes guardados');}
@@ -1575,6 +1581,12 @@ async function initFile(){if(!FS){updateSaveUI();return;}
 /* ============ BOOT ============ */
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 async function fetchRemote(){try{const resp=await fetch('./data/cuadrante-data.json?t='+Date.now(),{cache:'no-store'});if(resp.ok)return await resp.json();}catch(e){}return null;}
+// si este dispositivo aún no tiene configurada la URL del Apps Script, la adopta
+// del propio estado publicado (no es secreta) para que Publicar funcione sin tocar Ajustes
+function adoptAppsUrl(){
+  const publishedUrl=state.config&&state.config.appsUrl;
+  if(publishedUrl&&!ghGet().appsUrl)ghSet(Object.assign({},ghGet(),{appsUrl:publishedUrl}));
+}
 async function boot(){
   const local=storeGet();
   const remote=await fetchRemote();
@@ -1586,6 +1598,7 @@ async function boot(){
     else data=local;
   }else data=local||remote||seed();
   state=data;migrate();loadPins();
+  adoptAppsUrl();
   storeSet(state);
   await initFile();
   switchTab(state.ui.tab||'cuadrante');render();
@@ -1594,7 +1607,7 @@ async function boot(){
 async function pullRemote(){
   const remote=await fetchRemote();
   if(!remote){toast('No se pudo leer el archivo publicado');return;}
-  const keepUi=state.ui;state=remote;if(keepUi)state.ui=keepUi;migrate();storeSet(state);
+  const keepUi=state.ui;state=remote;if(keepUi)state.ui=keepUi;migrate();adoptAppsUrl();storeSet(state);
   closeModal();switchTab(state.ui.tab||'cuadrante');render();toast('✓ Datos publicados cargados');
 }
 boot();
