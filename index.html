@@ -607,11 +607,6 @@ async function publishToGitHub(){
   if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
   try{
     const headers={'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json'};
-    // Obtener SHA actual del archivo
-    const getR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path+'?ref='+branch,{headers});
-    let sha=null;
-    if(getR.ok){const d=await getR.json();sha=d.sha;}
-    else if(getR.status!==404){const e=await getR.json().catch(()=>({}));throw new Error(e.message||'Error '+getR.status);}
     // Sellar la marca de tiempo: así esta versión gana sobre las copias locales del resto
     state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
     // Codificar contenido en base64 (compatible con UTF-8)
@@ -619,18 +614,26 @@ async function publishToGitHub(){
     const bytes=new TextEncoder().encode(json);
     const binStr=Array.from(bytes,b=>String.fromCodePoint(b)).join('');
     const content=btoa(binStr);
-    // Commit vía API
-    const body={message:'Cuadrante actualizado · '+new Date().toLocaleString('es-ES'),content,branch};
-    if(sha)body.sha=sha;
-    const putR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{
-      method:'PUT',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    // hasta 2 intentos: si alguien publicó justo entre medias (409), se relee el SHA y se reintenta una vez sola
+    let putR;
+    for(let attempt=0;attempt<2;attempt++){
+      const getR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path+'?ref='+branch,{headers});
+      let sha=null;
+      if(getR.ok){const d=await getR.json();sha=d.sha;}
+      else if(getR.status!==404){const e=await getR.json().catch(()=>({}));throw new Error(e.message||'Error '+getR.status);}
+      const body={message:'Cuadrante actualizado · '+new Date().toLocaleString('es-ES'),content,branch};
+      if(sha)body.sha=sha;
+      putR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{
+        method:'PUT',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(putR.ok||putR.status!==409)break;
+    }
     if(putR.ok){
       toast('✓ Publicado — todos verán los cambios en ~1 min');
       if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
       updateSaveUI();
     }else{
       const err=await putR.json().catch(()=>({}));
-      if(putR.status===409)throw new Error('Conflicto: recarga la página y vuelve a intentarlo');
+      if(putR.status===409)throw new Error('Conflicto: otra persona publicó justo ahora. Recarga la página y vuelve a intentarlo');
       if(putR.status===401)throw new Error('Token inválido o caducado');
       throw new Error(err.message||'Error '+putR.status);
     }
