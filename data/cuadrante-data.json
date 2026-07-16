@@ -670,7 +670,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "xasd2wb",
-    "weekId": "2026-06-29",
+    "weekId": "2026-07-06",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -741,6 +741,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1784198185563
+    "updatedAt": 1784198794820
   }
 }
