@@ -90,13 +90,15 @@
   .col-resizer{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:col-resize;z-index:5}
   .col-resizer::after{content:'';position:absolute;right:1px;top:15%;bottom:15%;width:2px;border-radius:2px;background:transparent;transition:.12s}
   .col-resizer:hover::after,.col-resizer.active::after{background:var(--blue)}
-  .hourcell{background:var(--cream);color:var(--navy-soft);font-size:.74rem;font-weight:700;text-align:center;padding:0 8px;white-space:nowrap;width:78px;font-variant-numeric:tabular-nums}
-  td.slot{min-height:52px;height:auto;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
-  td.slot:hover{outline:2px solid var(--blue);outline-offset:-2px}
+  .hourcell{background:var(--cream);color:var(--navy-soft);font-size:.74rem;font-weight:700;text-align:center;vertical-align:middle;padding:0 8px;white-space:nowrap;width:78px;font-variant-numeric:tabular-nums}
+  td.slot{min-height:34px;height:auto;padding:0;position:relative;cursor:pointer;transition:.1s;background:var(--paper-card)}
+  td.slot:hover{outline:2px solid var(--blue);outline-offset:-2px;z-index:2}
   td.slot.col-today{background:#F4F8FF}
-  td.slot .chip{min-height:52px;width:100%;display:flex;flex-direction:column;justify-content:flex-start;gap:3px;padding:5px 8px;font-size:.72rem;font-weight:700;color:#fff;line-height:1.3;word-break:break-word}
-  td.slot .chip .nt{font-size:.65rem;font-weight:500;color:rgba(255,255,255,.9);white-space:pre-wrap;word-break:break-word;line-height:1.35;margin-top:2px}
+  td.slot .chip{min-height:34px;width:100%;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:4px 8px;font-size:.7rem;font-weight:700;color:#fff;line-height:1.25;word-break:break-word}
+  td.slot .chip .nt{font-size:.63rem;font-weight:500;color:rgba(255,255,255,.9);white-space:pre-wrap;word-break:break-word;line-height:1.3;margin-top:1px}
   td.slot.weekend{background:#FCFAF2}
+  tr.hour-row td{border-top:2px solid var(--navy-soft)}
+  tr.hour-row:first-child td{border-top:1px solid var(--line)}
   tfoot td{background:var(--cream);text-align:center;font-weight:800;font-size:.84rem;color:var(--blue);padding:9px 4px;font-variant-numeric:tabular-nums}
   tfoot td.lbl{color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;text-align:right;padding-right:12px}
 
@@ -681,6 +683,7 @@ function seed(){
 let state=seed();
 const DAYS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 const DAY_FULL=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const SLOT_HOURS=0.5; // cada bloque del cuadrante dura media hora
 
 function migrate(){
   state.config=state.config||{startHour:9,endHour:22,currency:'€'};
@@ -697,6 +700,24 @@ function migrate(){
     const flat=Object.keys(p.grid).filter(k=>/^[0-6]-\d+$/.test(k));
     if(flat.length){const wk=u.weekId;p.grid[wk]=p.grid[wk]||{};flat.forEach(k=>{p.grid[wk][k]=p.grid[k];delete p.grid[k];});}
   });
+  // migrar bloques de 1h ("día-hora") a bloques de 30min ("día-slot"), una sola vez:
+  // cada hora ocupada pasa a ocupar sus dos medias horas, para no perder horas/coste ya registrados
+  if(state.config.granularity!=='half'){
+    state.team.forEach(p=>{
+      Object.keys(p.grid||{}).forEach(wk=>{
+        const g=p.grid[wk],ng={};
+        Object.keys(g).forEach(k=>{
+          const mm=k.match(/^(\d)-(\d+)$/);
+          if(!mm){ng[k]=g[k];return;}
+          const di=mm[1],slot=parseInt(mm[2])*2;
+          ng[di+'-'+slot]=g[k];
+          ng[di+'-'+(slot+1)]=Object.assign({},g[k]);
+        });
+        p.grid[wk]=ng;
+      });
+    });
+    state.config.granularity='half';
+  }
   // migrate global projects → per-person
   if(state.projects&&state.projects.length){
     const gp=state.projects;
@@ -742,23 +763,24 @@ function ownerName(id){if(id==='empresa')return'Empresa';if(id==='cliente')retur
 function ownerColor(id){if(id==='empresa')return'var(--gold)';if(id==='cliente')return'#64748b';const p=person(id);return p?p.color:'#888';}
 function person(id){return state.team.find(t=>t.id===id);}
 function curPerson(){return person(state.ui.person)||state.team[0];}
-function hours(){const a=[];for(let h=state.config.startHour;h<state.config.endHour;h++)a.push(h);return a;}
+function hourList(){const a=[];for(let h=state.config.startHour;h<state.config.endHour;h++)a.push(h);return a;}
+function slotLabel(s){const h=Math.floor(s/2),mi=(s%2)*30;return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');}
 function cells(p,id){return p.grid[id]||(p.grid[id]={});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
 
 /* ============ STATS ============ */
 function weekStats(p,id){
   const c=p.grid[id]||{};const daily=DAYS.map(()=>0);const projHrs={};let week=0,weekCost=0;
-  Object.keys(c).forEach(k=>{const v=c[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);daily[di]++;week++;projHrs[v.p]=(projHrs[v.p]||0)+1;
-    const pr=proj(v.p,p);if(projBillable(pr))weekCost+=projEffRate(pr,p);}});
+  Object.keys(c).forEach(k=>{const v=c[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);daily[di]+=SLOT_HOURS;week+=SLOT_HOURS;projHrs[v.p]=(projHrs[v.p]||0)+SLOT_HOURS;
+    const pr=proj(v.p,p);if(projBillable(pr))weekCost+=projEffRate(pr,p)*SLOT_HOURS;}});
   return {daily,week,projHrs,weekCost};
 }
 function dayHours(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;
-  return Object.keys(c).filter(k=>k.indexOf(di+'-')===0&&c[k]&&c[k].p).length;}
+  return Object.keys(c).filter(k=>k.indexOf(di+'-')===0&&c[k]&&c[k].p).length*SLOT_HOURS;}
 function dayCost(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;let cost=0;
-  Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')!==0)return;const v=c[k];if(!v||!v.p)return;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p);});
+  Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')!==0)return;const v=c[k];if(!v||!v.p)return;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;});
   return cost;}
-function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours++;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p);}}});});return {hours,cost};}
+function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours+=SLOT_HOURS;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
 function render(){updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
@@ -826,15 +848,17 @@ function renderGrid(){
   DAYS.forEach((d,i)=>{const date=addDays(mon,i);const isT=dStr(date)===todayStr;
     h+='<th class="'+(isT?'col-today':'')+'">'+d+'<span class="sub">'+date.toLocaleDateString('es-ES',{day:'numeric',month:'short'})+'</span><div class="col-resizer" onmousedown="startColResize(event,'+i+')"></div></th>';});
   h+='</tr></thead><tbody>';
-  hours().forEach(hr=>{h+='<tr><td class="hourcell">'+String(hr).padStart(2,'0')+':00</td>';
+  hourList().forEach(hrIdx=>{[0,1].forEach(half=>{const slot=hrIdx*2+half;
+    h+='<tr class="'+(half?'half-row':'hour-row')+'">';
+    if(half===0)h+='<td class="hourcell" rowspan="2">'+String(hrIdx).padStart(2,'0')+':00</td>';
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
-      const v=(p.grid[state.ui.weekId]||{})[di+'-'+hr];
+      const v=(p.grid[state.ui.weekId]||{})[di+'-'+slot];
       if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';const off=pr&&!projBillable(pr);
-        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"><div class="chip" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
-      else{h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+hr+')"></td>';}});
-    h+='</tr>';});
+        h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+slot+')"><div class="chip" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
+      else{h+='<td class="slot'+we+tc+'" onclick="openPop(event,'+di+','+slot+')"></td>';}});
+    h+='</tr>';});});
   h+='</tbody><tfoot><tr><td class="lbl">Horas/día →</td>';
-  const st=weekStats(p,state.ui.weekId);st.daily.forEach(d=>{h+='<td>'+(d||0)+'</td>';});
+  const st=weekStats(p,state.ui.weekId);st.daily.forEach(d=>{h+='<td>'+num(d)+'</td>';});
   h+='</tr>';
   // cajón de tareas por día (To-Do, recurrentes, extraordinarias, hitos)
   h+='<tr><td class="drawer-lbl">📋 Tareas →</td>';
@@ -897,7 +921,7 @@ function renderLegend(){
         '<div class="prog-bar"><div class="fill" style="width:'+pct+'%;background:'+pr.color+'"></div></div>'+
         '<span class="prog-pct" onclick="editPct(\''+pr.id+'\',this)" title="Clic para editar">'+pct+'%</span>'+
       '</div>'+
-      '<span class="hrs">'+hrs+' h<span class="mv"> · '+money(hrs*eff)+'</span> <button class="btn ghost" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="openProject(\''+pr.id+'\')" title="Editar proyecto">✎</button><button class="btn ghost danger" style="padding:2px 7px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
+      '<span class="hrs">'+num(hrs)+' h<span class="mv"> · '+money(hrs*eff)+'</span> <button class="btn ghost" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="openProject(\''+pr.id+'\')" title="Editar proyecto">✎</button><button class="btn ghost danger" style="padding:2px 7px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
     host.appendChild(row);});
 }
 
@@ -916,7 +940,7 @@ function renderMonth(){
   // weeks
   const weeks=weeksOfMonth(y,m);let totH=0,totC=0;
   let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th class="'+MC+'">Coste</th></tr></thead><tbody>';
-  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h++;const pr=proj(v.p,p);if(projBillable(pr))c+=projEffRate(pr,p);}}});});totH+=h;totC+=c;
+  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h+=SLOT_HOURS;const pr=proj(v.p,p);if(projBillable(pr))c+=projEffRate(pr,p)*SLOT_HOURS;}}});});totH+=h;totC+=c;
     const r1=w.mon.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=addDays(w.mon,6).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     wh+='<tr><td>Semana '+w.info.weekNum+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+M(c)+'</td></tr>';});
   wh+='</tbody><tfoot><tr><td>TOTAL MES</td><td></td><td>'+num(totH)+' h</td><td>'+M(totC)+'</td></tr></tfoot>';
@@ -938,7 +962,7 @@ function renderMonth(){
     if(o.h)cell.style.background='rgba(29,78,216,'+alpha.toFixed(3)+')';
     if(dStr(date)===todayStr)cell.style.boxShadow='0 0 0 2px var(--blue) inset';
     cell.innerHTML='<div class="d"><span class="wd">'+DAYS[(date.getDay()+6)%7]+'</span><span>'+d+'</span></div>'+
-      '<div><div class="h">'+(o.h?o.h+' h':'—')+'</div><div class="c '+MC+'">'+(o.h?M(o.c):'')+'</div></div>';
+      '<div><div class="h">'+(o.h?num(o.h)+' h':'—')+'</div><div class="c '+MC+'">'+(o.h?M(o.c):'')+'</div></div>';
     grid.appendChild(cell);}
 }
 
@@ -1000,7 +1024,7 @@ function renderSummary(){
 let popCtx=null;
 function openPop(ev,di,hr){ev.stopPropagation();closePop();popCtx={di,hr};
   const p=curPerson();const cur=(p.grid[state.ui.weekId]||{})[di+'-'+hr]||{};const host=document.getElementById('popHost');
-  const pop=document.createElement('div');pop.className='pop';let h='<h4>'+DAY_FULL[di]+' · '+String(hr).padStart(2,'0')+':00</h4>';
+  const pop=document.createElement('div');pop.className='pop';let h='<h4>'+DAY_FULL[di]+' · '+slotLabel(hr)+'</h4>';
   (p.projects||[]).forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(cur.p===pr.id?' ✓':'')+'</div>';});
   h+='<div class="opt clear" onclick="assign(null)">○ Vaciar bloque</div>';
   h+='<div class="note-in"><textarea id="popNote" placeholder="Nota o especificación del momento concreto…" onkeydown="if(event.key===\'Enter\'&&event.ctrlKey)saveNote()">'+esc(cur.n||'')+'</textarea><div class="hint-key">Ctrl + Enter para guardar nota</div></div>';
@@ -1190,7 +1214,7 @@ function renderEquipo(){
         inner+='<div class="tc-prow"'+(h?'':' style="opacity:.22"')+'>'+
           '<span class="dot" style="background:'+t.color+'"></span>'+
           '<span class="pname" style="color:'+(h?t.color:'var(--muted-2)')+'">'+esc(t.name.split(' ')[0])+'</span>'+
-          (h?'<span class="phrs" style="color:'+t.color+'">'+h+'h</span>':'<span class="phrs" style="color:var(--muted-2)">–</span>')+
+          (h?'<span class="phrs" style="color:'+t.color+'">'+num(h)+'h</span>':'<span class="phrs" style="color:var(--muted-2)">–</span>')+
         '</div>';
       });
       inner+='</div>';
