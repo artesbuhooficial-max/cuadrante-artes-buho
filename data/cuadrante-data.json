@@ -1546,7 +1546,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u1",
-    "weekId": "2026-08-31",
+    "weekId": "2026-08-17",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1618,6 +1618,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1784566134118
+    "updatedAt": 1784574865326
   }
 }
