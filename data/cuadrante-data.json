@@ -1107,6 +1107,44 @@
           "4-29": {
             "p": "x8vl3wj"
           }
+        },
+        "2026-08-31": {
+          "0-20": {
+            "p": "xk6kruc"
+          },
+          "0-21": {
+            "p": "xk6kruc"
+          },
+          "0-22": {
+            "p": "xk6kruc"
+          },
+          "0-23": {
+            "p": "xk6kruc"
+          },
+          "0-26": {
+            "p": "xk6kruc"
+          },
+          "0-27": {
+            "p": "xk6kruc"
+          },
+          "0-28": {
+            "p": "xk6kruc"
+          },
+          "0-29": {
+            "p": "xk6kruc"
+          },
+          "0-30": {
+            "p": "xk6kruc"
+          },
+          "0-31": {
+            "p": "xk6kruc"
+          },
+          "0-24": {
+            "p": "xk6kruc"
+          },
+          "0-25": {
+            "p": "xk6kruc"
+          }
         }
       },
       "projects": [
@@ -1508,7 +1546,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u1",
-    "weekId": "2026-08-24",
+    "weekId": "2026-08-31",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1580,6 +1618,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1784566073143
+    "updatedAt": 1784566134118
   }
 }
