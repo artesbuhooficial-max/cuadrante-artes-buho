@@ -15,7 +15,11 @@
  *     GITHUB_REPO    cuadrante-artes-buho
  *     GITHUB_BRANCH  master
  *     MASTER_KEY     (la clave maestra de Roman; ve todos los sueldos)
- *     PINS           {"u1":"1234","u2":"5678","u3":"0000"}   (opcional)
+ *     PINS           (opcional) el PIN de cada persona para ver SOLO su sueldo.
+ *                    Las claves son los IDs internos del equipo actual:
+ *                      u1 David · u2 Miriam · u3 Manu · xasd2wb Daniel
+ *                    (Roman es el master: usa MASTER_KEY, no necesita PIN)
+ *                    {"u1":"1234","u2":"5678","u3":"0000","xasd2wb":"1111"}
  *
  * DESPLIEGUE:
  *   Implementar  →  Nueva implementación  →  Aplicación web
