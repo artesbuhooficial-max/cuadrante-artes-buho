@@ -564,7 +564,22 @@ function mergeMember(b,m,t){
   // Los sueldos no viajan en el archivo público (modo Apps Script): un 0 publicado
   // nunca debe borrar el valor real que tengas desbloqueado en local.
   ['salary','rate'].forEach(k=>{if(!out[k]&&m[k])out[k]=m[k];});
-  return out;
+  return dropOrphanCells(out);
+}
+// Si alguien borra un proyecto mientras otra persona está asignando bloques con él,
+// la fusión podría dejar bloques apuntando a un proyecto que ya no existe. Esos
+// bloques no se ven en la rejilla pero SÍ suman horas y coste (al precio de la
+// persona), así que se aplica la misma regla que al borrar un proyecto a mano:
+// "se vaciarán los bloques que lo usen". Si la lista quedara vacía no se toca nada,
+// para no arrasar un cuadrante entero ante datos inesperados.
+function dropOrphanCells(member){
+  const ids={};(member.projects||[]).forEach(p=>{if(p&&p.id!=null)ids[String(p.id)]=1;});
+  if(!Object.keys(ids).length)return member;
+  Object.keys(member.grid||{}).forEach(wk=>{
+    const w=member.grid[wk];if(!isObj(w))return;
+    Object.keys(w).forEach(k=>{if(w[k]&&w[k].p!=null&&!ids[String(w[k].p)])delete w[k];});
+  });
+  return member;
 }
 const SYNC_LISTS=['objectives','notes','tasks','recurring','extraTasks','milestones','projects'];
 // base = última versión publicada que vio este navegador

@@ -285,7 +285,25 @@ function _mergeMember(b, m, t){
     return _mergeMapSafe(bb, mm, tt, _pick);
   });
   out.projects = _mergeList(b.projects, m.projects, t.projects);
-  return out;
+  return _dropOrphanCells(out);
+}
+// Si alguien borra un proyecto mientras otra persona asigna bloques con él, la
+// fusión podría dejar bloques apuntando a un proyecto inexistente: no se ven en la
+// rejilla pero sí suman horas y coste. Se aplica la misma regla que al borrar un
+// proyecto a mano ("se vaciarán los bloques que lo usen"). Si la lista de proyectos
+// quedara vacía no se toca nada, para no arrasar un cuadrante entero.
+function _dropOrphanCells(member){
+  var ids = {};
+  (member.projects || []).forEach(function(p){ if (p && p.id != null) ids[String(p.id)] = 1; });
+  if (!Object.keys(ids).length) return member;
+  Object.keys(member.grid || {}).forEach(function(wk){
+    var w = member.grid[wk];
+    if (!_isObj(w)) return;
+    Object.keys(w).forEach(function(k){
+      if (w[k] && w[k].p != null && !ids[String(w[k].p)]) delete w[k];
+    });
+  });
+  return member;
 }
 var _SYNC_LISTS = ['objectives', 'notes', 'tasks', 'recurring', 'extraTasks', 'milestones', 'projects'];
 function _mergeState(base, mine, theirs){
