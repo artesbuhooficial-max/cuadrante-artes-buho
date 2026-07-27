@@ -1545,12 +1545,12 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
-    "weekId": "2026-07-06",
+    "person": "u3",
+    "weekId": "2026-07-13",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 7
     },
     "resRef": {
       "y": 2026,
@@ -1618,6 +1618,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785151953284
+    "updatedAt": 1785152034329
   }
 }
