@@ -481,6 +481,115 @@ let memFallback=false;
 function storeGet(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){memFallback=true;return window.__mem||null;}}
 function storeSet(d){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){memFallback=true;window.__mem=d;}}
 
+/* ============ SINCRONIZACIÓN (fusión a tres bandas) ============
+   Cada persona publica con SU propio token, así que antes se subía el estado
+   ENTERO del navegador: si Miriam publicaba y después publicaba Manu, la copia
+   de Manu (que no tenía los cambios de Miriam) borraba lo de Miriam — y al revés.
+
+   Ahora cada navegador guarda una "base": la última versión publicada que ha
+   visto. Al publicar se leen los datos publicados en ese instante y se aplican
+   ÚNICAMENTE tus cambios (base → tu copia) sobre ellos. Lo que no has tocado tú
+   se respeta tal y como lo dejó tu compañero, así que ya no se pisan.
+   Lo mismo al abrir la app y al pulsar "Traer cambios publicados".          */
+const BASE_KEY='cuadrante_base_v1';
+function baseGet(){try{const r=localStorage.getItem(BASE_KEY);return r?JSON.parse(r):(window.__baseMem||null);}catch(e){return window.__baseMem||null;}}
+function baseSet(d){const c=clone(d);window.__baseMem=c;try{localStorage.setItem(BASE_KEY,JSON.stringify(c));}catch(e){}}
+
+function clone(o){return (o==null)?o:JSON.parse(JSON.stringify(o));}
+// firma estable (con las claves ordenadas) para comparar dos estados sin que
+// influya el orden en que se escribieron
+function canon(o){
+  if(Array.isArray(o))return '['+o.map(canon).join(',')+']';
+  if(isObj(o))return '{'+Object.keys(o).sort().map(k=>JSON.stringify(k)+':'+canon(o[k])).join(',')+'}';
+  return JSON.stringify(o===undefined?null:o);
+}
+// firma de los datos compartidos: ignora la vista (ui) y la marca de tiempo (meta),
+// que son de cada navegador y cambian sin que nadie haya editado nada
+function sig(s){return canon(without(s||{},{ui:1,meta:1}));}
+function same(a,b){return JSON.stringify(a===undefined?null:a)===JSON.stringify(b===undefined?null:b);}
+function has(o,k){return !!o&&Object.prototype.hasOwnProperty.call(o,k);}
+function isObj(o){return !!o&&typeof o==='object'&&!Array.isArray(o);}
+// valor suelto: si yo no lo he tocado gana el de la versión publicada; si lo he
+// tocado gana el mío (soy quien está publicando ahora)
+function pickVal(b,m,t){return same(m,t)?clone(m):(same(m,b)?clone(t):clone(m));}
+function mergeAny(b,m,t){return (isObj(m)&&isObj(t))?mergeMap(isObj(b)?b:{},m,t,mergeAny):pickVal(b,m,t);}
+// Fusiona un objeto-diccionario: parte de lo publicado (theirs) y le aplica mi
+// diferencia respecto a la base (altas, bajas y modificaciones mías).
+function mergeMap(base,mine,theirs,mergeVal){
+  base=isObj(base)?base:{};mine=isObj(mine)?mine:{};theirs=isObj(theirs)?theirs:{};
+  mergeVal=mergeVal||mergeAny;
+  const out=clone(theirs);
+  const keys=Object.keys(base);
+  Object.keys(mine).forEach(k=>{if(keys.indexOf(k)<0)keys.push(k);});
+  keys.forEach(k=>{
+    const inB=has(base,k),inM=has(mine,k),inT=has(theirs,k);
+    if(!inM){delete out[k];return;}                                   // lo he borrado yo
+    if(!inB){out[k]=inT?mergeVal(undefined,mine[k],theirs[k]):clone(mine[k]);return;} // alta mía
+    if(same(base[k],mine[k]))return;                                  // yo no lo he tocado → manda el suyo
+    out[k]=inT?mergeVal(base[k],mine[k],theirs[k]):clone(mine[k]);     // cambio mío
+  });
+  return out;
+}
+function mergeMapSafe(b,m,t,fn){
+  if(!isObj(m))return clone(t)||{};
+  if(!isObj(t))return clone(m);
+  return mergeMap(b,m,t,fn);
+}
+function listKey(x,i){return (x&&x.id!=null)?String(x.id):('#'+i);}
+function byId(list){const m={};(Array.isArray(list)?list:[]).forEach((x,i)=>{const k=listKey(x,i);if(!has(m,k))m[k]=x;});return m;}
+// Listas con id (tareas, objetivos, notas, hitos, proyectos, equipo): se fusionan
+// elemento a elemento, de modo que las altas de cada persona se suman y las bajas
+// solo las aplica quien realmente ha borrado.
+function mergeList(base,mine,theirs,mergeItem){
+  if(!Array.isArray(mine))return clone(theirs)||[];
+  if(!Array.isArray(theirs))return clone(mine);
+  const merged=mergeMap(byId(base),byId(mine),byId(theirs),mergeItem||mergeAny);
+  const out=[],seen={};
+  const push=list=>(Array.isArray(list)?list:[]).forEach((x,i)=>{const k=listKey(x,i);if(has(merged,k)&&!seen[k]){seen[k]=1;out.push(merged[k]);}});
+  push(theirs);push(mine);
+  Object.keys(merged).forEach(k=>{if(!seen[k]){seen[k]=1;out.push(merged[k]);}});
+  return out;
+}
+const MEMBER_SKIP={grid:1,projects:1};
+function without(o,skip){const r={};Object.keys(o||{}).forEach(k=>{if(!skip[k])r[k]=o[k];});return r;}
+// Una persona del equipo: el cuadrante se fusiona bloque a bloque (semana → celda),
+// así que dos personas pueden publicar la misma semana sin borrarse los bloques.
+function mergeMember(b,m,t){
+  if(!isObj(m))return clone(t);
+  if(!isObj(t))return clone(m);
+  b=isObj(b)?b:{};
+  const out=mergeMap(without(b,MEMBER_SKIP),without(m,MEMBER_SKIP),without(t,MEMBER_SKIP),mergeAny);
+  out.grid=mergeMapSafe(b.grid,m.grid,t.grid,(bb,mm,tt)=>mergeMapSafe(bb,mm,tt,pickVal));
+  out.projects=mergeList(b.projects,m.projects,t.projects);
+  // Los sueldos no viajan en el archivo público (modo Apps Script): un 0 publicado
+  // nunca debe borrar el valor real que tengas desbloqueado en local.
+  ['salary','rate'].forEach(k=>{if(!out[k]&&m[k])out[k]=m[k];});
+  return out;
+}
+const SYNC_LISTS=['objectives','notes','tasks','recurring','extraTasks','milestones','projects'];
+// base = última versión publicada que vio este navegador
+// mine = lo que hay ahora en este navegador
+// theirs = lo que hay publicado ahora mismo en GitHub
+function mergeState(base,mine,theirs){
+  if(!isObj(theirs))return clone(mine);
+  if(!isObj(mine))return clone(theirs);
+  base=isObj(base)?base:{};
+  const out=clone(theirs);
+  out.config=mergeMapSafe(base.config,mine.config,theirs.config,mergeAny);
+  out.team=mergeList(base.team,mine.team,theirs.team,mergeMember);
+  SYNC_LISTS.forEach(k=>{out[k]=mergeList(base[k],mine[k],theirs[k]);});
+  out.ui=clone(mine.ui||theirs.ui);   // la vista (pestaña, semana, persona) es de cada uno
+  const lu=(mine.meta&&mine.meta.updatedAt)||0,ru=(theirs.meta&&theirs.meta.updatedAt)||0;
+  out.meta={updatedAt:Math.max(lu,ru)}; // meta se recalcula al publicar: nunca cuenta como cambio
+  return out;
+}
+// Adopta la versión fusionada en este navegador (conservando la vista actual)
+function adoptMerged(merged){
+  const ui=state.ui;
+  state=merged;if(ui)state.ui=ui;
+  migrate();save();render();
+}
+
 /* ============ GITHUB PUBLISH ============ */
 const GH_KEY='cuadrante_gh_cfg';
 // si localStorage está bloqueado en este navegador (modo privado estricto, política del
@@ -579,67 +688,109 @@ function toggleMoney(){
   document.getElementById('moneyToggleBtn').textContent=hidden?'👁 Mostrar €':'👁 Ocultar €';
 }
 
+/* --- Lectura de la versión publicada --- */
+const DATA_PATH='data/cuadrante-data.json';
+function ghRepoCfg(){const c=ghGet();return {
+  owner:c.owner||'artesbuhooficial-max',repo:c.repo||'cuadrante-artes-buho',
+  branch:c.branch||'master',token:c.token||'',path:DATA_PATH};}
+function ghApiUrl(g,extra){return 'https://api.github.com/repos/'+g.owner+'/'+g.repo+'/contents/'+g.path+(extra||'');}
+function strToB64(s){const bytes=new TextEncoder().encode(s);let bin='';bytes.forEach(b=>{bin+=String.fromCharCode(b);});return btoa(bin);}
+function b64ToStr(b64){const bin=atob(String(b64||'').replace(/\s+/g,''));const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder('utf-8').decode(bytes);}
+// La API de GitHub devuelve SIEMPRE la última versión (el archivo servido por
+// GitHub Pages puede tardar un minuto en actualizarse y llega cacheado). Devuelve
+// también el sha, imprescindible para escribir sin pisar a nadie.
+async function fetchRemoteApi(){
+  const g=ghRepoCfg();
+  const headers={'Accept':'application/vnd.github.v3+json'};
+  if(g.token)headers['Authorization']='token '+g.token;
+  const r=await fetch(ghApiUrl(g,'?ref='+encodeURIComponent(g.branch)+'&t='+Date.now()),{headers,cache:'no-store'});
+  if(r.status===404)return {state:null,sha:null};
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||('Error '+r.status));}
+  const d=await r.json();
+  let text=d.content?b64ToStr(d.content):'';
+  if(!text&&d.sha){ // archivos grandes: la API no incluye el contenido, se pide el blob
+    const br=await fetch('https://api.github.com/repos/'+g.owner+'/'+g.repo+'/git/blobs/'+d.sha,{headers});
+    if(br.ok){const bd=await br.json();text=b64ToStr(bd.content);}
+  }
+  return {state:text?JSON.parse(text):null,sha:d.sha||null};
+}
+// Con caída a la copia servida por la web si la API falla (sin red, límite de peticiones…)
+async function fetchPublished(){
+  try{const r=await fetchRemoteApi();if(r.state)return r.state;}catch(e){}
+  return await fetchRemote();
+}
+
 async function publishViaAppsScript(){
   const url=ghGet().appsUrl;
   const btn=document.getElementById('publishBtn');
   if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
   try{
-    state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
+    // 1) Traer lo que hay publicado AHORA y aplicarle solo mis cambios
+    const base=baseGet();
+    const remote=await fetchPublished();
+    const merged=remote?mergeState(base,state,remote):clone(state);
+    merged.meta={updatedAt:Date.now()};
+    // 2) Enviar el resultado y también mi base: el propio script vuelve a fusionar
+    //    contra el archivo real en el momento del commit (por si alguien publica a la vez)
+    //    y serializa las publicaciones simultáneas con un bloqueo.
     // no-cors: la respuesta es opaca (no legible), pero el commit se hace en el servidor.
-    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state})});
-    toast('✓ Enviado a publicar — el equipo lo verá al recargar (~1 min)');
-    updateSaveUI();
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'publish',state:merged,base:base||null})});
+    baseSet(merged); // la base pasa a ser exactamente lo que se acaba de enviar
+    adoptMerged(merged);
+    toast('✓ Publicado — fusionado con los cambios de tus compañeros');
   }catch(e){
     toast('Error al publicar: '+e.message);
   }finally{
     if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
+    updateSaveUI();
   }
 }
 async function publishToGitHub(){
   const cfg=ghGet();
   if(cfg.appsUrl)return publishViaAppsScript();
   if(!cfg.token){openSettings();toast('Configura la publicación en Ajustes (Apps Script o token)');return;}
-  const owner=cfg.owner||'artesbuhooficial-max';
-  const repo=cfg.repo||'cuadrante-artes-buho';
-  const branch=cfg.branch||'master';
-  const path='data/cuadrante-data.json';
+  const g=ghRepoCfg();
   const btn=document.getElementById('publishBtn');
   if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
   try{
-    const headers={'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json'};
-    // Sellar la marca de tiempo: así esta versión gana sobre las copias locales del resto
-    state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
-    // Codificar contenido en base64 (compatible con UTF-8)
-    const json=JSON.stringify(state,null,2);
-    const bytes=new TextEncoder().encode(json);
-    const binStr=Array.from(bytes,b=>String.fromCodePoint(b)).join('');
-    const content=btoa(binStr);
-    // hasta 2 intentos: si alguien publicó justo entre medias (409), se relee el SHA y se reintenta una vez sola
-    let putR;
-    for(let attempt=0;attempt<2;attempt++){
-      const getR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path+'?ref='+branch,{headers});
-      let sha=null;
-      if(getR.ok){const d=await getR.json();sha=d.sha;}
-      else if(getR.status!==404){const e=await getR.json().catch(()=>({}));throw new Error(e.message||'Error '+getR.status);}
-      const body={message:'Cuadrante actualizado · '+new Date().toLocaleString('es-ES'),content,branch};
-      if(sha)body.sha=sha;
-      putR=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{
-        method:'PUT',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
-      if(putR.ok||putR.status!==409)break;
-    }
-    if(putR.ok){
-      toast('✓ Publicado — todos verán los cambios en ~1 min');
-      if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
-      updateSaveUI();
-    }else{
+    const headers={'Authorization':'token '+g.token,'Accept':'application/vnd.github.v3+json'};
+    let lastErr=null;
+    // Se relee lo publicado, se fusionan mis cambios encima y se escribe indicando el
+    // sha leído: si alguien ha publicado entre medias, GitHub rechaza la escritura
+    // (409/422) y se repite el ciclo con los datos nuevos. Nunca se sobrescribe a ciegas.
+    for(let attempt=0;attempt<3;attempt++){
+      const remote=await fetchRemoteApi();
+      const merged=mergeState(baseGet(),state,remote.state);
+      merged.meta={updatedAt:Date.now()};
+      const body={message:'Cuadrante actualizado · '+new Date().toLocaleString('es-ES'),
+        content:strToB64(JSON.stringify(merged,null,2)),branch:g.branch};
+      if(remote.sha)body.sha=remote.sha;
+      const putR=await fetch(ghApiUrl(g),{method:'PUT',
+        headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(putR.ok){
+        baseSet(merged); // la base pasa a ser exactamente lo que acaba de quedar publicado
+        adoptMerged(merged);
+        toast('✓ Publicado — fusionado con los cambios de tus compañeros');
+        return;
+      }
       const err=await putR.json().catch(()=>({}));
-      if(putR.status===409)throw new Error('Conflicto: otra persona publicó justo ahora. Recarga la página y vuelve a intentarlo');
+      if(putR.status===409||putR.status===422){ // otra persona publicó justo ahora: reintentar
+        lastErr=new Error('Otra persona publicó a la vez');
+        await new Promise(r=>setTimeout(r,400*(attempt+1)));
+        continue;
+      }
       if(putR.status===401)throw new Error('Token inválido o caducado');
+      if(putR.status===403)throw new Error('El token no tiene permiso Contents: Read & Write sobre el repositorio');
       throw new Error(err.message||'Error '+putR.status);
     }
+    throw lastErr||new Error('No se pudo publicar');
   }catch(e){
     toast('Error: '+e.message);
+  }finally{
     if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
+    updateSaveUI();
   }
 }
 
@@ -1176,7 +1327,8 @@ function openSettings(){const c=state.config;const gh=ghGet();
     '<div class="inp row"><div><label>Usuario / Org</label><input id="ghOwner" value="'+esc(gh.owner||'artesbuhooficial-max')+'"></div><div><label>Repositorio</label><input id="ghRepo" value="'+esc(gh.repo||'cuadrante-artes-buho')+'"></div></div>'+
     '<div class="inp"><label>Rama</label><input id="ghBranch" value="'+esc(gh.branch||'master')+'"></div>'+
     '<div class="inp row"><button class="btn" onclick="pullRemote()">↻ Traer cambios publicados</button></div>'+
-    '<p class="hint">Usa <b>Traer cambios publicados</b> si otra persona publicó y no ves sus cambios: descarga la última versión del repositorio y sustituye tu copia local.</p>'+
+    '<p class="hint">Usa <b>Traer cambios publicados</b> si otra persona publicó y no ves sus cambios: descarga la última versión del repositorio y la <b>fusiona</b> con la tuya (no pierdes lo que tengas sin publicar).</p>'+
+    '<p class="hint">Al pulsar <b>☁ Publicar</b> se lee lo publicado en ese momento y se aplican <b>solo tus cambios</b> encima, así que aunque Miriam y Manu publiquen seguidos <b>nadie borra el trabajo del otro</b>.</p>'+
     '<div class="divider"></div>'+
     '<div class="divider"></div>'+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">🔒 PINs de seguridad económica</label>'+
@@ -1594,26 +1746,61 @@ function adoptAppsUrl(){
 }
 async function boot(){
   const local=storeGet();
-  const remote=await fetchRemote();
+  const remote=await fetchPublished();
   let data;
   if(local&&remote){
-    const lu=(local.meta&&local.meta.updatedAt)||0;
-    const ru=(remote.meta&&remote.meta.updatedAt)||0;
-    if(ru>lu){data=remote;if(local.ui)data.ui=local.ui;} // hay una publicación más nueva: la adoptamos
-    else data=local;
-  }else data=local||remote||seed();
+    const base=baseGet();
+    if(base){
+      // Se fusiona: ves lo que han publicado los demás SIN perder lo que tengas
+      // pendiente de publicar en este navegador.
+      data=mergeState(base,local,remote);
+    }else{
+      // Primer arranque con fusión (aún no hay base): se adopta lo publicado si es
+      // más reciente, como hasta ahora, y a partir de aquí ya se fusiona siempre.
+      const lu=(local.meta&&local.meta.updatedAt)||0;
+      const ru=(remote.meta&&remote.meta.updatedAt)||0;
+      data=(ru>lu)?clone(remote):local;
+      if(local.ui)data.ui=local.ui;
+    }
+  }else data=local||clone(remote)||seed();
+  if(remote)baseSet(remote); // la base es siempre lo que sabemos que hay en el servidor
   state=data;migrate();loadPins();
   adoptAppsUrl();
   storeSet(state);
   await initFile();
   switchTab(state.ui.tab||'cuadrante');render();
+  lastRefresh=Date.now(); // acabamos de leer lo publicado: no repetir al primer clic
+  window.addEventListener('focus',refreshFromRemote);
 }
-// Traer manualmente los últimos datos publicados (sobrescribe la copia local)
+// Traer los últimos datos publicados y fusionarlos con lo que tengas sin publicar
 async function pullRemote(){
-  const remote=await fetchRemote();
+  const remote=await fetchPublished();
   if(!remote){toast('No se pudo leer el archivo publicado');return;}
-  const keepUi=state.ui;state=remote;if(keepUi)state.ui=keepUi;migrate();adoptAppsUrl();storeSet(state);
-  closeModal();switchTab(state.ui.tab||'cuadrante');render();toast('✓ Datos publicados cargados');
+  const before=sig(state);
+  adoptMerged(mergeState(baseGet(),state,remote));
+  baseSet(remote);
+  adoptAppsUrl();
+  closeModal();switchTab(state.ui.tab||'cuadrante');
+  toast(before===sig(state)?'✓ Ya tenías la última versión':'✓ Cambios del equipo incorporados');
+}
+// Al volver a la pestaña se comprueba si alguien ha publicado (como mucho cada 3 min,
+// para no gastar el límite de peticiones de GitHub). Siempre fusiona: no borra nada tuyo.
+let lastRefresh=0,refreshing=false;
+async function refreshFromRemote(){
+  if(refreshing||Date.now()-lastRefresh<180000)return;
+  // si hay una ventana o un desplegable abierto, se deja para el siguiente foco
+  if(document.querySelector('.scrim')||document.querySelector('.pop'))return;
+  refreshing=true;lastRefresh=Date.now();
+  try{
+    const remote=await fetchPublished();
+    if(!remote)return;
+    const base=baseGet();
+    if(base&&sig(base)===sig(remote))return; // nadie ha publicado desde la última vez
+    const before=sig(state);
+    const merged=mergeState(base,state,remote);
+    baseSet(remote);
+    if(sig(merged)!==before){adoptMerged(merged);toast('↻ Cambios de tu equipo incorporados');}
+  }catch(e){}finally{refreshing=false;}
 }
 boot();
 </script>

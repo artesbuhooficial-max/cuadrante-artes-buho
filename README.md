@@ -21,7 +21,19 @@ Identidad corporativa de Artes Búho (azul cobalto + dorado sobre crema). No req
 - **Guardado en el proyecto:** el botón `💾 Guardar en proyecto` escribe directamente el archivo `data/cuadrante-data.json` de este repositorio (mediante la File System Access API de Chrome/Edge). Actívalo una vez, deja `Auto: ON` y cada cambio se guarda solo en ese archivo. Después solo tienes que hacer commit.
 - **Backup manual:** en `⚙ Ajustes` puedes descargar/restaurar un `.json` (útil en Firefox/Safari, que no soportan el guardado directo a archivo).
 
-Al abrir la app, se compara la copia local (localStorage) con la publicada (`data/cuadrante-data.json`) y se adopta **la más reciente** (marca de tiempo `meta.updatedAt`). Así, cuando alguien pulsa **Publicar**, el resto ve sus cambios al recargar. Si no aparecen, usa **Ajustes → ↻ Traer cambios publicados** para forzar la última versión del repositorio.
+### Publicar sin pisarse (cada persona con su token)
+
+Cada persona publica con **su propio token**, así que dos publicaciones seguidas podrían chocar. Para que eso no pase, la app **no sube nunca el estado entero del navegador**:
+
+1. Cada navegador recuerda la **última versión publicada que ha visto** (su *base*).
+2. Al pulsar **☁ Publicar**, se lee lo que hay publicado **en ese instante** y se aplican encima **solo tus cambios** (los que van de tu *base* a tu copia actual): tus bloques, tus tareas, tus altas y tus borrados.
+3. Se escribe indicando el `sha` que se acaba de leer. Si alguien ha publicado entre medias, GitHub rechaza la escritura y el ciclo se repite con los datos nuevos (hasta 3 veces) en lugar de sobrescribir.
+
+Resultado: si Miriam publica y después publica Manu, **cada uno conserva lo suyo y ve lo del otro**. La fusión es fina: el cuadrante se combina **bloque a bloque** (cada media hora de cada día), y las tareas, objetivos, notas, hitos y proyectos **uno a uno por su id**. Solo si dos personas cambian *exactamente el mismo bloque* a la vez gana quien publica el último, y un borrado solo lo aplica quien realmente ha borrado.
+
+Al abrir la app (y al volver a la pestaña, como mucho cada 3 minutos) se hace esa misma fusión con lo publicado: **ves los cambios del equipo sin perder lo que aún no has publicado**. También puedes forzarlo con **Ajustes → ↻ Traer cambios publicados**.
+
+> En modo Apps Script la fusión se hace además **en el servidor** en el momento del commit, con un bloqueo que pone en fila las publicaciones simultáneas. Si ya tenías el script desplegado, vuelve a subir el `Codigo.gs` actualizado (ver [`apps-script/INSTRUCCIONES.md`](apps-script/INSTRUCCIONES.md)).
 
 ### Publicar con Apps Script (recomendado — token oculto y sueldos privados)
 

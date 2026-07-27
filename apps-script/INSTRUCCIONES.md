@@ -60,9 +60,19 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
 
 - **Publicar**: el botón ☁ Publicar envía los datos al script; el script quita los
   sueldos y sube el resto a GitHub con su token. El equipo lo ve al recargar (~1 min).
+- **Nadie pisa a nadie**: antes de subir, el script lee lo que hay publicado en ese
+  momento y le aplica **solo los cambios** de quien publica. Si Miriam publica y justo
+  después publica Manu, los cambios de Miriam siguen ahí. Además, un **bloqueo**
+  (`LockService`) pone en fila las publicaciones simultáneas y, si GitHub rechaza la
+  escritura porque alguien se ha adelantado, se reintenta con los datos nuevos.
 - **Ver sueldos**: cada persona introduce su PIN para ver el suyo; **Roman** introduce
   la **clave maestra** para ver el Resumen y los sueldos de todos.
 - Los sueldos **nunca** quedan en el archivo público `data/cuadrante-data.json`.
+
+> ⚠️ **Si ya tenías el script desplegado**, vuelve a pegar el `Codigo.gs` actualizado y
+> haz **Implementar → Gestionar implementaciones → ✏️ Editar → Versión: Nueva versión →
+> Implementar**. La URL no cambia. Sin este paso el navegador ya fusiona por su cuenta,
+> pero no tendrás la segunda red de seguridad del servidor.
 
 ## Cambiar PIN o clave maestra
 
