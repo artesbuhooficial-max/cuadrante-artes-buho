@@ -140,6 +140,11 @@ function _publishMerged(path, mine, base){
   for (var i = 0; i < 3; i++){
     var cur = _read(path);
     var merged = (base && cur.json) ? _mergeState(base, mine, cur.json) : mine;
+    // INVARIANTE: el archivo público nunca lleva sueldos, pase lo que pase en la
+    // fusión. Sin esto, un sueldo que ya estuviera publicado sobreviviría: para
+    // quien publica no ha cambiado (0 en su copia y 0 en su base), así que la
+    // fusión daba por bueno el valor antiguo del archivo.
+    merged = _stripMoney(merged);
     merged.meta = { updatedAt: new Date().getTime() };
     var r = _commit(path, JSON.stringify(merged, null, 2), cur.sha);
     if (r.ok || (r.status !== 409 && r.status !== 422)) return r;

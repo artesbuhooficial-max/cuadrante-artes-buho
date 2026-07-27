@@ -552,6 +552,12 @@ function mergeList(base,mine,theirs,mergeItem){
 }
 const MEMBER_SKIP={grid:1,projects:1};
 function without(o,skip){const r={};Object.keys(o||{}).forEach(k=>{if(!skip[k])r[k]=o[k];});return r;}
+// ¿esta sesión tiene derecho a ver el sueldo de esa persona? (PIN propio o clave maestra)
+function sueldoVisible(id){
+  if(typeof _unlocked==='undefined'||!_unlocked)return false;
+  return !!(_unlocked.__master__||_unlocked[id]);
+}
+function esModoApps(){try{return typeof appsMode==='function'&&appsMode();}catch(e){return false;}}
 // Una persona del equipo: el cuadrante se fusiona bloque a bloque (semana → celda),
 // así que dos personas pueden publicar la misma semana sin borrarse los bloques.
 function mergeMember(b,m,t){
@@ -561,9 +567,11 @@ function mergeMember(b,m,t){
   const out=mergeMap(without(b,MEMBER_SKIP),without(m,MEMBER_SKIP),without(t,MEMBER_SKIP),mergeAny);
   out.grid=mergeMapSafe(b.grid,m.grid,t.grid,(bb,mm,tt)=>mergeMapSafe(bb,mm,tt,pickVal));
   out.projects=mergeList(b.projects,m.projects,t.projects);
-  // Los sueldos no viajan en el archivo público (modo Apps Script): un 0 publicado
-  // nunca debe borrar el valor real que tengas desbloqueado en local.
-  ['salary','rate'].forEach(k=>{if(!out[k]&&m[k])out[k]=m[k];});
+  // En modo Apps Script los sueldos viven en el servidor y el navegador NO es la
+  // autoridad: se conserva lo que hayas desbloqueado en esta sesión (para no perder
+  // el dato al publicar) y, si no lo tienes desbloqueado, manda lo publicado. Así un
+  // sueldo que quedara cacheado de antes no se sigue viendo ni se reenvía.
+  if(esModoApps())['salary','rate'].forEach(k=>{out[k]=sueldoVisible(out.id)?(m[k]||t[k]||0):(t[k]||0);});
   return dropOrphanCells(out);
 }
 // Si alguien borra un proyecto mientras otra persona está asignando bloques con él,
