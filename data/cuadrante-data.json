@@ -4,7 +4,7 @@
     "endHour": 22,
     "currency": "€",
     "granularity": "half",
-    "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec"
+    "appsUrl": ""
   },
   "projects": [],
   "team": [
@@ -13,8 +13,8 @@
       "name": "David",
       "role": "Director Operativo · AI/Tech",
       "color": "#1d4ed8",
-      "salary": 0,
-      "rate": 0,
+      "salary": 800,
+      "rate": 10,
       "grid": {
         "2026-06-29": {
           "0-22": {
@@ -302,6 +302,12 @@
           },
           "4-21": {
             "p": "xcc414h"
+          },
+          "2-24": {
+            "p": "xa3kx1b"
+          },
+          "2-25": {
+            "p": "xa3kx1b"
           }
         },
         "2026-07-20": {
@@ -1238,8 +1244,8 @@
       "name": "Miriam",
       "role": "Social Media · Marketing",
       "color": "#db2777",
-      "salary": 0,
-      "rate": 0,
+      "salary": 1200,
+      "rate": 14,
       "grid": {
         "2026-07-06": {
           "3-24": {
@@ -1343,8 +1349,8 @@
       "name": "Manu",
       "role": "Escuela · Bella Bestia",
       "color": "#0891b2",
-      "salary": 0,
-      "rate": 0,
+      "salary": 1300,
+      "rate": 14,
       "grid": {
         "2026-08-03": {
           "0-16": {
@@ -1510,8 +1516,8 @@
       "name": "Daniel",
       "role": "Administrativo",
       "color": "#0891b2",
-      "salary": 0,
-      "rate": 0,
+      "salary": 1200,
+      "rate": 10,
       "grid": {
         "2026-06-29": {
           "1-20": {
@@ -1652,7 +1658,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -1714,6 +1720,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785234057017
+    "updatedAt": 1785243861869
   }
 }
