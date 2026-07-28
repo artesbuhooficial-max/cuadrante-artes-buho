@@ -1501,7 +1501,7 @@
           "name": "Vacaciones",
           "color": "#475569",
           "rate": 0,
-          "billable": true
+          "billable": false
         }
       ]
     },
@@ -1646,13 +1646,13 @@
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 6
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -1714,6 +1714,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785152259480
+    "updatedAt": 1785226818997
   }
 }
