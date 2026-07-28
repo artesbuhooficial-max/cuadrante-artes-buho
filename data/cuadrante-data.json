@@ -1327,12 +1327,6 @@
           },
           "6-17": {
             "p": "xlv61ik"
-          },
-          "0-18": {
-            "p": "xlv61ik"
-          },
-          "0-19": {
-            "p": "xlv61ik"
           }
         },
         "2026-08-10": {
@@ -1441,7 +1435,7 @@
           "name": "VACACIONES",
           "color": "#475569",
           "rate": null,
-          "billable": true
+          "billable": false
         }
       ]
     },
@@ -1759,7 +1753,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -1821,6 +1815,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785248275445
+    "updatedAt": 1785250326597
   }
 }
