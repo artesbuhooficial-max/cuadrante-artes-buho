@@ -1327,6 +1327,12 @@
           },
           "6-17": {
             "p": "xlv61ik"
+          },
+          "0-18": {
+            "p": "xlv61ik"
+          },
+          "0-19": {
+            "p": "xlv61ik"
           }
         },
         "2026-08-10": {
@@ -1743,7 +1749,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u2",
-    "weekId": "2026-08-10",
+    "weekId": "2026-08-03",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1815,6 +1821,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785247924733
+    "updatedAt": 1785248275445
   }
 }
