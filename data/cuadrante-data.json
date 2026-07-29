@@ -1742,7 +1742,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "xasd2wb",
     "weekId": "2026-08-03",
     "monthScope": "person",
     "monthRef": {
@@ -1753,7 +1753,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "recur"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -1815,6 +1815,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785250326597
+    "updatedAt": 1785320689415
   }
 }
