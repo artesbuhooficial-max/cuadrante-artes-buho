@@ -1734,7 +1734,9 @@
         {
           "id": "x3p3cnv",
           "name": "Clases de Música Sirio",
-          "color": "#db2777"
+          "color": "#db2777",
+          "rate": 15,
+          "billable": true
         },
         {
           "id": "x6n3x6j",
@@ -1900,7 +1902,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "recur"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -1962,6 +1964,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785401164167
+    "updatedAt": 1785401208767
   }
 }
