@@ -1632,20 +1632,7 @@
       "salary": 0,
       "rate": 9.08,
       "grid": {
-        "2026-06-29": {
-          "1-20": {
-            "p": "x09g91h"
-          },
-          "1-21": {
-            "p": "x09g91h"
-          },
-          "1-22": {
-            "p": "x09g91h"
-          },
-          "1-23": {
-            "p": "x09g91h"
-          }
-        },
+        "2026-06-29": {},
         "2026-08-03": {
           "0-30": {
             "p": "x09g91h"
@@ -1688,6 +1675,38 @@
           },
           "0-41": {
             "p": "xmom4jb"
+          }
+        },
+        "2026-08-31": {
+          "0-16": {
+            "p": "x2rmepz"
+          },
+          "0-17": {
+            "p": "x2rmepz"
+          },
+          "1-16": {
+            "p": "x2rmepz"
+          },
+          "1-17": {
+            "p": "x2rmepz"
+          },
+          "2-16": {
+            "p": "x2rmepz"
+          },
+          "2-17": {
+            "p": "x2rmepz"
+          },
+          "3-16": {
+            "p": "x2rmepz"
+          },
+          "3-17": {
+            "p": "x2rmepz"
+          },
+          "4-16": {
+            "p": "x2rmepz"
+          },
+          "4-17": {
+            "p": "x2rmepz"
           }
         }
       },
@@ -1756,6 +1775,13 @@
           "id": "xmb9zk2",
           "name": "Limpieza Escuela",
           "color": "#ca8a04"
+        },
+        {
+          "id": "x2rmepz",
+          "name": "Vacaciones",
+          "color": "#475569",
+          "rate": 0,
+          "billable": true
         }
       ]
     },
@@ -1863,8 +1889,8 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
-    "weekId": "2026-07-27",
+    "person": "xasd2wb",
+    "weekId": "2026-08-31",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1874,7 +1900,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "recur"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -1936,6 +1962,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785400564035
+    "updatedAt": 1785400852751
   }
 }
