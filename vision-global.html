@@ -461,11 +461,13 @@ const RAMAS=[
   {id:'mgmt',      name:'Management & Booking', color:'#0EA5E9', desc:'Roster de artistas, envíos y giras'},
   {id:'marketing', name:'Marketing / RRSS',     color:'#1E8A5E', desc:'Contenidos, publicidad y comunidades'},
   {id:'admin',     name:'Dirección & Admin',    color:'#64748B', desc:'Contabilidad, facturación y legal'},
-  {id:'interno',   name:'Interno / Procesos',   color:'#D59A18', desc:'Reuniones, herramientas y organización'}
+  {id:'interno',   name:'Interno / Procesos',   color:'#D59A18', desc:'Reuniones, herramientas y organización'},
+  {id:'noLaboral', name:'Vacaciones / No laboral', color:'#94A3B8', desc:'Ausencias: vacaciones, bajas, festivos — no es carga de trabajo real'}
 ];
 const ramaById=id=>RAMAS.find(r=>r.id===id)||RAMAS[RAMAS.length-1];
 function guessRama(name){
   const n=(name||'').toLowerCase();
+  if(/no laboral|vacacion|\bvacas\b|\bbaja\b|festivo/.test(n))return 'noLaboral';
   if(/escuela|kydemy|contabili.*escuela|profesor|alumno/.test(n))return 'escuela';
   if(/bella|bestia/.test(n))return 'bella';
   if(/ne[oó]n/.test(n))return 'neon';
@@ -506,7 +508,14 @@ function allProjects(){
   return out;
 }
 function projName(id){const f=allProjects().find(p=>p.id===id);return f?f.name:'(proyecto)';}
-function ramaOfProject(pid){return local.mapping[pid]||guessRama(projName(pid));}
+function ramaOfProject(pid){
+  if(local.mapping[pid])return local.mapping[pid];
+  // los proyectos marcados como "bloquea el día completo" en el cuadrante (vacaciones,
+  // bajas…) son la señal fiable de que no es carga de trabajo real, no solo el nombre.
+  const pr=allProjects().find(p=>p.id===pid);
+  if(pr&&pr.fullDay)return 'noLaboral';
+  return guessRama(projName(pid));
+}
 function cellProj(v){return (v&&typeof v==='object')?v.p:v;}
 function capOf(p){return local.capacity[p.id]!=null?+local.capacity[p.id]:local.capDefault;}
 
