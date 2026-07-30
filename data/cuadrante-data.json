@@ -847,115 +847,115 @@
           },
           "6-16": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-17": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-18": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-19": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-20": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-21": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-22": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-23": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-24": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-25": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-26": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-27": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-28": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-29": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-30": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-31": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-32": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-33": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-34": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-35": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-36": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-37": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-38": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-39": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-40": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-41": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-42": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           },
           "6-43": {
             "p": "xcc414h",
-            "n": "Descanso obligatorio · después de Bolo"
+            "n": "Descanso obligatorio · después de Bolo NDN"
           }
         },
         "2026-08-10": {
@@ -4447,16 +4447,24 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785411251957
+    "updatedAt": 1785411549946
   },
   "bigEvents": [
     {
       "id": "xdjodv4",
-      "title": "Bolo",
+      "title": "Bolo NDN",
       "type": "NDN",
       "date": "2026-08-08",
       "notes": "",
       "davidAttends": true
+    },
+    {
+      "id": "x2pexgj",
+      "title": "Bolo Maquillaje",
+      "type": "Maquillaje Rock",
+      "date": "2026-08-08",
+      "notes": "",
+      "davidAttends": false
     }
   ]
 }
