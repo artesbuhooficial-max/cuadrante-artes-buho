@@ -4943,7 +4943,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
+    "person": "u2",
     "weekId": "2026-08-17",
     "monthScope": "person",
     "monthRef": {
@@ -4999,7 +4999,7 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785413292029
+    "updatedAt": 1785413355431
   },
   "bigEvents": [
     {
