@@ -737,41 +737,6 @@ function migrate(){
     state.projects=[];
   }
   state.team.forEach(p=>{if(!p.projects)p.projects=[];});
-  // "No laboral" (vacaciones, bajas, festivos…): tiene que ser TRANSVERSAL — el mismo
-  // proyecto (mismo id) en el catálogo de todo el mundo, no solo de quien lo creó.
-  // Si alguien ya tenía un proyecto "Vacas"/"No laboral" con horas asignadas, se
-  // conserva su id y sus horas tal cual; solo se añade/renombra en el resto del equipo.
-  // Una sola vez (no vuelve a tocarlo si ya se migró).
-  if(!state.config.noLaboralMigrated){
-    let base=null;
-    state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{
-      if(!base&&pr.name&&/^(vacas|no laboral)$/i.test(pr.name.trim()))base=pr;
-    });});
-    // solo migramos si YA existe un proyecto así en algún sitio — nunca creamos
-    // "No laboral" de la nada para equipos que nunca lo han tenido.
-    if(base){
-      const nlId=base.id,nlName='No laboral',nlColor=base.color;
-      state.team.forEach(p=>{
-        p.projects=p.projects||[];
-        let pr=p.projects.find(x=>x.id===nlId);
-        if(pr){
-          pr.name=nlName;
-          if(pr.billable===undefined)pr.billable=false;
-          if(pr.fullDay===undefined)pr.fullDay=true;
-          return;
-        }
-        // si esta persona tenía su propio "Vacas"/"No laboral" con OTRO id (duplicado),
-        // remapeamos sus horas ya asignadas al id compartido antes de unificar el catálogo.
-        const dup=p.projects.find(x=>x.name&&/^(vacas|no laboral)$/i.test(x.name.trim())&&x.id!==nlId);
-        if(dup){
-          Object.keys(p.grid||{}).forEach(wk=>{Object.keys(p.grid[wk]).forEach(k=>{if(p.grid[wk][k]&&p.grid[wk][k].p===dup.id)p.grid[wk][k].p=nlId;});});
-          p.projects=p.projects.filter(x=>x.id!==dup.id);
-        }
-        p.projects.push({id:nlId,name:nlName,color:nlColor,billable:false,fullDay:true});
-      });
-      state.config.noLaboralMigrated=true;
-    }
-  }
   if(!state.notes)state.notes=[];
   if(!state.tasks)state.tasks=[];
   if(!state.recurring)state.recurring=[];
@@ -785,8 +750,46 @@ function migrate(){
   if(roman)roman.master=true;
   else if(!romanExists){
     const base=(state.team[0]&&state.team[0].projects)||[];
-    const rp=base.map(pr=>({id:pr.id,name:pr.name,color:pr.color}));
+    const rp=base.map(pr=>Object.assign({},pr));
     state.team.push({id:'u4',name:'Roman',role:'Dirección · Master',color:'#7c3aed',salary:0,rate:0,master:true,projects:rp,grid:{}});
+  }
+  // "No laboral" (vacaciones, bajas, festivos…): tiene que ser TRANSVERSAL — el mismo
+  // proyecto (mismo id) en el catálogo de todo el mundo, no uno distinto por persona.
+  // Como cada persona puede crear el suyo a mano ("Vacas", "Vacaciones", "VACACIONES"…)
+  // esto se ejecuta en CADA carga (es idempotente: si ya está todo unificado, no hace
+  // nada) para fundir automáticamente cualquier duplicado nuevo que aparezca, sin
+  // esperar a que alguien lo pida. Nunca se pierden horas: se remapean al id común.
+  // Va DESPUÉS de asegurar que existe Roman para que, si se acaba de crear, entre
+  // también en la fusión desde el primer momento.
+  {
+    const isVacName=n=>!!n&&/^(vacas|vacaciones|no\s*laboral|bajas?|festivos?)$/i.test(n.trim());
+    const byId={};
+    state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{if(isVacName(pr.name))byId[pr.id]=pr;});});
+    const ids=Object.keys(byId);
+    if(ids.length){
+      // preferimos como id canónico el que ya se llama "No laboral" (fruto de una fusión
+      // previa), si no el que ya tenga fullDay activado, si no cualquiera de los que hay.
+      const canonicalId=ids.find(id=>byId[id].name==='No laboral')
+        ||ids.find(id=>byId[id].fullDay)
+        ||ids[0];
+      const canonicalColor=byId[canonicalId].color||'#94A3B8';
+      const otherIds=ids.filter(id=>id!==canonicalId);
+      state.team.forEach(p=>{
+        p.projects=p.projects||[];
+        if(otherIds.length){
+          Object.keys(p.grid||{}).forEach(wk=>{
+            Object.keys(p.grid[wk]).forEach(k=>{
+              const cell=p.grid[wk][k];
+              if(cell&&otherIds.indexOf(cell.p)!==-1)cell.p=canonicalId;
+            });
+          });
+          p.projects=p.projects.filter(pr=>otherIds.indexOf(pr.id)===-1);
+        }
+        let pr=p.projects.find(x=>x.id===canonicalId);
+        if(!pr)p.projects.push({id:canonicalId,name:'No laboral',color:canonicalColor,billable:false,fullDay:true});
+        else{pr.name='No laboral';pr.billable=false;pr.fullDay=true;}
+      });
+    }
   }
 }
 
