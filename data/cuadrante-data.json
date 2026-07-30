@@ -4,7 +4,7 @@
     "endHour": 22,
     "currency": "€",
     "granularity": "half",
-    "appsUrl": ""
+    "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec"
   },
   "projects": [],
   "team": [
@@ -13,8 +13,8 @@
       "name": "David",
       "role": "Director Operativo · AI/Tech",
       "color": "#1d4ed8",
-      "salary": 800,
-      "rate": 10,
+      "salary": 0,
+      "rate": 0,
       "grid": {
         "2026-06-29": {
           "0-22": {
@@ -1262,8 +1262,8 @@
       "name": "Miriam",
       "role": "Social Media · Marketing",
       "color": "#db2777",
-      "salary": 1200,
-      "rate": 14,
+      "salary": 0,
+      "rate": 0,
       "grid": {
         "2026-07-06": {
           "3-24": {
@@ -1462,8 +1462,8 @@
       "name": "Manu",
       "role": "Escuela · Bella Bestia",
       "color": "#0891b2",
-      "salary": 1300,
-      "rate": 14,
+      "salary": 0,
+      "rate": 0,
       "grid": {
         "2026-08-03": {
           "0-16": {
@@ -1630,7 +1630,7 @@
       "role": "Administrativo",
       "color": "#0891b2",
       "salary": 0,
-      "rate": 9.08,
+      "rate": 0,
       "grid": {
         "2026-06-29": {},
         "2026-08-03": {
@@ -1734,7 +1734,9 @@
         {
           "id": "x3p3cnv",
           "name": "Clases de Música Sirio",
-          "color": "#db2777"
+          "color": "#db2777",
+          "rate": 15,
+          "billable": true
         },
         {
           "id": "x6n3x6j",
@@ -1890,7 +1892,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "xasd2wb",
-    "weekId": "2026-08-31",
+    "weekId": "2026-08-03",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1962,6 +1964,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785400852751
+    "updatedAt": 1785401049273
   }
 }
