@@ -154,6 +154,14 @@
   .obj .st{width:7px;height:7px;border-radius:50%;flex:none;background:rgba(255,255,255,.55)}
   .obj.empresa .st{background:rgba(14,33,72,.4)}.obj.done{text-decoration:line-through;opacity:.6}
   .obj.curso .st{background:#fff}.obj.empresa.curso .st{background:var(--navy)}
+  .cal-cell.has-mega{box-shadow:0 0 0 1.5px #EA580C inset}
+  .mega-badge{font-size:.7rem;font-weight:800;padding:3px 7px;border-radius:6px;color:#fff;background:linear-gradient(100deg,#EA580C,#C2410C);line-height:1.25;display:flex;align-items:center;gap:5px;cursor:pointer}
+  .mega-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+  .mega-row{display:flex;align-items:center;gap:10px;background:var(--paper-card);border:1px solid var(--line);border-left:4px solid #EA580C;border-radius:10px;padding:9px 13px;cursor:pointer}
+  .mega-row:hover{border-color:#EA580C}
+  .mega-row .mg-date{font-size:.72rem;font-weight:800;color:#C2410C;min-width:64px}
+  .mega-row .mg-title{font-weight:700;color:var(--navy);flex:1}
+  .mega-row .mg-type{font-size:.68rem;font-weight:700;color:var(--muted);background:var(--cream);border:1px solid var(--cream-line);padding:2px 8px;border-radius:20px}
 
   .mday{min-height:78px;border:1px solid var(--line);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;justify-content:space-between;background:var(--paper-card)}
   .mday.out{opacity:.35}
@@ -401,11 +409,18 @@
         <button class="iconbtn" onclick="calMove(1)">›</button>
       </div>
       <h2 id="calTitle"></h2>
-      <button class="btn primary" onclick="openObjective()">+ Objetivo</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" style="background:linear-gradient(100deg,#EA580C,#C2410C);color:#fff;border-color:#C2410C" onclick="openBigEvent()">🎪 Evento grande</button>
+        <button class="btn primary" onclick="openObjective()">+ Objetivo</button>
+      </div>
     </div>
     <div class="cal-grid" id="calDow"></div>
     <div class="cal-grid" id="calGrid" style="margin-top:6px"></div>
     <p class="hint" style="margin-top:14px">Los objetivos en <span style="color:var(--gold);font-weight:700">dorado</span> son de la empresa (se ven con cualquier persona). Toca un día para añadir, o un objetivo para editar.</p>
+    <div class="panel" style="margin-top:18px">
+      <h3>🎪 Eventos grandes <span style="color:var(--muted);font-weight:500;font-size:.78rem">(NDN, Maquillaje Rock, Producción Externa… implican más gestión para todo el equipo)</span></h3>
+      <div class="mega-list" id="megaList"></div>
+    </div>
   </section>
 
   <!-- ===== TAREAS ===== -->
@@ -742,6 +757,7 @@ function migrate(){
   if(!state.recurring)state.recurring=[];
   if(!state.extraTasks)state.extraTasks=[];
   if(!state.milestones)state.milestones=[];
+  if(!state.bigEvents)state.bigEvents=[];
   state.meta=state.meta||{};
   u.taskSub=u.taskSub||'todo';
   // asegurar que existe un master (Roman)
@@ -1046,6 +1062,12 @@ function renderCalendar(){
     const ds=ry+'-'+String(rm+1).padStart(2,'0')+'-'+String(dayNum).padStart(2,'0');
     const cell=document.createElement('div');cell.className='cal-cell'+(out?' out':'')+(ds===todayStr?' today':'');cell.onclick=()=>openObjective(null,ds);
     let inner='<span class="dnum">'+dayNum+'</span>';
+    const dayMegas=state.bigEvents.filter(e=>e.date===ds);
+    if(dayMegas.length)cell.classList.add('has-mega');
+    dayMegas.forEach(e=>{
+      const tip='🎪 '+e.title+' ('+(e.type||'Otro')+')'+(e.davidAttends?' · David asiste':'');
+      inner+='<div class="mega-badge" title="'+esc(tip)+'" onclick="event.stopPropagation();openBigEvent(\''+e.id+'\')">🎪 '+esc(e.title)+'</div>';
+    });
     state.objectives.filter(o=>o.date===ds&&(o.owner==='empresa'||o.owner===pid)).forEach(o=>{
       const isEmp=o.owner==='empresa';const col=isEmp?'var(--gold-bright)':(person(o.owner)?person(o.owner).color:'#888');
       const cls='obj'+(isEmp?' empresa':'')+(o.status==='done'?' done':'')+(o.status==='curso'?' curso':'');
@@ -1053,6 +1075,64 @@ function renderCalendar(){
       const tip=(pn?'['+pn+'] ':'')+o.title;
       inner+='<div class="'+cls+'" style="background:'+col+'" title="'+esc(tip)+'" onclick="event.stopPropagation();openObjective(\''+o.id+'\')"><span class="st"></span>'+(pn?'<span style="opacity:.85;font-weight:800">'+esc(pn)+' · </span>':'')+esc(o.title)+'</div>';});
     cell.innerHTML=inner;grid.appendChild(cell);}
+  renderBigEvents();
+}
+
+/* ============ EVENTOS GRANDES (NDN, Maquillaje Rock, Producción Externa…) ============ */
+function renderBigEvents(){
+  const host=document.getElementById('megaList');if(!host)return;
+  const upcoming=(state.bigEvents||[]).slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+  if(!upcoming.length){host.innerHTML='<p class="hint">Sin eventos grandes todavía.</p>';return;}
+  host.innerHTML=upcoming.map(e=>{
+    const d=parseId(e.date);
+    return '<div class="mega-row" onclick="openBigEvent(\''+e.id+'\')">'+
+      '<span class="mg-date">'+d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})+'</span>'+
+      '<span class="mg-title">🎪 '+esc(e.title)+(e.davidAttends?' <span style="color:#C2410C;font-weight:800">· David asiste</span>':'')+'</span>'+
+      '<span class="mg-type">'+esc(e.type||'Otro')+'</span>'+
+    '</div>';
+  }).join('');
+}
+function openBigEvent(id,presetDate){
+  const e=id?state.bigEvents.find(x=>x.id===id):{title:'',type:'NDN',date:presetDate||dStr(new Date()),notes:'',davidAttends:false};
+  const tOpt=(v,l)=>'<option value="'+v+'"'+(e.type===v?' selected':'')+'>'+l+'</option>';
+  modal('<div class="modal"><header><h3>'+(id?'Editar evento grande':'Nuevo evento grande')+'</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+
+    '<div class="inp"><label>Título</label><input id="meTitle" value="'+esc(e.title)+'" placeholder="p.ej. NDN · Sala Apolo"></div>'+
+    '<div class="inp row"><div><label>Tipo</label><select id="meType">'+tOpt('NDN','NDN')+tOpt('Maquillaje Rock','Maquillaje Rock')+tOpt('Producción Externa','Producción Externa')+tOpt('Otro','Otro')+'</select></div><div><label>Fecha</label><input id="meDate" type="date" value="'+e.date+'"></div></div>'+
+    '<div class="inp" style="flex-direction:row;align-items:center;gap:9px">'+
+      '<input id="meDavid" type="checkbox" style="width:17px;height:17px;padding:0;border-radius:5px;flex:none;accent-color:var(--blue)" '+(e.davidAttends?'checked':'')+'>'+
+      '<span style="font-size:.85rem;color:var(--navy);font-weight:600;line-height:1.35">David asiste físicamente al evento</span>'+
+    '</div>'+
+    '<p class="hint">Si lo marcas, el día siguiente se bloquea automáticamente como descanso obligatorio en su cuadrante (necesita ya un proyecto "No laboral" creado).</p>'+
+    '<div class="inp"><label>Notas (opcional)</label><textarea id="meNotes" rows="2">'+esc(e.notes||'')+'</textarea></div>'+
+    '<p class="hint">Un evento grande siempre implica más gestión para todo el equipo — sobre todo Roman y David — y puede afectar también a Miriam y Manu con la organización. Se marcará en el calendario y en Visión Global.</p></div>'+
+    '<footer>'+(id?'<button class="btn ghost danger" onclick="delBigEvent(\''+id+'\')">Eliminar</button>':'<span></span>')+'<button class="btn primary" onclick="saveBigEvent(\''+(id||'')+'\')">Guardar</button></footer></div>');
+}
+function saveBigEvent(id){
+  const title=document.getElementById('meTitle').value.trim();if(!title){toast('Pon un título');return;}
+  const data={title,type:document.getElementById('meType').value,date:document.getElementById('meDate').value,notes:document.getElementById('meNotes').value.trim(),davidAttends:document.getElementById('meDavid').checked};
+  let ev;
+  if(id){ev=state.bigEvents.find(x=>x.id===id);Object.assign(ev,data);}
+  else{ev={id:uid(),...data};state.bigEvents.push(ev);}
+  let restMsg='';
+  if(ev.davidAttends)restMsg=applyDavidRestDay(ev);
+  save();closeModal();render();
+  toast('Evento grande guardado'+(restMsg?' · '+restMsg:''));
+}
+function delBigEvent(id){state.bigEvents=(state.bigEvents||[]).filter(e=>e.id!==id);save();closeModal();render();}
+function applyDavidRestDay(ev){
+  const david=state.team.find(p=>/david/i.test(p.name||''));
+  if(!david)return 'no se encontró a David en el equipo';
+  const nl=(david.projects||[]).find(pr=>pr.fullDay);
+  if(!nl)return 'David no tiene un proyecto "No laboral" — créalo primero';
+  const restDate=addDays(parseId(ev.date),1);
+  blockFullDayFor(david,restDate,nl.id,'Descanso obligatorio · después de '+ev.title);
+  return 'descanso de David bloqueado el '+dStr(restDate);
+}
+function blockFullDayFor(person,date,projectId,note){
+  const wk=weekId(mondayOf(date));
+  const di=(date.getDay()+6)%7;
+  const c=cells(person,wk);
+  allDaySlots().forEach(s=>{c[di+'-'+s]={p:projectId,n:note};});
 }
 
 /* ============ SUMMARY (mes real) ============ */

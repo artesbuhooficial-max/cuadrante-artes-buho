@@ -124,6 +124,7 @@ table.heat{border-collapse:separate;border-spacing:3px;width:100%;font-size:11px
 .heat-scale{display:flex;gap:12px;margin-top:10px;font-size:10px;color:var(--ink-light);font-weight:600;flex-wrap:wrap}
 .heat-scale .hs{display:flex;align-items:center;gap:5px}
 .heat-scale .sw{width:11px;height:11px;border-radius:3px}
+.heat th .mega-mark{display:block;font-size:11px;cursor:help;margin-top:2px}
 
 /* tables */
 table.tbl{border-collapse:collapse;width:100%;font-size:12px}
@@ -502,6 +503,8 @@ function shortWk(mon){return mon.getDate()+' '+MESES[mon.getMonth()];}
 
 /* ============ DERIVADOS ============ */
 function team(){return (cuad&&cuad.team)||[];}
+function bigEvents(){return (cuad&&cuad.bigEvents)||[];}
+function bigEventsInWeek(wk){const mon=parseD(wk),sun=addDays(mon,6);return bigEvents().filter(e=>{const d=parseD(e.date);return d>=mon&&d<=sun;});}
 function allProjects(){
   const seen={},out=[];
   team().forEach(p=>(p.projects||[]).forEach(pr=>{if(!seen[pr.id]){seen[pr.id]=1;out.push(pr);}}));
@@ -965,7 +968,11 @@ function renderHeatmap(){
     if(r<=1)return {bg:'#FFEFC2',fg:'#8A6208'};
     return {bg:'#F8D7D1',fg:'#C0392B'};
   }
-  let h='<table class="heat"><thead><tr><th></th>'+weeks.map(m=>'<th'+(dStr(m)===todayWk?' style="color:#B47F10"':'')+'>'+shortWk(m)+'</th>').join('')+'</tr></thead><tbody>';
+  let h='<table class="heat"><thead><tr><th></th>'+weeks.map(m=>{
+    const wk=dStr(m);const megas=bigEventsInWeek(wk);
+    const mark=megas.length?'<span class="mega-mark" title="🎪 '+esc(megas.map(e=>e.title).join(', '))+' · más gestión para Roman y David esta semana">🎪</span>':'';
+    return '<th'+(wk===todayWk?' style="color:#B47F10"':'')+'>'+shortWk(m)+mark+'</th>';
+  }).join('')+'</tr></thead><tbody>';
   t.forEach(p=>{
     h+='<tr><td class="name"><span class="avatar" style="background:'+(p.color||'#0757D8')+'">'+initials(p.name)+'</span>'+esc(p.name)+'</td>';
     weeks.forEach(m=>{
@@ -1029,6 +1036,11 @@ function renderFcChart(){
   wkIds.forEach((wk,i)=>{
     s+='<text x="'+X(i)+'" y="'+(padT+chartH+15)+'" text-anchor="middle" font-size="8.5" fill="#6A7EA6">'+shortWk(weeks[i])+'</text>';
     s+='<rect x="'+(X(i)-stepW/2)+'" y="'+padT+'" width="'+stepW+'" height="'+chartH+'" fill="transparent" data-hover="'+wk+'"/>';
+    const megas=bigEventsInWeek(wk);
+    if(megas.length){
+      s+='<circle cx="'+X(i)+'" cy="8" r="7" fill="#EA580C"><title>🎪 '+esc(megas.map(e=>e.title).join(', '))+' · más gestión para Roman y David</title></circle>'+
+         '<text x="'+X(i)+'" y="11" text-anchor="middle" font-size="8" fill="#fff" style="pointer-events:none">🎪</text>';
+    }
   });
   s+='</svg>';
   host.innerHTML=s;
@@ -1161,6 +1173,9 @@ function renderInsights(){
   const conf=computeConflicts();
   if(conf.length){const alta=conf.filter(c=>c.sev==='alta').length;
     out.push({ic:'⚠',bg:'var(--red-pale)',fg:'var(--red)',txt:'Se detectan <b>'+conf.length+' conflicto'+(conf.length!==1?'s':'')+'</b>'+(alta?(', '+alta+' de prioridad alta que requieren atención'):'')+'.'});}
+  /* eventos grandes próximos (NDN, Maquillaje Rock, Producción Externa…) */
+  const upcomingMegas=bigEvents().filter(e=>e.date>=todayWk).sort((a,b)=>a.date<b.date?-1:1).slice(0,3);
+  if(upcomingMegas.length)out.push({ic:'🎪',bg:'#FDE8DA',fg:'#C2410C',txt:'<b>'+upcomingMegas.length+' evento'+(upcomingMegas.length!==1?'s':'')+' grande'+(upcomingMegas.length!==1?'s':'')+'</b> en el horizonte: '+upcomingMegas.map(e=>esc(e.title)+' ('+shortWk(mondayOf(parseD(e.date)))+')').join(', ')+'. Siempre implican más gestión, sobre todo para Roman y David.'});
   /* ramas sin previsión */
   const fcRamas=new Set(local.forecasts.map(f=>f.rama));
   const silent=RAMAS.filter(r=>!fcRamas.has(r.id)&&!Object.values(rbw).some(per=>per[r.id])).slice(0,3);
