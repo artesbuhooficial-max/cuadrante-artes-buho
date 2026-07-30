@@ -180,6 +180,7 @@
   .pop .opt{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;font-size:.82rem;font-weight:600;color:var(--navy);cursor:pointer}
   .pop .opt:hover{background:var(--blue-light)}.pop .opt .sw{width:13px;height:13px;border-radius:4px;flex:none}
   .pop .opt.clear{color:var(--muted)}.pop .note-in{margin-top:8px}
+  .pop .opt.copy{color:var(--gold);border-bottom:1px dashed var(--line);border-radius:8px 8px 0 0;margin-bottom:2px}
   .pop .pop-split{font-size:.72rem;font-weight:700;color:var(--blue);padding:7px 9px;cursor:pointer;border-top:1px dashed var(--line);margin-top:5px;border-radius:8px}
   .pop .pop-split:hover{background:var(--blue-light)}
   .pop .note-in textarea{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:8px;color:var(--navy);padding:7px 10px;font-size:.78rem;outline:none;resize:vertical;min-height:70px;font-family:inherit;line-height:1.45}
@@ -213,6 +214,8 @@
   .lock-banner{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px dashed var(--cream-line);border-radius:11px;padding:9px 15px;color:var(--muted);font-size:.83rem;flex:1;cursor:default}
   .lock-banner .li{font-size:1.1rem}
   .lock-banner b{color:var(--navy)}
+  .paste-bar{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1.5px dashed var(--gold);border-radius:11px;padding:9px 15px;color:var(--navy);font-size:.83rem;margin-bottom:12px}
+  .paste-bar b{color:var(--blue-deep)}
   .team-cal-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
   .tc-dow{font-size:.68rem;font-weight:700;color:var(--muted);text-align:center;padding:5px 2px}
   .tc-day{background:var(--paper-card);border:1px solid var(--line);border-radius:8px;padding:5px 5px 4px;min-height:76px;font-size:.63rem}
@@ -341,6 +344,7 @@
       <button class="btn ghost spacer" onclick="weekToday()">Semana actual</button>
     </div>
     <div class="person-strip" id="personStrip"></div>
+    <div class="paste-bar" id="pasteBar" style="display:none"></div>
     <div class="grid-card"><div class="grid-scroll"><table class="grid" id="gridTable"></table></div></div>
     <div class="below">
       <div class="panel">
@@ -733,6 +737,20 @@ function migrate(){
     state.projects=[];
   }
   state.team.forEach(p=>{if(!p.projects)p.projects=[];});
+  // "Vacas" (vacaciones): si existe un proyecto con ese nombre exacto y todavía no se
+  // ha configurado a mano, lo marcamos como no facturable y de bloqueo de día completo.
+  // Una sola vez (no vuelve a tocarlo si el usuario ya lo había ajustado él mismo).
+  if(!state.config.vacasMigrated){
+    state.team.forEach(p=>{
+      (p.projects||[]).forEach(pr=>{
+        if(pr.name&&pr.name.trim().toLowerCase()==='vacas'){
+          if(pr.billable===undefined)pr.billable=false;
+          if(pr.fullDay===undefined)pr.fullDay=true;
+        }
+      });
+    });
+    state.config.vacasMigrated=true;
+  }
   if(!state.notes)state.notes=[];
   if(!state.tasks)state.tasks=[];
   if(!state.recurring)state.recurring=[];
@@ -772,6 +790,7 @@ function ownerColor(id){if(id==='empresa')return'var(--gold)';if(id==='cliente')
 function person(id){return state.team.find(t=>t.id===id);}
 function curPerson(){return person(state.ui.person)||state.team[0];}
 function hourList(){const a=[];for(let h=state.config.startHour;h<state.config.endHour;h++)a.push(h);return a;}
+function allDaySlots(){const a=[];hourList().forEach(h=>{a.push(h*2,h*2+1);});return a;}
 function slotLabel(s){const h=Math.floor(s/2),mi=(s%2)*30;return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');}
 function cells(p,id){return p.grid[id]||(p.grid[id]={});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
@@ -791,7 +810,7 @@ function dayCost(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};
 function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours+=SLOT_HOURS;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
-function render(){updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
+function render(){if(clipProj)exitPasteMode();updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
 
 function renderPeople(){
   const host=document.getElementById('people');
@@ -847,10 +866,12 @@ function updPerson(key,v){curPerson()[key]=parseFloat(v)||0;save();renderPersonS
 const _HOUR_COL_W=78,_DAY_COL_DEF=150;
 let _colW=Array(7).fill(null);
 
-function slotCell(v,we,tc,attrs,onclick,chipMod){
+function slotCell(v,we,tc,attrs,di,slots,chipMod){
+  const args='event,'+di+',['+slots.join(',')+']';
+  const handlers=' onclick="openPop('+args+')" onmousedown="cellDown('+args+')" onmouseenter="cellOver('+args+')"';
   if(v&&v.p){const pr=proj(v.p);const col=pr?pr.color:'#888';const off=pr&&!projBillable(pr);
-    return '<td class="slot'+we+tc+'"'+attrs+' onclick="'+onclick+'"><div class="chip'+chipMod+'" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
-  return '<td class="slot'+we+tc+'"'+attrs+' onclick="'+onclick+'"></td>';
+    return '<td class="slot'+we+tc+'"'+attrs+handlers+'><div class="chip'+chipMod+'" style="background:'+col+'" title="'+(off?'No computa al coste de Artes Búho':'')+'">'+(off?'🔒 ':'')+(pr?esc(pr.name):'?')+(v.n?'<span class="nt">'+esc(v.n)+'</span>':'')+'</div></td>';}
+  return '<td class="slot'+we+tc+'"'+attrs+handlers+'></td>';
 }
 function renderGrid(){
   const p=curPerson();const t=document.getElementById('gridTable');const mon=parseId(state.ui.weekId);const todayStr=dStr(new Date());
@@ -868,12 +889,12 @@ function renderGrid(){
     h+='<tr class="hour-row"><td class="hourcell" rowspan="2">'+String(hrIdx).padStart(2,'0')+':00</td>';
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
       const {v0,merged}=dayData[di];
-      h+=merged?slotCell(v0,we,tc,' rowspan="2"','openPop(event,'+di+',['+slot0+','+slot1+'])',''):
-                slotCell(v0,we,tc,'','openPop(event,'+di+',['+slot0+'])',' half');});
+      h+=merged?slotCell(v0,we,tc,' rowspan="2"',di,[slot0,slot1],''):
+                slotCell(v0,we,tc,'',di,[slot0],' half');});
     h+='</tr><tr class="half-row">';
     DAYS.forEach((d,di)=>{const date=addDays(mon,di);const isT=dStr(date)===todayStr;const we=di>=5?' weekend':'';const tc=isT?' col-today':'';
       const {v1,merged}=dayData[di];if(merged)return;
-      h+=slotCell(v1,we,tc,'','openPop(event,'+di+',['+slot1+'])',' half');});
+      h+=slotCell(v1,we,tc,'',di,[slot1],' half');});
     h+='</tr>';});
   h+='</tbody><tfoot><tr><td class="lbl">Horas/día →</td>';
   const st=weekStats(p,state.ui.weekId);st.daily.forEach(d=>{h+='<td>'+num(d)+'</td>';});
@@ -933,13 +954,14 @@ function renderLegend(){
   projs.forEach(pr=>{const hrs=st.projHrs[pr.id]||0;const pct=pr.progress||0;const eff=projEffRate(pr,p);const billOff=!projBillable(pr);const row=document.createElement('div');row.className='legend-row';
     const customTag=pr.rate!=null?' <span class="tag" style="background:var(--blue-light);color:var(--blue-deep)" title="Precio/hora personalizado de este proyecto">'+num(eff)+' '+state.config.currency+'/h</span>':'';
     const offTag=billOff?' <span class="tag" style="background:var(--cream);color:var(--muted);border:1px solid var(--cream-line)" title="No computa al coste ni al Δ salario de Artes Búho">🔒 aparte</span>':'';
+    const fdTag=pr.fullDay?' <span class="tag" style="background:var(--gold-soft);color:var(--gold)" title="Al asignarlo, bloquea el día completo">🌴 día completo</span>':'';
     row.innerHTML=
-      '<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span><span class="lg-name-text">'+esc(pr.name)+'</span>'+customTag+offTag+'</span>'+
+      '<span class="lg-name"><span class="sw" style="background:'+pr.color+'"></span><span class="lg-name-text">'+esc(pr.name)+'</span>'+customTag+offTag+fdTag+'</span>'+
       '<div class="prog-wrap">'+
         '<div class="prog-bar"><div class="fill" style="width:'+pct+'%;background:'+pr.color+'"></div></div>'+
         '<span class="prog-pct" onclick="editPct(\''+pr.id+'\',this)" title="Clic para editar">'+pct+'%</span>'+
       '</div>'+
-      '<span class="hrs">'+num(hrs)+' h<span class="mv"> · '+money(hrs*eff)+'</span> <button class="btn ghost" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="openProject(\''+pr.id+'\')" title="Editar proyecto">✎</button><button class="btn ghost danger" style="padding:2px 7px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
+      '<span class="hrs">'+num(hrs)+' h<span class="mv"> · '+money(hrs*eff)+'</span> <button class="btn ghost" style="padding:2px 7px;margin-left:6px;font-size:.7rem" onclick="copyProj(\''+pr.id+'\')" title="Copiar para pegar en el cuadrante">📋</button><button class="btn ghost" style="padding:2px 7px;font-size:.7rem" onclick="openProject(\''+pr.id+'\')" title="Editar proyecto">✎</button><button class="btn ghost danger" style="padding:2px 7px;font-size:.7rem" onclick="delProject(\''+pr.id+'\')">✕</button></span>';
     host.appendChild(row);});
 }
 
@@ -1040,11 +1062,14 @@ function renderSummary(){
 
 /* ============ POPOVER ============ */
 let popCtx=null;
+let clipProj=null; // proyecto copiado para pegar rápido en el cuadrante: {id,name}
+let painting=false; // true mientras se arrastra el ratón pegando en varias casillas
 function slotRangeLabel(slots){return slotLabel(slots[0])+' – '+slotLabel(slots[slots.length-1]+1);}
 function popBody(){
   const {di,slots}=popCtx;const p=curPerson();const cur=(p.grid[state.ui.weekId]||{})[di+'-'+slots[0]]||{};
   let h='<h4>'+DAY_FULL[di]+' · '+slotRangeLabel(slots)+'</h4>';
-  (p.projects||[]).forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(cur.p===pr.id?' ✓':'')+'</div>';});
+  if(cur.p){const curPr=proj(cur.p,p);if(curPr)h+='<div class="opt copy" onclick="copyProj(\''+cur.p+'\')">📋 Copiar "'+esc(curPr.name)+'" para pegar</div>';}
+  (p.projects||[]).forEach(pr=>{h+='<div class="opt" onclick="assign(\''+pr.id+'\')"><span class="sw" style="background:'+pr.color+'"></span>'+esc(pr.name)+(pr.fullDay?' 🌴':'')+(cur.p===pr.id?' ✓':'')+'</div>';});
   h+='<div class="opt clear" onclick="assign(null)">○ Vaciar bloque</div>';
   h+=slots.length===2
     ?'<div class="pop-split" onclick="togglePopScope(event)">🔀 Usar un proyecto distinto en cada media hora</div>'
@@ -1052,7 +1077,9 @@ function popBody(){
   h+='<div class="note-in"><textarea id="popNote" placeholder="Nota o especificación del momento concreto…" onkeydown="if(event.key===\'Enter\'&&event.ctrlKey)saveNote()">'+esc(cur.n||'')+'</textarea><div class="hint-key">Ctrl + Enter para guardar nota</div></div>';
   return h;
 }
-function openPop(ev,di,slots){ev.stopPropagation();closePop();popCtx={di,slots};
+function openPop(ev,di,slots){
+  if(clipProj)return; // en modo "pegar" el clic ya pega (lo gestiona cellDown) — no abrir el menú
+  ev.stopPropagation();closePop();popCtx={di,slots};
   const host=document.getElementById('popHost');
   const pop=document.createElement('div');pop.className='pop';pop.id='popEl';pop.innerHTML=popBody();
   host.appendChild(pop);
@@ -1072,13 +1099,46 @@ function closePopOnce(e){const p=document.querySelector('.pop');if(p&&!p.contain
 function closePop(){document.getElementById('popHost').innerHTML='';document.removeEventListener('click',closePopOnce);popCtx=null;}
 function assign(pid){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
   const note=(document.getElementById('popNote')||{}).value||'';
-  popCtx.slots.forEach(s=>{const k=popCtx.di+'-'+s;
+  const pr=pid?proj(pid,p):null;
+  const slots=(pr&&pr.fullDay)?allDaySlots():popCtx.slots;
+  slots.forEach(s=>{const k=popCtx.di+'-'+s;
     if(pid===null)delete c[k];else c[k]={p:pid,n:note.trim()||undefined};});
-  save();closePop();renderGrid();renderStats();renderLegend();renderPersonStrip();}
+  save();closePop();renderGrid();renderStats();renderLegend();renderPersonStrip();
+  if(pr&&pr.fullDay)toast('Día completo marcado como "'+pr.name+'"');}
 function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
   const note=(document.getElementById('popNote')||{}).value||'';
   popCtx.slots.forEach(s=>{const k=popCtx.di+'-'+s;if(c[k])c[k].n=note.trim()||undefined;});
   save();closePop();renderGrid();}
+
+/* ============ COPIAR / PEGAR PROYECTO (rellenar el cuadrante rápido) ============ */
+function copyProj(id){const pr=proj(id);if(!pr)return;clipProj={id:pr.id,name:pr.name};closePop();renderPasteBar();toast('Copiado "'+pr.name+'" — clic o arrastra sobre el cuadrante para pegar');}
+function exitPasteMode(){clipProj=null;painting=false;renderPasteBar();}
+function renderPasteBar(){
+  const bar=document.getElementById('pasteBar');if(!bar)return;
+  if(!clipProj){bar.style.display='none';bar.innerHTML='';return;}
+  bar.style.display='flex';
+  bar.innerHTML='📌 Modo pegar: <b>'+esc(clipProj.name)+'</b> — clic o arrastra sobre el cuadrante para rellenar varias casillas <button class="btn ghost" style="margin-left:auto;padding:4px 10px;font-size:.72rem" onclick="exitPasteMode()">✕ Salir (Esc)</button>';
+}
+function pasteAt(di,slots){
+  const p=curPerson();const pr=proj(clipProj&&clipProj.id,p);
+  if(!pr){exitPasteMode();toast('El proyecto copiado ya no existe');return;}
+  const c=cells(p,state.ui.weekId);
+  const targetSlots=pr.fullDay?allDaySlots():slots;
+  targetSlots.forEach(s=>{c[di+'-'+s]={p:pr.id,n:undefined};});
+  save();renderGrid();renderStats();renderLegend();renderPersonStrip();
+}
+function cellDown(ev,di,slots){
+  if(!clipProj)return;
+  ev.preventDefault();
+  pasteAt(di,slots);
+  painting=true;
+  document.addEventListener('mouseup',()=>{painting=false;},{once:true});
+}
+function cellOver(ev,di,slots){
+  if(!painting||!clipProj)return;
+  pasteAt(di,slots);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&clipProj)exitPasteMode();});
 
 /* ============ PROJECT PROGRESS ============ */
 function editPct(projId,el){
@@ -1113,14 +1173,20 @@ function openProject(id){const pr=proj(id);if(!pr)return;pickColor=pr.color;cons
       '<span style="font-size:.85rem;color:var(--navy);font-weight:600;line-height:1.35">Cuenta para el coste y el Δ salario de Artes Búho</span>'+
     '</div>'+
     '<p class="hint">Si lo desmarcas, las horas del proyecto se siguen viendo en el cuadrante y en "horas esta semana", pero <b>no</b> suman al coste ni al Δ salario de la persona ni de la empresa — útil cuando el proyecto lo paga el cliente aparte.</p>'+
+    '<div class="inp" style="flex-direction:row;align-items:center;gap:9px">'+
+      '<input id="pFullDay" type="checkbox" style="width:17px;height:17px;padding:0;border-radius:5px;flex:none;accent-color:var(--blue)" '+(pr.fullDay?'checked':'')+'>'+
+      '<span style="font-size:.85rem;color:var(--navy);font-weight:600;line-height:1.35">Vacaciones / baja — al asignarlo bloquea el día completo</span>'+
+    '</div>'+
+    '<p class="hint">Con esto marcado, al asignar el proyecto a una casilla se rellena automáticamente <b>todo el horario del día</b> (no hace falta ir casilla a casilla). Útil para "Vacas" u otras ausencias.</p>'+
     '<p class="hint">El cambio se aplica al proyecto en <b>toda la oficina</b> (todas las personas que lo tengan).</p></div>'+
     '<footer><span></span><button class="btn primary" onclick="saveProject(\''+id+'\')">Guardar</button></footer></div>');
   paintSwatches('pSw');}
 function saveProject(id){const name=(document.getElementById('pName').value||'').trim();if(!name){toast('Pon un nombre');return;}
   const rateRaw=document.getElementById('pRate').value;const rate=rateRaw===''?null:Math.max(0,parseFloat(rateRaw)||0);
   const billable=document.getElementById('pBillable').checked;
+  const fullDay=document.getElementById('pFullDay').checked;
   // aplicar a todas las personas que tengan este proyecto (catálogo compartido de la oficina)
-  state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{if(pr.id===id){pr.name=name;pr.color=pickColor;pr.rate=rate;pr.billable=billable;}});});
+  state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{if(pr.id===id){pr.name=name;pr.color=pickColor;pr.rate=rate;pr.billable=billable;pr.fullDay=fullDay;}});});
   save();closeModal();render();toast('Proyecto actualizado');}
 
 /* ============ MODALS ============ */
@@ -1565,7 +1631,7 @@ function quickAddTask(ds){
 }
 
 /* ============ TABS ============ */
-function switchTab(t){state.ui.tab=t;storeSet(state);
+function switchTab(t){if(clipProj)exitPasteMode();state.ui.tab=t;storeSet(state);
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   ['cuadrante','mes','calendario','resumen','equipo','notas','tareas'].forEach(v=>{document.getElementById('view-'+v).style.display=(v===t)?'':'none';});
   renderPeople();if(t==='cuadrante')renderGrid();if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();if(t==='equipo')renderEquipo();if(t==='notas')renderNotas();if(t==='tareas')renderTareas();}
