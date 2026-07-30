@@ -1181,12 +1181,16 @@ function openSettings(){const c=state.config;const gh=ghGet();
     '<div class="divider"></div>'+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">🔒 PINs de seguridad económica</label>'+
     (gh.appsUrl
-      ?'<p class="hint">Estás en <b>modo Apps Script</b>: los PIN de cada persona y la <b>clave maestra</b> (MASTER_KEY) se gestionan en el propio script (Propiedades del script), no aquí. Así los sueldos nunca salen del servidor. Estos campos locales solo se usan si desactivas Apps Script.</p>'
+      ?'<p class="hint">Estás en <b>modo Apps Script</b>: los PIN se guardan en el propio script (Propiedades del script → <code>PINS</code>), no en este navegador — así funcionan igual desde cualquier ordenador. Escribe aquí el PIN nuevo de quien quieras, pon la <b>clave maestra</b> para autorizar el cambio y pulsa "Guardar PIN en el script".</p>'
       :'<p class="hint">Cada persona puede proteger sus datos económicos con un PIN. Solo quien lo conozca podrá verlos. El PIN de <b>Roman (master)</b> es la <b>clave maestra</b>: desbloquea el Resumen y los sueldos de todo el equipo. Los PINs se guardan <b>solo en este dispositivo</b> y nunca se publican en GitHub.</p>')+
     state.team.map(t=>'<div class="inp row" style="align-items:center;gap:8px"><label style="min-width:65px;font-weight:700;color:var(--navy);font-size:.85rem">'+esc(t.name)+(t.master?' 👑':'')+'</label>'+
-      '<input type="password" id="pin_'+t.id+'" placeholder="'+(_pins[t.id]?'Tiene PIN — reescribe para cambiar':'Sin PIN — escribe uno para crearlo')+'" autocomplete="new-password" style="flex:1">'+
-      (_pins[t.id]?'<button class="btn ghost danger" style="padding:5px 9px;font-size:.73rem;white-space:nowrap" onclick="clearPin(\''+t.id+'\')">Quitar PIN</button>':'')+
+      '<input type="password" id="pin_'+t.id+'" placeholder="'+(gh.appsUrl?'Escribe un PIN nuevo para '+esc(t.name)+' (déjalo vacío para no tocarlo)':(_pins[t.id]?'Tiene PIN — reescribe para cambiar':'Sin PIN — escribe uno para crearlo'))+'" autocomplete="new-password" style="flex:1">'+
+      (!gh.appsUrl&&_pins[t.id]?'<button class="btn ghost danger" style="padding:5px 9px;font-size:.73rem;white-space:nowrap" onclick="clearPin(\''+t.id+'\')">Quitar PIN</button>':'')+
     '</div>').join('')+
+    (gh.appsUrl
+      ?'<div class="inp"><label>Clave maestra (para autorizar el cambio)</label><input type="password" id="spMaster" placeholder="Clave maestra actual del script" autocomplete="off"></div>'+
+       '<div class="inp row"><button class="btn primary" id="spSaveBtn" onclick="saveAppsScriptPins()">💾 Guardar PIN en el script</button></div>'
+      :'')+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">Copias de seguridad locales</label>'+
     '<div class="inp row"><button class="btn" onclick="exportJSON()">↓ Descargar backup (.json)</button><button class="btn" onclick="importJSON()">↑ Restaurar backup</button></div>'+
     '</div>'+
@@ -1210,6 +1214,25 @@ function saveSettings(){
   state.team.forEach(t=>{const inp=document.getElementById('pin_'+t.id);if(inp&&inp.value.trim()){_pins[t.id]=inp.value.trim();}});
   savePins();
   save();closeModal();render();toast('Ajustes guardados');}
+async function saveAppsScriptPins(){
+  const u=ghGet().appsUrl;if(!u){toast('No hay Apps Script configurado');return;}
+  const master=(document.getElementById('spMaster')||{}).value||'';
+  if(!master){toast('Escribe la clave maestra para autorizar el cambio');return;}
+  const pins={};
+  state.team.forEach(t=>{const inp=document.getElementById('pin_'+t.id);if(inp&&inp.value.trim())pins[t.id]=inp.value.trim();});
+  if(!Object.keys(pins).length){toast('Escribe al menos un PIN nuevo para guardar');return;}
+  const btn=document.getElementById('spSaveBtn');if(btn){btn.disabled=true;btn.textContent='⏳ Guardando…';}
+  try{
+    // el POST del script no se puede leer en modo no-cors (igual que al Publicar);
+    // por eso verificamos aparte con una lectura real (JSONP) de uno de los PIN recién guardados.
+    await fetch(u,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'setpins',master,pins})});
+    const firstId=Object.keys(pins)[0];
+    const check=await unlockOnline(firstId,pins[firstId],null);
+    if(check&&check.ok){toast('✓ PIN guardados y verificados correctamente');document.getElementById('spMaster').value='';}
+    else toast('Se envió el cambio, pero no se pudo verificar — revisa que la clave maestra sea correcta e inténtalo de nuevo');
+  }catch(e){toast('Error al guardar los PIN: '+e.message);}
+  finally{if(btn){btn.disabled=false;btn.textContent='💾 Guardar PIN en el script';}}
+}
 function resetAll(){if(!confirm('Esto borra TODOS los datos y vuelve al ejemplo inicial. ¿Seguro?'))return;state=seed();save();closeModal();render();}
 
 /* ============ EQUIPO ============ */

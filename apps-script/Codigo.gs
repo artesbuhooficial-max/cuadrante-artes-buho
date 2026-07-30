@@ -101,7 +101,12 @@ function doPost(e){
     if (!master || body.master !== master){
       return _out({ ok: false, error: 'Clave maestra incorrecta' });
     }
-    _setJson('PINS', body.pins || {});
+    // fusiona con los PIN ya guardados: solo se tocan las personas incluidas en el envío,
+    // el resto conserva su PIN tal cual (evita borrar PINs de otros por accidente).
+    var pins = _json('PINS', {});
+    var incoming = body.pins || {};
+    Object.keys(incoming).forEach(function(id){ pins[id] = incoming[id]; });
+    _setJson('PINS', pins);
     return _out({ ok: true });
   }
 
