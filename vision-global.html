@@ -444,6 +444,9 @@ function guessRama(name){
 }
 
 /* ============ STATE ============ */
+// el cuadrante de horas guarda bloques de 30 min (índice.html: SLOT_HOURS) —
+// cada celda ocupada del grid equivale a media hora real, no a una hora
+const SLOT_HOURS=0.5;
 let cuad=null;
 let local={mapping:{},forecasts:[],hidden:{},capacity:{},capDefault:30};
 let riverOffset=0, detailWeek=null;
@@ -478,21 +481,21 @@ function realByWeek(){
   const out={};
   team().forEach(p=>Object.entries(p.grid||{}).forEach(([wk,cells])=>{
     out[wk]=out[wk]||{};
-    Object.values(cells).forEach(v=>{const pid=cellProj(v);if(!pid)return;const r=ramaOfProject(pid);out[wk][r]=(out[wk][r]||0)+1;});
+    Object.values(cells).forEach(v=>{const pid=cellProj(v);if(!pid)return;const r=ramaOfProject(pid);out[wk][r]=(out[wk][r]||0)+SLOT_HOURS;});
   }));
   return out;
 }
 function realByWeekPerson(){
   const out={};
   team().forEach(p=>Object.entries(p.grid||{}).forEach(([wk,cells])=>{
-    out[wk]=out[wk]||{};out[wk][p.id]=(out[wk][p.id]||0)+Object.keys(cells).length;
+    out[wk]=out[wk]||{};out[wk][p.id]=(out[wk][p.id]||0)+Object.keys(cells).length*SLOT_HOURS;
   }));
   return out;
 }
 function realByProject(){
   const out={};
   team().forEach(p=>Object.values(p.grid||{}).forEach(cells=>Object.values(cells).forEach(v=>{
-    const pid=cellProj(v);if(pid)out[pid]=(out[pid]||0)+1;
+    const pid=cellProj(v);if(pid)out[pid]=(out[pid]||0)+SLOT_HOURS;
   })));
   return out;
 }
@@ -1021,7 +1024,7 @@ function renderPeople(){
     per[p.id]={total:0,byRama:{}};
     Object.entries(p.grid||{}).forEach(([wk,cells])=>{
       if(!wkIds.includes(wk))return;
-      Object.values(cells).forEach(v=>{const pid=cellProj(v);if(!pid)return;const r=ramaOfProject(pid);per[p.id].byRama[r]=(per[p.id].byRama[r]||0)+1;per[p.id].total++;});
+      Object.values(cells).forEach(v=>{const pid=cellProj(v);if(!pid)return;const r=ramaOfProject(pid);per[p.id].byRama[r]=(per[p.id].byRama[r]||0)+SLOT_HOURS;per[p.id].total+=SLOT_HOURS;});
     });
     if(per[p.id].total>maxT)maxT=per[p.id].total;
   });
@@ -1070,7 +1073,7 @@ function renderParalelo(){
   t.forEach(p=>{
     m[p.id]={};
     const cells=(p.grid||{})[wk]||{};
-    Object.values(cells).forEach(v=>{const pid=cellProj(v);if(!pid)return;const r=ramaOfProject(pid);m[p.id][r]=(m[p.id][r]||0)+1;if(m[p.id][r]>maxCell)maxCell=m[p.id][r];});
+    Object.values(cells).forEach(v=>{const pid=cellProj(v);if(!pid)return;const r=ramaOfProject(pid);m[p.id][r]=(m[p.id][r]||0)+SLOT_HOURS;if(m[p.id][r]>maxCell)maxCell=m[p.id][r];});
   });
   const activeRamas=RAMAS.filter(r=>t.some(p=>m[p.id][r.id]));
   if(!activeRamas.length){host.innerHTML='<div class="empty">Sin horas registradas esta semana. Cambia de semana con las flechas.</div>';}
@@ -1101,7 +1104,7 @@ function renderParalelo(){
     const who=[],ramaSet=new Set();
     t.forEach(p=>{
       const cells=(p.grid||{})[wk]||{};let hn=0;
-      Object.entries(cells).forEach(([k,v])=>{if(k.split('-')[0]===String(d)){hn++;const pid=cellProj(v);if(pid)ramaSet.add(ramaOfProject(pid));}});
+      Object.entries(cells).forEach(([k,v])=>{if(k.split('-')[0]===String(d)){hn+=SLOT_HOURS;const pid=cellProj(v);if(pid)ramaSet.add(ramaOfProject(pid));}});
       if(hn)who.push({p,h:hn});
     });
     const all=activePeople.length>1&&who.length===activePeople.length;
