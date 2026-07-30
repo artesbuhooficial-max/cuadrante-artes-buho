@@ -1611,8 +1611,8 @@
       "name": "Daniel",
       "role": "Administrativo",
       "color": "#0891b2",
-      "salary": 1200,
-      "rate": 10,
+      "salary": 0,
+      "rate": 9.08,
       "grid": {
         "2026-06-29": {
           "1-20": {
@@ -1627,14 +1627,117 @@
           "1-23": {
             "p": "x09g91h"
           }
+        },
+        "2026-08-03": {
+          "0-30": {
+            "p": "x09g91h"
+          },
+          "0-31": {
+            "p": "x09g91h"
+          },
+          "0-32": {
+            "p": "x09g91h"
+          },
+          "0-33": {
+            "p": "x09g91h"
+          },
+          "0-34": {
+            "p": "x6fm5ya"
+          },
+          "0-35": {
+            "p": "x6fm5ya"
+          },
+          "0-36": {
+            "p": "x6fm5ya"
+          },
+          "0-37": {
+            "p": "x6fm5ya"
+          },
+          "0-38": {
+            "p": "x6n3x6j"
+          },
+          "0-39": {
+            "p": "x6n3x6j"
+          },
+          "0-28": {
+            "p": "xmb9zk2"
+          },
+          "0-29": {
+            "p": "xmb9zk2"
+          },
+          "0-40": {
+            "p": "xmom4jb"
+          },
+          "0-41": {
+            "p": "xmom4jb"
+          }
         }
       },
       "projects": [
         {
           "id": "x09g91h",
-          "name": "Contabiliad Escuela",
+          "name": "Contabilidad Artes Búho",
           "color": "#1d4ed8",
-          "progress": 35
+          "progress": 35,
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "x6fm5ya",
+          "name": "Contabilidad Bella Bestia",
+          "color": "#d97706",
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "x95ibqt",
+          "name": "Clases de Música Escuela",
+          "color": "#0891b2"
+        },
+        {
+          "id": "x3p3cnv",
+          "name": "Clases de Música Sirio",
+          "color": "#db2777"
+        },
+        {
+          "id": "x6n3x6j",
+          "name": "NDN - Actualizar CRM",
+          "color": "#16a34a",
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "xmom4jb",
+          "name": "NDN - Llamadas",
+          "color": "#16a34a",
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "xuquwgd",
+          "name": "NDN - Emails",
+          "color": "#16a34a",
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "xbbk50l",
+          "name": "NDN - Whatsapp",
+          "color": "#16a34a",
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "xxsj8h6",
+          "name": "NDN - Bodas.net",
+          "color": "#16a34a",
+          "rate": null,
+          "billable": true
+        },
+        {
+          "id": "xmb9zk2",
+          "name": "Limpieza Escuela",
+          "color": "#ca8a04"
         }
       ]
     },
@@ -1815,6 +1918,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785320689415
+    "updatedAt": 1785399843897
   }
 }
