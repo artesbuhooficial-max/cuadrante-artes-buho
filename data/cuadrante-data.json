@@ -2712,13 +2712,6 @@
           "color": "#d97706"
         },
         {
-          "id": "xlv61ik",
-          "name": "VACACIONES",
-          "color": "#475569",
-          "rate": null,
-          "billable": false
-        },
-        {
           "id": "xcc414h",
           "name": "No laboral",
           "color": "#16a34a",
@@ -3978,13 +3971,6 @@
           "color": "#d97706"
         },
         {
-          "id": "x5bme6q",
-          "name": "Vacaciones",
-          "color": "#475569",
-          "rate": 0,
-          "billable": false
-        },
-        {
           "id": "xcc414h",
           "name": "No laboral",
           "color": "#16a34a",
@@ -4345,6 +4331,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785406694509
+    "updatedAt": 1785406726185
   }
 }
