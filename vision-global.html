@@ -528,9 +528,33 @@ function realByWeek(){
   return out;
 }
 function realByWeekPerson(){
+  // carga de trabajo REAL: las horas de proyectos "bloquea el día completo" (vacaciones,
+  // bajas…) no cuentan aquí — si contaran, una semana de vacaciones se vería como
+  // sobrecarga en el mapa de calor y en los conflictos, cuando es justo lo contrario.
   const out={};
   team().forEach(p=>Object.entries(p.grid||{}).forEach(([wk,cells])=>{
-    out[wk]=out[wk]||{};out[wk][p.id]=(out[wk][p.id]||0)+Object.keys(cells).length*SLOT_HOURS;
+    out[wk]=out[wk]||{};
+    Object.values(cells).forEach(v=>{
+      const pid=cellProj(v);if(!pid)return;
+      const pr=allProjects().find(x=>x.id===pid);
+      if(pr&&pr.fullDay)return;
+      out[wk][p.id]=(out[wk][p.id]||0)+SLOT_HOURS;
+    });
+  }));
+  return out;
+}
+function vacByWeekPerson(){
+  // horas de "no laboral" (vacaciones, bajas…) por persona y semana — aparte de la
+  // carga real, solo para poder distinguir "sin datos" de "estaba de vacaciones".
+  const out={};
+  team().forEach(p=>Object.entries(p.grid||{}).forEach(([wk,cells])=>{
+    out[wk]=out[wk]||{};
+    Object.values(cells).forEach(v=>{
+      const pid=cellProj(v);if(!pid)return;
+      const pr=allProjects().find(x=>x.id===pid);
+      if(!(pr&&pr.fullDay))return;
+      out[wk][p.id]=(out[wk][p.id]||0)+SLOT_HOURS;
+    });
   }));
   return out;
 }
@@ -929,7 +953,7 @@ function centerRiver(){riverOffset=0;renderAll();}
 function renderHeatmap(){
   const host=document.getElementById('heatmap');
   const weeks=riverWeeks().slice(0,12);
-  const rbp=realByWeekPerson();
+  const rbp=realByWeekPerson(),vbp=vacByWeekPerson();
   const t=team();
   if(!t.length){host.innerHTML='<div class="empty">Sin equipo cargado todavía.</div>';document.getElementById('heatScale').innerHTML='';return;}
   const todayWk=weekId(new Date());
@@ -947,8 +971,15 @@ function renderHeatmap(){
     weeks.forEach(m=>{
       const wk=dStr(m);
       const v=rbp[wk]&&rbp[wk][p.id]||0;
+      const vac=vbp[wk]&&vbp[wk][p.id]||0;
+      // sin carga real pero con horas de "no laboral" esa semana: no es "sin datos",
+      // es que estaba de vacaciones/baja — se marca aparte, no como sobrecarga ni como vacío.
+      if(!v&&vac){
+        h+='<td class="hc" style="background:#F1EEFB;color:#7C3AED'+(wk===todayWk?';outline:2px solid #E8B83E;outline-offset:-2px':'')+'" title="'+esc(p.name)+' · semana del '+wkLabel(m)+' · '+vac+' h de vacaciones/no laboral (no computan como carga)">🏖</td>';
+        return;
+      }
       const c=cellColor(v,capOf(p));
-      h+='<td class="hc" style="background:'+c.bg+';color:'+c.fg+(wk===todayWk?';outline:2px solid #E8B83E;outline-offset:-2px':'')+'" title="'+esc(p.name)+' · semana del '+wkLabel(m)+' · '+v+' h">'+(v?v+'h':'·')+'</td>';
+      h+='<td class="hc" style="background:'+c.bg+';color:'+c.fg+(wk===todayWk?';outline:2px solid #E8B83E;outline-offset:-2px':'')+'" title="'+esc(p.name)+' · semana del '+wkLabel(m)+' · '+v+' h'+(vac?' + '+vac+' h de vacaciones (no computan)':'')+'">'+(v?v+'h':'·')+'</td>';
     });
     h+='</tr>';
   });
