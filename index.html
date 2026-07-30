@@ -737,19 +737,40 @@ function migrate(){
     state.projects=[];
   }
   state.team.forEach(p=>{if(!p.projects)p.projects=[];});
-  // "Vacas" (vacaciones): si existe un proyecto con ese nombre exacto y todavía no se
-  // ha configurado a mano, lo marcamos como no facturable y de bloqueo de día completo.
-  // Una sola vez (no vuelve a tocarlo si el usuario ya lo había ajustado él mismo).
-  if(!state.config.vacasMigrated){
-    state.team.forEach(p=>{
-      (p.projects||[]).forEach(pr=>{
-        if(pr.name&&pr.name.trim().toLowerCase()==='vacas'){
+  // "No laboral" (vacaciones, bajas, festivos…): tiene que ser TRANSVERSAL — el mismo
+  // proyecto (mismo id) en el catálogo de todo el mundo, no solo de quien lo creó.
+  // Si alguien ya tenía un proyecto "Vacas"/"No laboral" con horas asignadas, se
+  // conserva su id y sus horas tal cual; solo se añade/renombra en el resto del equipo.
+  // Una sola vez (no vuelve a tocarlo si ya se migró).
+  if(!state.config.noLaboralMigrated){
+    let base=null;
+    state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{
+      if(!base&&pr.name&&/^(vacas|no laboral)$/i.test(pr.name.trim()))base=pr;
+    });});
+    // solo migramos si YA existe un proyecto así en algún sitio — nunca creamos
+    // "No laboral" de la nada para equipos que nunca lo han tenido.
+    if(base){
+      const nlId=base.id,nlName='No laboral',nlColor=base.color;
+      state.team.forEach(p=>{
+        p.projects=p.projects||[];
+        let pr=p.projects.find(x=>x.id===nlId);
+        if(pr){
+          pr.name=nlName;
           if(pr.billable===undefined)pr.billable=false;
           if(pr.fullDay===undefined)pr.fullDay=true;
+          return;
         }
+        // si esta persona tenía su propio "Vacas"/"No laboral" con OTRO id (duplicado),
+        // remapeamos sus horas ya asignadas al id compartido antes de unificar el catálogo.
+        const dup=p.projects.find(x=>x.name&&/^(vacas|no laboral)$/i.test(x.name.trim())&&x.id!==nlId);
+        if(dup){
+          Object.keys(p.grid||{}).forEach(wk=>{Object.keys(p.grid[wk]).forEach(k=>{if(p.grid[wk][k]&&p.grid[wk][k].p===dup.id)p.grid[wk][k].p=nlId;});});
+          p.projects=p.projects.filter(x=>x.id!==dup.id);
+        }
+        p.projects.push({id:nlId,name:nlName,color:nlColor,billable:false,fullDay:true});
       });
-    });
-    state.config.vacasMigrated=true;
+      state.config.noLaboralMigrated=true;
+    }
   }
   if(!state.notes)state.notes=[];
   if(!state.tasks)state.tasks=[];
@@ -1100,11 +1121,37 @@ function closePop(){document.getElementById('popHost').innerHTML='';document.rem
 function assign(pid){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
   const note=(document.getElementById('popNote')||{}).value||'';
   const pr=pid?proj(pid,p):null;
+  const di=popCtx.di;
   const slots=(pr&&pr.fullDay)?allDaySlots():popCtx.slots;
-  slots.forEach(s=>{const k=popCtx.di+'-'+s;
+  slots.forEach(s=>{const k=di+'-'+s;
     if(pid===null)delete c[k];else c[k]={p:pid,n:note.trim()||undefined};});
   save();closePop();renderGrid();renderStats();renderLegend();renderPersonStrip();
-  if(pr&&pr.fullDay)toast('Día completo marcado como "'+pr.name+'"');}
+  if(pr&&pr.fullDay){toast('Día completo marcado como "'+pr.name+'"');openReasonPicker(di,pr);}}
+
+/* ============ MOTIVO DEL DÍA NO LABORAL (vacaciones, baja, festivo…) ============ */
+function openReasonPicker(di,pr){
+  const host=document.getElementById('popHost');
+  const pop=document.createElement('div');pop.className='pop';pop.id='reasonEl';
+  pop.style.position='fixed';pop.style.left='50%';pop.style.top='110px';pop.style.transform='translateX(-50%)';
+  pop.innerHTML='<h4>'+DAY_FULL[di]+' · '+esc(pr.name)+'</h4>'+
+    '<p class="hint" style="margin:0 0 8px">¿Qué tipo de día no laboral es?</p>'+
+    '<div class="opt" onclick="setDayReason('+di+',\''+pr.id+'\',\'Vacaciones\')">🏖 Vacaciones</div>'+
+    '<div class="opt" onclick="setDayReason('+di+',\''+pr.id+'\',\'Baja\')">🤒 Baja</div>'+
+    '<div class="opt" onclick="setDayReason('+di+',\''+pr.id+'\',\'Festivo\')">📅 Festivo</div>'+
+    '<div class="note-in"><textarea id="reasonNote" placeholder="Otro motivo (opcional)…" onkeydown="if(event.key===\'Enter\'&&event.ctrlKey)setDayReason('+di+',\''+pr.id+'\',null)"></textarea><div class="hint-key">Ctrl + Enter para guardar</div></div>'+
+    '<div class="opt clear" onclick="closeReasonPicker()">○ Dejar sin especificar</div>';
+  host.appendChild(pop);
+  setTimeout(()=>document.addEventListener('click',closeReasonPickerOnce),0);
+}
+function setDayReason(di,pid,fixedReason){
+  const p=curPerson();const c=cells(p,state.ui.weekId);
+  const custom=(document.getElementById('reasonNote')||{}).value||'';
+  const reason=fixedReason||custom.trim();
+  Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')===0&&c[k]&&c[k].p===pid)c[k].n=reason||undefined;});
+  save();closeReasonPicker();renderGrid();
+}
+function closeReasonPickerOnce(e){const el=document.getElementById('reasonEl');if(el&&!el.contains(e.target))closeReasonPicker();}
+function closeReasonPicker(){const el=document.getElementById('reasonEl');if(el)el.remove();document.removeEventListener('click',closeReasonPickerOnce);}
 function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
   const note=(document.getElementById('popNote')||{}).value||'';
   popCtx.slots.forEach(s=>{const k=popCtx.di+'-'+s;if(c[k])c[k].n=note.trim()||undefined;});
@@ -1177,7 +1224,7 @@ function openProject(id){const pr=proj(id);if(!pr)return;pickColor=pr.color;cons
       '<input id="pFullDay" type="checkbox" style="width:17px;height:17px;padding:0;border-radius:5px;flex:none;accent-color:var(--blue)" '+(pr.fullDay?'checked':'')+'>'+
       '<span style="font-size:.85rem;color:var(--navy);font-weight:600;line-height:1.35">Vacaciones / baja — al asignarlo bloquea el día completo</span>'+
     '</div>'+
-    '<p class="hint">Con esto marcado, al asignar el proyecto a una casilla se rellena automáticamente <b>todo el horario del día</b> (no hace falta ir casilla a casilla). Útil para "Vacas" u otras ausencias.</p>'+
+    '<p class="hint">Con esto marcado, al asignar el proyecto a una casilla se rellena automáticamente <b>todo el horario del día</b> (no hace falta ir casilla a casilla) y se pregunta el motivo (vacaciones, baja…). Útil para "No laboral" u otras ausencias.</p>'+
     '<p class="hint">El cambio se aplica al proyecto en <b>toda la oficina</b> (todas las personas que lo tengan).</p></div>'+
     '<footer><span></span><button class="btn primary" onclick="saveProject(\''+id+'\')">Guardar</button></footer></div>');
   paintSwatches('pSw');}
