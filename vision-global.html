@@ -1038,10 +1038,16 @@ function renderFcChart(){
     s+='<rect x="'+(X(i)-stepW/2)+'" y="'+padT+'" width="'+stepW+'" height="'+chartH+'" fill="transparent" data-hover="'+wk+'"/>';
     const megas=bigEventsInWeek(wk);
     if(megas.length){
-      const tip='🎪 '+esc(megas.map(e=>e.title).join(', '))+' · más gestión para Roman y David';
-      s+='<circle cx="'+X(i)+'" cy="15" r="9" fill="none" stroke="#EA580C" stroke-width="2.4" opacity=".85"><animate attributeName="r" values="9;16" dur="1.3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.3s" repeatCount="indefinite"/></circle>'+
-         '<circle cx="'+X(i)+'" cy="15" r="10" fill="#EA580C" stroke="#fff" stroke-width="1.5"><title>'+tip+'</title></circle>'+
-         '<text x="'+X(i)+'" y="19" text-anchor="middle" font-size="10.5" fill="#fff" style="pointer-events:none">🎪</text>';
+      // la columna representa la semana entera (etiquetada con su lunes), pero el marcador
+      // se desplaza dentro de ella según el día real del evento más próximo — así no queda
+      // siempre centrado sobre el lunes como si el bolo fuera ese día.
+      const earliest=megas.slice().sort((a,b)=>a.date<b.date?-1:1)[0];
+      const dow=(parseD(earliest.date).getDay()+6)%7; // 0=Lun … 6=Dom
+      const cx=X(i)+(dow/6-0.5)*stepW*0.8;
+      const tip='🎪 '+esc(megas.map(e=>e.title+' ('+shortWk(parseD(e.date))+')').join(', '))+' · más gestión para Roman y David';
+      s+='<circle cx="'+cx+'" cy="15" r="9" fill="none" stroke="#EA580C" stroke-width="2.4" opacity=".85"><animate attributeName="r" values="9;16" dur="1.3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.3s" repeatCount="indefinite"/></circle>'+
+         '<circle cx="'+cx+'" cy="15" r="10" fill="#EA580C" stroke="#fff" stroke-width="1.5"><title>'+tip+'</title></circle>'+
+         '<text x="'+cx+'" y="19" text-anchor="middle" font-size="10.5" fill="#fff" style="pointer-events:none">🎪</text>';
     }
   });
   s+='</svg>';
@@ -1069,19 +1075,25 @@ function renderProjTable(){
   const hours=realByProject(), plw=projectLastWeek();
   const projs=allProjects().map(p=>({p,h:hours[p.id]||0,last:plw[p.id]||''})).sort((a,b)=>b.h-a.h);
   if(!projs.length){tbl.innerHTML='<tr><td><div class="empty">Sin proyectos en el cuadrante.</div></td></tr>';return;}
-  const maxH=Math.max(1,...projs.map(x=>x.h));
+  // "No laboral" (vacaciones, bajas…) no es carga de trabajo — si entra en la comparación,
+  // su volumen (siempre el mayor, al sumar las ausencias de todo el equipo) sale en rojo
+  // como si fuera una sobrecarga, y además aplasta la barra del resto de proyectos reales.
+  const workProjs=projs.filter(x=>!x.p.fullDay);
+  const maxH=Math.max(1,...workProjs.map(x=>x.h));
   const cut4=dStr(addDays(mondayOf(new Date()),-28));
   const todayWk=weekId(new Date());
   let h='<thead><tr><th>Proyecto</th><th>Sección</th><th>Estado</th><th class="r">Horas</th><th>Carga</th></tr></thead><tbody>';
   projs.slice(0,9).forEach(x=>{
     const r=ramaById(ramaOfProject(x.p.id));
     const state=x.last>=todayWk?'<span class="state on">Activo</span>':(x.last>=cut4?'<span class="state on">Activo</span>':(x.h?'<span class="state off">Pausado</span>':'<span class="state plan">Planificado</span>'));
-    const pct=Math.round(x.h/maxH*100);
-    const col=pct>80?'#C0392B':(pct>55?'#D59A18':'#0757D8');
+    const cargaCell=x.p.fullDay
+      ?'<span class="state" style="background:#F1EEFB;color:#7C3AED">🏖 No es carga</span>'
+      :(()=>{const pct=Math.round(x.h/maxH*100);const col=pct>80?'#C0392B':(pct>55?'#D59A18':'#0757D8');
+        return '<span class="occ-bar"><i style="width:'+pct+'%;background:'+col+'"></i></span>';})();
     h+='<tr><td style="font-weight:600">'+esc(x.p.name)+'</td>'+
        '<td><span class="dot" style="background:'+r.color+';margin-right:5px"></span><span style="font-size:11px;color:var(--ink-mid)">'+esc(r.name)+'</span></td>'+
        '<td>'+state+'</td><td class="r mono" style="font-weight:600">'+x.h+' h</td>'+
-       '<td><span class="occ-bar"><i style="width:'+pct+'%;background:'+col+'"></i></span></td></tr>';
+       '<td>'+cargaCell+'</td></tr>';
   });
   h+='</tbody>';
   tbl.innerHTML=h;
