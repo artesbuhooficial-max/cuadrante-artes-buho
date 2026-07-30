@@ -1007,7 +1007,7 @@ function renderFcChart(){
   const wkIds=weeks.map(dStr);
   const rbw=realByWeek(),fbw=forecastByWeek();
   const capT=teamCapacity();
-  const padL=38,padR=10,padT=16,padB=28,chartH=170;
+  const padL=38,padR=10,padT=30,padB=28,chartH=170;
   const stepW=Math.max(46,Math.min(70,Math.round(560/weeks.length)));
   const W=padL+padR+(weeks.length-1)*stepW,H=chartH+padT+padB;
   let maxH=Math.max(capT*1.1,10);
@@ -1038,8 +1038,10 @@ function renderFcChart(){
     s+='<rect x="'+(X(i)-stepW/2)+'" y="'+padT+'" width="'+stepW+'" height="'+chartH+'" fill="transparent" data-hover="'+wk+'"/>';
     const megas=bigEventsInWeek(wk);
     if(megas.length){
-      s+='<circle cx="'+X(i)+'" cy="8" r="7" fill="#EA580C"><title>🎪 '+esc(megas.map(e=>e.title).join(', '))+' · más gestión para Roman y David</title></circle>'+
-         '<text x="'+X(i)+'" y="11" text-anchor="middle" font-size="8" fill="#fff" style="pointer-events:none">🎪</text>';
+      const tip='🎪 '+esc(megas.map(e=>e.title).join(', '))+' · más gestión para Roman y David';
+      s+='<circle cx="'+X(i)+'" cy="15" r="9" fill="none" stroke="#EA580C" stroke-width="2.4" opacity=".85"><animate attributeName="r" values="9;16" dur="1.3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.3s" repeatCount="indefinite"/></circle>'+
+         '<circle cx="'+X(i)+'" cy="15" r="10" fill="#EA580C" stroke="#fff" stroke-width="1.5"><title>'+tip+'</title></circle>'+
+         '<text x="'+X(i)+'" y="19" text-anchor="middle" font-size="10.5" fill="#fff" style="pointer-events:none">🎪</text>';
     }
   });
   s+='</svg>';
