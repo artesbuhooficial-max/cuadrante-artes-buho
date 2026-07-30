@@ -844,6 +844,118 @@
           },
           "0-43": {
             "p": "xcc414h"
+          },
+          "6-16": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-17": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-18": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-19": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-20": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-21": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-22": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-23": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-24": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-25": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-26": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-27": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-28": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-29": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-30": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-31": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-32": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-33": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-34": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-35": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-36": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-37": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-38": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-39": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-40": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-41": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-42": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
+          },
+          "6-43": {
+            "p": "xcc414h",
+            "n": "Descanso obligatorio · después de Bolo"
           }
         },
         "2026-08-10": {
@@ -1457,10 +1569,11 @@
         },
         {
           "id": "x0fza5l",
-          "name": "Bolo Noches de Neon",
-          "color": "#7c3aed",
+          "name": "Bolo",
+          "color": "#dc2626",
           "rate": null,
-          "billable": false
+          "billable": false,
+          "fullDay": false
         },
         {
           "id": "x41fhdn",
@@ -4257,19 +4370,10 @@
       "date": "2026-06-29",
       "status": "done",
       "notes": ""
-    },
-    {
-      "id": "xfkys65",
-      "title": "MAQUILLAJE ROCK",
-      "owner": "u1",
-      "projectId": "x0fza5l",
-      "date": "2026-08-08",
-      "status": "pend",
-      "notes": ""
     }
   ],
   "ui": {
-    "tab": "cuadrante",
+    "tab": "calendario",
     "person": "u1",
     "weekId": "2026-08-17",
     "monthScope": "person",
@@ -4343,7 +4447,16 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785411144550
+    "updatedAt": 1785411251957
   },
-  "bigEvents": []
+  "bigEvents": [
+    {
+      "id": "xdjodv4",
+      "title": "Bolo",
+      "type": "NDN",
+      "date": "2026-08-08",
+      "notes": "",
+      "davidAttends": true
+    }
+  ]
 }
