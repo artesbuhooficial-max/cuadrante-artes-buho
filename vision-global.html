@@ -1176,8 +1176,9 @@ function renderInsights(){
   if(conf.length){const alta=conf.filter(c=>c.sev==='alta').length;
     out.push({ic:'⚠',bg:'var(--red-pale)',fg:'var(--red)',txt:'Se detectan <b>'+conf.length+' conflicto'+(conf.length!==1?'s':'')+'</b>'+(alta?(', '+alta+' de prioridad alta que requieren atención'):'')+'.'});}
   /* eventos grandes próximos (NDN, Maquillaje Rock, Producción Externa…) */
-  const upcomingMegas=bigEvents().filter(e=>e.date>=todayWk).sort((a,b)=>a.date<b.date?-1:1).slice(0,3);
-  if(upcomingMegas.length)out.push({ic:'🎪',bg:'#FDE8DA',fg:'#C2410C',txt:'<b>'+upcomingMegas.length+' evento'+(upcomingMegas.length!==1?'s':'')+' grande'+(upcomingMegas.length!==1?'s':'')+'</b> en el horizonte: '+upcomingMegas.map(e=>esc(e.title)+' ('+shortWk(mondayOf(parseD(e.date)))+')').join(', ')+'. Siempre implican más gestión, sobre todo para Roman y David.'});
+  const upcomingMegasAll=bigEvents().filter(e=>e.date>=todayWk).sort((a,b)=>a.date<b.date?-1:1);
+  const upcomingMegas=upcomingMegasAll.slice(0,3);
+  if(upcomingMegasAll.length)out.push({ic:'🎪',bg:'#FDE8DA',fg:'#C2410C',txt:'<b>'+upcomingMegasAll.length+' evento'+(upcomingMegasAll.length!==1?'s':'')+' grande'+(upcomingMegasAll.length!==1?'s':'')+'</b> en el horizonte: '+upcomingMegas.map(e=>esc(e.title)+' ('+shortWk(parseD(e.date))+')').join(', ')+(upcomingMegasAll.length>upcomingMegas.length?'…':'')+'. Siempre implican más gestión, sobre todo para Roman y David.'});
   /* ramas sin previsión */
   const fcRamas=new Set(local.forecasts.map(f=>f.rama));
   const silent=RAMAS.filter(r=>!fcRamas.has(r.id)&&!Object.values(rbw).some(per=>per[r.id])).slice(0,3);
