@@ -215,8 +215,6 @@
   ::-webkit-scrollbar-track{background:transparent}
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);border:1px solid var(--blue);color:#fff;padding:11px 18px;border-radius:11px;font-size:.84rem;font-weight:600;z-index:90;box-shadow:var(--shadow);opacity:0;transition:.25s;pointer-events:none}
   .toast.show{opacity:1}
-  body.hide-money .mv{visibility:hidden}
-  body.hide-money .mv-field{visibility:hidden}
   body.money-locked .mv{visibility:hidden}
   body.money-locked .mv-field{visibility:hidden}
   .lock-banner{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px dashed var(--cream-line);border-radius:11px;padding:9px 15px;color:var(--muted);font-size:.83rem;flex:1;cursor:default}
@@ -305,7 +303,6 @@
   .td-add:hover{color:var(--blue);border-color:var(--blue)}
   .drawer-lbl{color:var(--muted);font-weight:700;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;text-align:right;padding-right:12px;vertical-align:top}
   body.no-team-money .tv{visibility:hidden}
-  body.hide-money .tv{visibility:hidden}
 </style>
 </head>
 <body>
@@ -318,8 +315,8 @@
     </div>
     <div class="top-actions">
       <span class="save-pill" id="saveStatus">✓ Guardado local</span>
+      <button class="btn" id="syncBtn" onclick="pullRemote()" title="Descarga la última versión publicada y sustituye tu copia local — úsalo si alguien ha publicado y no ves sus cambios">🔄 Sincronizar</button>
       <button class="btn" id="publishBtn" onclick="publishToGitHub()" style="background:rgba(255,255,255,.92);color:var(--blue-deep);font-weight:700;border-color:rgba(255,255,255,.9)">☁ Publicar</button>
-      <button class="btn" id="moneyToggleBtn" onclick="toggleMoney()">👁 Ocultar €</button>
       <button class="btn" onclick="openSettings()">⚙ Ajustes</button>
       <a class="btn" href="vision-global.html" target="_blank" rel="noopener" style="text-decoration:none">🌍 Visión Global ↗</a>
     </div>
@@ -593,12 +590,25 @@ async function confirmPin(pid){
     toast(person(pid)&&person(pid).master?'✓ Clave maestra correcta — ves todo el equipo':'✓ Datos económicos desbloqueados');}
   else{toast('PIN incorrecto');el.value='';el.focus();}}
 
-function toggleMoney(){
-  const hidden=document.body.classList.toggle('hide-money');
-  document.getElementById('moneyToggleBtn').textContent=hidden?'👁 Mostrar €':'👁 Ocultar €';
+// Devuelve el meta.updatedAt de la última versión publicada que este navegador ha visto
+// realmente (al arrancar, al sincronizar, o justo después de publicar) — a diferencia de
+// state.meta.updatedAt (que se actualiza con cualquier interacción local y por eso SIEMPRE
+// "parece" más nuevo), esto sirve para detectar si ALGUIEN MÁS ha publicado algo desde
+// entonces sin que nos hayamos enterado.
+let lastKnownRemoteAt=0;
+// Comprueba justo antes de publicar si hay una versión más reciente que la que conocemos.
+// Si la hay, avisa y NO deja publicar directamente — así no se repite lo que le pasó a
+// Miriam (dos publicaciones casi a la vez, una pisando silenciosamente a la otra).
+async function guardStalePublish(){
+  const fresh=await fetchRemote();
+  const ru=(fresh&&fresh.meta&&fresh.meta.updatedAt)||0;
+  if(ru<=lastKnownRemoteAt)return true;
+  const proceed=confirm('⚠️ Alguien ha publicado cambios más recientes que los que tienes cargados.\n\nSi publicas ahora podrías borrar su trabajo (como pasó antes con las horas de Miriam).\n\nAceptar → traer esos cambios primero (sustituye tus ediciones locales aún no publicadas). Después podrás revisar y publicar de nuevo.\nCancelar → no hacer nada por ahora.');
+  if(proceed)await pullRemote();
+  return false;
 }
-
 async function publishViaAppsScript(){
+  if(!(await guardStalePublish()))return;
   const url=ghGet().appsUrl;
   const btn=document.getElementById('publishBtn');
   if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
@@ -606,6 +616,7 @@ async function publishViaAppsScript(){
     state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
     // no-cors: la respuesta es opaca (no legible), pero el commit se hace en el servidor.
     await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state})});
+    lastKnownRemoteAt=state.meta.updatedAt;
     toast('✓ Enviado a publicar — el equipo lo verá al recargar (~1 min)');
     updateSaveUI();
   }catch(e){
@@ -618,6 +629,7 @@ async function publishToGitHub(){
   const cfg=ghGet();
   if(cfg.appsUrl)return publishViaAppsScript();
   if(!cfg.token){openSettings();toast('Configura la publicación en Ajustes (Apps Script o token)');return;}
+  if(!(await guardStalePublish()))return;
   const owner=cfg.owner||'artesbuhooficial-max';
   const repo=cfg.repo||'cuadrante-artes-buho';
   const branch=cfg.branch||'master';
@@ -647,6 +659,7 @@ async function publishToGitHub(){
       if(putR.ok||putR.status!==409)break;
     }
     if(putR.ok){
+      lastKnownRemoteAt=state.meta.updatedAt;
       toast('✓ Publicado — todos verán los cambios en ~1 min');
       if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
       updateSaveUI();
@@ -1377,8 +1390,7 @@ function openSettings(){const c=state.config;const gh=ghGet();
     '<div class="inp"><label>Token de GitHub</label><input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="'+esc(gh.token||'')+'"></div>'+
     '<div class="inp row"><div><label>Usuario / Org</label><input id="ghOwner" value="'+esc(gh.owner||'artesbuhooficial-max')+'"></div><div><label>Repositorio</label><input id="ghRepo" value="'+esc(gh.repo||'cuadrante-artes-buho')+'"></div></div>'+
     '<div class="inp"><label>Rama</label><input id="ghBranch" value="'+esc(gh.branch||'master')+'"></div>'+
-    '<div class="inp row"><button class="btn" onclick="pullRemote()">↻ Traer cambios publicados</button></div>'+
-    '<p class="hint">Usa <b>Traer cambios publicados</b> si otra persona publicó y no ves sus cambios: descarga la última versión del repositorio y sustituye tu copia local.</p>'+
+    '<p class="hint">¿No ves los cambios de otra persona? Usa el botón <b>🔄 Sincronizar</b> de la barra de arriba.</p>'+
     '<div class="divider"></div>'+
     '<div class="divider"></div>'+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">🔒 PINs de seguridad económica</label>'+
@@ -1413,6 +1425,16 @@ function saveSettings(){
   // se guarda también en el estado publicado para que cualquier ordenador nuevo la reciba solo,
   // sin tener que pegarla a mano en cada dispositivo.
   state.config.appsUrl=appsUrl;
+  if(appsMode()){
+    // en modo Apps Script los PIN NO se guardan aquí (solo en el propio script, con el
+    // botón "Guardar PIN en el script" + clave maestra) — antes este botón los escribía
+    // en _pins (local, sin efecto real) dando la falsa impresión de que habían quedado
+    // guardados, cuando el servidor nunca se enteraba y el PIN no funcionaba para nadie.
+    const typed=state.team.some(t=>{const inp=document.getElementById('pin_'+t.id);return inp&&inp.value.trim();});
+    save();render();
+    if(typed){toast('Ajustes guardados. Para que los PIN funcionen, pulsa "💾 Guardar PIN en el script" con la clave maestra.');return;}
+    closeModal();toast('Ajustes guardados');return;
+  }
   state.team.forEach(t=>{const inp=document.getElementById('pin_'+t.id);if(inp&&inp.value.trim()){_pins[t.id]=inp.value.trim();}});
   savePins();
   save();closeModal();render();toast('Ajustes guardados');}
@@ -1826,7 +1848,11 @@ async function boot(){
     const ru=(remote.meta&&remote.meta.updatedAt)||0;
     if(ru>lu){data=remote;if(local.ui)data.ui=local.ui;} // hay una publicación más nueva: la adoptamos
     else data=local;
-  }else data=local||remote||seed();
+    lastKnownRemoteAt=ru;
+  }else{
+    data=local||remote||seed();
+    lastKnownRemoteAt=(remote&&remote.meta&&remote.meta.updatedAt)||0;
+  }
   state=data;migrate();loadPins();
   adoptAppsUrl();
   storeSet(state);
@@ -1837,6 +1863,7 @@ async function boot(){
 async function pullRemote(){
   const remote=await fetchRemote();
   if(!remote){toast('No se pudo leer el archivo publicado');return;}
+  lastKnownRemoteAt=(remote.meta&&remote.meta.updatedAt)||0;
   const keepUi=state.ui;state=remote;if(keepUi)state.ui=keepUi;migrate();adoptAppsUrl();storeSet(state);
   closeModal();switchTab(state.ui.tab||'cuadrante');render();toast('✓ Datos publicados cargados');
 }
