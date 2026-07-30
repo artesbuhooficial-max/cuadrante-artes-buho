@@ -570,6 +570,24 @@
           },
           "4-29": {
             "p": "xa3kx1b"
+          },
+          "0-32": {
+            "p": "x8vl3wj"
+          },
+          "0-33": {
+            "p": "x8vl3wj"
+          },
+          "0-34": {
+            "p": "x8vl3wj"
+          },
+          "0-35": {
+            "p": "x8vl3wj"
+          },
+          "0-36": {
+            "p": "x8vl3wj"
+          },
+          "0-37": {
+            "p": "x8vl3wj"
           }
         },
         "2026-08-03": {
@@ -1845,8 +1863,8 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
-    "weekId": "2026-08-03",
+    "person": "u1",
+    "weekId": "2026-07-27",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1856,7 +1874,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -1918,6 +1936,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785399843897
+    "updatedAt": 1785400564035
   }
 }
