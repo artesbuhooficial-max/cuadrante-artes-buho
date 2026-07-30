@@ -1734,9 +1734,7 @@
         {
           "id": "x3p3cnv",
           "name": "Clases de Música Sirio",
-          "color": "#db2777",
-          "rate": 15,
-          "billable": true
+          "color": "#db2777"
         },
         {
           "id": "x6n3x6j",
@@ -1783,7 +1781,7 @@
           "name": "Vacaciones",
           "color": "#475569",
           "rate": 0,
-          "billable": true
+          "billable": false
         }
       ]
     },
@@ -1892,7 +1890,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "xasd2wb",
-    "weekId": "2026-08-03",
+    "weekId": "2026-08-31",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1902,7 +1900,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -1964,6 +1962,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785401049273
+    "updatedAt": 1785401164167
   }
 }
