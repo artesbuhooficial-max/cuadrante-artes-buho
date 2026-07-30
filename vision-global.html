@@ -431,10 +431,10 @@ table.tbl{border-collapse:collapse;width:100%;font-size:12px}
 <div class="toast" id="toast"></div>
 <input type="file" id="importFile" accept=".json" style="display:none">
 
-<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Preguntar a la IA sobre el cuadrante">🦉</button>
+<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Preguntar a Romeo sobre el cuadrante">🦉</button>
 <div class="ai-panel" id="aiPanel" style="display:none">
   <div class="ai-panel-head">
-    <span>🦉 Asistente de Visión Global</span>
+    <span>🦉 Romeo</span>
     <button onclick="toggleAiChat()">✕</button>
   </div>
   <div class="ai-panel-body" id="aiMessages"></div>
@@ -701,8 +701,8 @@ function toggleAiChat(){
       box.dataset.greeted='1';
       const ready=cuad&&cuad.config&&cuad.config.appsUrl;
       appendAiMsg('bot', ready
-        ? 'Pregúntame lo que quieras sobre el cuadrante: horas, sobrecargas, proyectos, quién hace qué…'
-        : 'Todavía no hay conexión con el script del cuadrante — sincroniza los datos (↻) e inténtalo de nuevo.');
+        ? 'Hola, quiriditos búhos... soy Romeo 🦉 — pregúntame lo que quieras sobre el cuadrante: horas, sobrecargas, proyectos, quién hace qué…'
+        : 'Hola, quiriditos búhos... soy Romeo, pero todavía no tengo conexión con el script del cuadrante — sincroniza los datos (↻) e inténtalo de nuevo.');
     }
     document.getElementById('aiInput').focus();
   }
@@ -764,10 +764,10 @@ async function sendAiQuestion(){
     const url=cuad.config.appsUrl+'?action=ask&q='+encodeURIComponent(q)+'&view='+encodeURIComponent(curView)+ctxParam;
     const d=await aiJsonp(url);
     pending.remove();
-    appendAiMsg('bot', d&&d.ok ? d.answer : ('No he podido responder: '+((d&&d.error)||'error desconocido')));
+    appendAiMsg('bot', d&&d.ok ? d.answer : ('Hola, quiriditos búhos... no he podido responder: '+((d&&d.error)||'error desconocido')));
   }catch(e){
     pending.remove();
-    appendAiMsg('bot','Error de conexión: '+e.message);
+    appendAiMsg('bot','Hola, quiriditos búhos... parece que hay un problema de conexión: '+e.message);
   }finally{
     inp.disabled=false;inp.focus();
   }
