@@ -4,7 +4,8 @@
     "endHour": 22,
     "currency": "€",
     "granularity": "half",
-    "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec"
+    "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec",
+    "vacasMigrated": true
   },
   "projects": [],
   "team": [
@@ -674,6 +675,174 @@
           },
           "5-21": {
             "p": "x0fza5l"
+          },
+          "1-16": {
+            "p": "xcc414h"
+          },
+          "1-17": {
+            "p": "xcc414h"
+          },
+          "1-18": {
+            "p": "xcc414h"
+          },
+          "1-19": {
+            "p": "xcc414h"
+          },
+          "1-20": {
+            "p": "xcc414h"
+          },
+          "1-21": {
+            "p": "xcc414h"
+          },
+          "1-22": {
+            "p": "xcc414h"
+          },
+          "1-23": {
+            "p": "xcc414h"
+          },
+          "1-24": {
+            "p": "xcc414h"
+          },
+          "1-25": {
+            "p": "xcc414h"
+          },
+          "1-26": {
+            "p": "xcc414h"
+          },
+          "1-27": {
+            "p": "xcc414h"
+          },
+          "1-28": {
+            "p": "xcc414h"
+          },
+          "1-29": {
+            "p": "xcc414h"
+          },
+          "1-30": {
+            "p": "xcc414h"
+          },
+          "1-31": {
+            "p": "xcc414h"
+          },
+          "1-32": {
+            "p": "xcc414h"
+          },
+          "1-33": {
+            "p": "xcc414h"
+          },
+          "1-34": {
+            "p": "xcc414h"
+          },
+          "1-35": {
+            "p": "xcc414h"
+          },
+          "1-36": {
+            "p": "xcc414h"
+          },
+          "1-37": {
+            "p": "xcc414h"
+          },
+          "1-38": {
+            "p": "xcc414h"
+          },
+          "1-39": {
+            "p": "xcc414h"
+          },
+          "1-40": {
+            "p": "xcc414h"
+          },
+          "1-41": {
+            "p": "xcc414h"
+          },
+          "1-42": {
+            "p": "xcc414h"
+          },
+          "1-43": {
+            "p": "xcc414h"
+          },
+          "0-16": {
+            "p": "xcc414h"
+          },
+          "0-17": {
+            "p": "xcc414h"
+          },
+          "0-18": {
+            "p": "xcc414h"
+          },
+          "0-19": {
+            "p": "xcc414h"
+          },
+          "0-20": {
+            "p": "xcc414h"
+          },
+          "0-21": {
+            "p": "xcc414h"
+          },
+          "0-22": {
+            "p": "xcc414h"
+          },
+          "0-23": {
+            "p": "xcc414h"
+          },
+          "0-24": {
+            "p": "xcc414h"
+          },
+          "0-25": {
+            "p": "xcc414h"
+          },
+          "0-26": {
+            "p": "xcc414h"
+          },
+          "0-27": {
+            "p": "xcc414h"
+          },
+          "0-28": {
+            "p": "xcc414h"
+          },
+          "0-29": {
+            "p": "xcc414h"
+          },
+          "0-30": {
+            "p": "xcc414h"
+          },
+          "0-31": {
+            "p": "xcc414h"
+          },
+          "0-32": {
+            "p": "xcc414h"
+          },
+          "0-33": {
+            "p": "xcc414h"
+          },
+          "0-34": {
+            "p": "xcc414h"
+          },
+          "0-35": {
+            "p": "xcc414h"
+          },
+          "0-36": {
+            "p": "xcc414h"
+          },
+          "0-37": {
+            "p": "xcc414h"
+          },
+          "0-38": {
+            "p": "xcc414h"
+          },
+          "0-39": {
+            "p": "xcc414h"
+          },
+          "0-40": {
+            "p": "xcc414h"
+          },
+          "0-41": {
+            "p": "xcc414h"
+          },
+          "0-42": {
+            "p": "xcc414h"
+          },
+          "0-43": {
+            "p": "xcc414h"
           }
         },
         "2026-08-10": {
@@ -1246,7 +1415,8 @@
           "name": "Vacas",
           "color": "#16a34a",
           "rate": 0,
-          "billable": true
+          "billable": true,
+          "fullDay": true
         },
         {
           "id": "x0fza5l",
@@ -1734,9 +1904,7 @@
         {
           "id": "x3p3cnv",
           "name": "Clases de Música Sirio",
-          "color": "#db2777",
-          "rate": 15,
-          "billable": true
+          "color": "#db2777"
         },
         {
           "id": "x6n3x6j",
@@ -1891,8 +2059,8 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
-    "weekId": "2026-08-31",
+    "person": "u2",
+    "weekId": "2026-08-03",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -1902,7 +2070,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -1964,6 +2132,6 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785401208767
+    "updatedAt": 1785406030940
   }
 }
