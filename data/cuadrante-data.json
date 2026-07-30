@@ -5459,9 +5459,9 @@
     }
   ],
   "ui": {
-    "tab": "cuadrante",
-    "person": "u1",
-    "weekId": "2026-08-03",
+    "tab": "calendario",
+    "person": "u4",
+    "weekId": "2026-08-24",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -5516,7 +5516,7 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785415235501
+    "updatedAt": 1785415462141
   },
   "bigEvents": [
     {
