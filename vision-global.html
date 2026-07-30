@@ -716,6 +716,37 @@ function appendAiMsg(kind,text){
   box.scrollTop=box.scrollHeight;
   return div;
 }
+// El JSON publicado (cuad) trae las horas en bruto, pero cosas como el mapa de
+// calor dependen también de la CAPACIDAD por persona, que es un ajuste local de
+// este navegador (no viaja en el JSON público). Sin esto, la IA no podía explicar
+// ni recalcular lo que se ve en pantalla — así que se lo mandamos ya calculado.
+function buildAiContext(){
+  try{
+    const t=team();
+    if(!t.length)return null;
+    const weeks=riverWeeks().slice(0,12);
+    const rbp=realByWeekPerson();
+    const mapaCalor=[];
+    t.forEach(p=>{
+      const cap=capOf(p);
+      weeks.forEach(m=>{
+        const wk=dStr(m);
+        const h=(rbp[wk]&&rbp[wk][p.id])||0;
+        if(!h)return;
+        const pct=Math.round(h/cap*100);
+        const nivel=pct<=40?'bajo (≤40%)':pct<=75?'medio (40-75%)':pct<=100?'alto (75-100%)':'sobrecarga (>100%)';
+        mapaCalor.push({persona:p.name,semana:wk,horas:h,capacidad_semanal:cap,porcentaje:pct,nivel:nivel});
+      });
+    });
+    const capacidades={};
+    t.forEach(p=>{capacidades[p.name]=capOf(p);});
+    return {
+      explicacion_mapa_de_calor:'La pestaña Global muestra un "Mapa de calor": una fila por persona, una columna por cada una de las 12 semanas visibles (6 anteriores a hoy y 6 siguientes, por defecto). Cada celda es el número de horas REALES ya asignadas en el cuadrante esa semana (bloques de 30 min ocupados). El color de la celda no depende de un umbral de horas fijo, sino del porcentaje de esas horas sobre la CAPACIDAD semanal configurada para esa persona (ajuste local de Visión Global; si no se ha personalizado, el valor por defecto es '+local.capDefault+' h/semana). Escala de color: verde = ≤40% de su capacidad, azul = 40-75%, ámbar = 75-100%, rojo = más del 100% (sobrecarga).',
+      mapa_de_calor_actual:mapaCalor,
+      capacidades_configuradas_h_semana:capacidades
+    };
+  }catch(e){return null;}
+}
 async function sendAiQuestion(){
   const inp=document.getElementById('aiInput');
   const q=(inp.value||'').trim();
@@ -728,7 +759,9 @@ async function sendAiQuestion(){
   appendAiMsg('user',q);
   const pending=appendAiMsg('pending','Pensando…');
   try{
-    const url=cuad.config.appsUrl+'?action=ask&q='+encodeURIComponent(q)+'&view='+encodeURIComponent(curView);
+    const ctxObj=buildAiContext();
+    const ctxParam=ctxObj?('&ctx='+encodeURIComponent(JSON.stringify(ctxObj))):'';
+    const url=cuad.config.appsUrl+'?action=ask&q='+encodeURIComponent(q)+'&view='+encodeURIComponent(curView)+ctxParam;
     const d=await aiJsonp(url);
     pending.remove();
     appendAiMsg('bot', d&&d.ok ? d.answer : ('No he podido responder: '+((d&&d.error)||'error desconocido')));

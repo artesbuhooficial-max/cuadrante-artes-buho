@@ -69,14 +69,14 @@ function doGet(e){
   }
 
   if (action === 'ask'){
-    return _out(_askClaude(p.q || '', p.view || ''), cb);
+    return _out(_askClaude(p.q || '', p.view || '', p.ctx || ''), cb);
   }
 
   return _out({ ok: false, error: 'Acción desconocida' }, cb);
 }
 
 /* ---- Asistente de Visión Global: interpreta el cuadrante con Claude ---- */
-function _askClaude(question, view){
+function _askClaude(question, view, ctx){
   question = String(question || '').trim();
   if (!question) return { ok: false, error: 'Falta la pregunta' };
   if (question.length > 800) return { ok: false, error: 'Pregunta demasiado larga (máx. 800 caracteres)' };
@@ -96,14 +96,25 @@ function _askClaude(question, view){
   }
   var cuadranteJson = dataR.getContentText();
 
+  // 1b) Contexto ya calculado por Visión Global (mapa de calor, capacidades por
+  //     persona, etc.): cosas que la propia app calcula en el navegador a partir
+  //     de ajustes locales que NO viajan en el JSON público. Sin esto, Claude no
+  //     podía explicar ni recalcular visualizaciones como el mapa de calor.
+  ctx = String(ctx || '');
+  if (ctx.length > 6000) ctx = ctx.slice(0, 6000);
+
   // 2) Preguntar a Claude, restringido EXCLUSIVAMENTE a estos datos.
   var system = 'Eres el asistente de "Visión Global" del cuadrante de horas de Artes Búho. ' +
-    'Respondes EXCLUSIVAMENTE a partir del JSON del cuadrante que se te adjunta (equipo, proyectos, ' +
-    'horas asignadas por bloques de 30 min, objetivos). No uses conocimiento externo ni inventes datos. ' +
-    'Si la pregunta no se puede responder con estos datos, dilo con claridad. ' +
-    'Responde siempre en español, en 2-4 frases, directo y sin rodeos.';
+    'Respondes EXCLUSIVAMENTE a partir de los datos que se te adjuntan: el JSON del cuadrante ' +
+    '(equipo, proyectos, horas asignadas por bloques de 30 min, objetivos) y, si se incluye, un ' +
+    'CONTEXTO ADICIONAL ya calculado por la propia app (p. ej. el mapa de calor con sus porcentajes ' +
+    'y colores, o las capacidades semanales configuradas por persona) — trátalo con la misma fiabilidad ' +
+    'que el JSON, ya que lo genera la aplicación, no el usuario. No uses conocimiento externo ni inventes ' +
+    'datos que no estén en ninguno de los dos. Si la pregunta no se puede responder con estos datos, dilo ' +
+    'con claridad. Responde siempre en español, en 2-4 frases, directo y sin rodeos.';
 
   var userContent = 'DATOS DEL CUADRANTE (JSON, ya publicado, sin datos económicos):\n' + cuadranteJson +
+    (ctx ? '\n\nCONTEXTO ADICIONAL YA CALCULADO POR LA APP (coincide con lo que el usuario ve en pantalla ahora mismo):\n' + ctx : '') +
     (view ? '\n\nLa persona está mirando ahora mismo la pestaña "' + view + '" de Visión Global.' : '') +
     '\n\nPREGUNTA: ' + question;
 
