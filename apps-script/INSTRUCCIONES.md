@@ -29,6 +29,7 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
    | `GITHUB_BRANCH` | `master`                                          |
    | `MASTER_KEY`    | la clave maestra de Roman (la que quieras)        |
    | `PINS`          | `{"u1":"1234","u2":"5678","u3":"0000"}` (opcional)|
+   | `ANTHROPIC_API_KEY` | tu clave de la API de Claude (opcional — ver abajo) |
 
    - El **token** de GitHub se crea en GitHub → *Settings → Developer settings →
      Personal access tokens → Fine-grained tokens*, con permiso **Contents: Read & Write**
@@ -36,6 +37,10 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
    - `PINS` es el PIN de cada persona para ver **solo su** sueldo. Las claves
      (`u1`, `u2`, `u3`, `u4`…) son los IDs internos de cada persona. Si no lo pones,
      solo Roman (con `MASTER_KEY`) verá los sueldos.
+   - `ANTHROPIC_API_KEY` activa el icono flotante 🦉 de **Visión Global** (asistente que
+     interpreta el cuadrante con Claude). Sin esta propiedad, todo lo demás funciona igual
+     — el icono solo mostrará un aviso de que falta configurar. Créala en
+     [console.anthropic.com](https://console.anthropic.com) → API Keys.
    - Guarda.
 
 ## 3. Desplegar como aplicación web
@@ -63,6 +68,9 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
 - **Ver sueldos**: cada persona introduce su PIN para ver el suyo; **Roman** introduce
   la **clave maestra** para ver el Resumen y los sueldos de todos.
 - Los sueldos **nunca** quedan en el archivo público `data/cuadrante-data.json`.
+- **Asistente de Visión Global** (icono 🦉 flotante, si pusiste `ANTHROPIC_API_KEY`): responde
+  preguntas sobre el cuadrante usando Claude, leyendo únicamente los datos ya publicados
+  (sin sueldos). Cada pregunta cuesta céntimos — normal para el uso puntual de un equipo pequeño.
 
 ## Cambiar PIN o clave maestra
 

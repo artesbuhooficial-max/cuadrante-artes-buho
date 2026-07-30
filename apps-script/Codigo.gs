@@ -16,6 +16,9 @@
  *     GITHUB_BRANCH  master
  *     MASTER_KEY     (la clave maestra de Roman; ve todos los sueldos)
  *     PINS           {"u1":"1234","u2":"5678","u3":"0000"}   (opcional)
+ *     ANTHROPIC_API_KEY  sk-ant-...  (opcional: activa el asistente de
+ *                        Visión Global — icono flotante que interpreta el
+ *                        cuadrante con Claude. Créala en console.anthropic.com)
  *
  * DESPLIEGUE:
  *   Implementar  →  Nueva implementación  →  Aplicación web
@@ -65,7 +68,77 @@ function doGet(e){
     return _out({ ok: false, error: 'Clave incorrecta' }, cb);
   }
 
+  if (action === 'ask'){
+    return _out(_askClaude(p.q || '', p.view || ''), cb);
+  }
+
   return _out({ ok: false, error: 'Acción desconocida' }, cb);
+}
+
+/* ---- Asistente de Visión Global: interpreta el cuadrante con Claude ---- */
+function _askClaude(question, view){
+  question = String(question || '').trim();
+  if (!question) return { ok: false, error: 'Falta la pregunta' };
+  if (question.length > 800) return { ok: false, error: 'Pregunta demasiado larga (máx. 800 caracteres)' };
+
+  var apiKey = _get('ANTHROPIC_API_KEY', '');
+  if (!apiKey) return { ok: false, error: 'Falta ANTHROPIC_API_KEY en las Propiedades del script' };
+
+  // 1) Traer el cuadrante público tal cual lo ve cualquier visitante
+  //    (ya sin sueldos ni precios/hora — publishToGitHub/publishViaAppsScript los quita antes de commitear).
+  var owner = _get('GITHUB_OWNER', 'artesbuhooficial-max');
+  var repo = _get('GITHUB_REPO', 'cuadrante-artes-buho');
+  var branch = _get('GITHUB_BRANCH', 'master');
+  var dataUrl = 'https://raw.githubusercontent.com/' + owner + '/' + repo + '/' + branch + '/data/cuadrante-data.json';
+  var dataR = UrlFetchApp.fetch(dataUrl, { muteHttpExceptions: true });
+  if (dataR.getResponseCode() !== 200){
+    return { ok: false, error: 'No se pudo leer el cuadrante publicado (' + dataR.getResponseCode() + ')' };
+  }
+  var cuadranteJson = dataR.getContentText();
+
+  // 2) Preguntar a Claude, restringido EXCLUSIVAMENTE a estos datos.
+  var system = 'Eres el asistente de "Visión Global" del cuadrante de horas de Artes Búho. ' +
+    'Respondes EXCLUSIVAMENTE a partir del JSON del cuadrante que se te adjunta (equipo, proyectos, ' +
+    'horas asignadas por bloques de 30 min, objetivos). No uses conocimiento externo ni inventes datos. ' +
+    'Si la pregunta no se puede responder con estos datos, dilo con claridad. ' +
+    'Responde siempre en español, en 2-4 frases, directo y sin rodeos.';
+
+  var userContent = 'DATOS DEL CUADRANTE (JSON, ya publicado, sin datos económicos):\n' + cuadranteJson +
+    (view ? '\n\nLa persona está mirando ahora mismo la pestaña "' + view + '" de Visión Global.' : '') +
+    '\n\nPREGUNTA: ' + question;
+
+  var payload = {
+    model: 'claude-sonnet-5',
+    max_tokens: 500,
+    thinking: { type: 'disabled' },
+    system: system,
+    messages: [{ role: 'user', content: userContent }]
+  };
+
+  var aiR = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01'
+    },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+
+  var code = aiR.getResponseCode();
+  if (code !== 200){
+    return { ok: false, error: 'Claude API ' + code + ': ' + aiR.getContentText().slice(0, 200) };
+  }
+  var data = JSON.parse(aiR.getContentText());
+  if (data.stop_reason === 'refusal'){
+    return { ok: false, error: 'No se pudo generar una respuesta a esta pregunta.' };
+  }
+  var answer = '';
+  for (var i = 0; i < (data.content || []).length; i++){
+    if (data.content[i].type === 'text') answer += data.content[i].text;
+  }
+  return { ok: true, answer: answer.trim() };
 }
 
 /* ---- Escrituras: publish y setpins ---- */

@@ -212,6 +212,26 @@ table.tbl{border-collapse:collapse;width:100%;font-size:12px}
 .empty{padding:24px;text-align:center;color:var(--ink-light);font-size:12px;border:1.5px dashed var(--border);border-radius:10px}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;border-radius:999px;padding:10px 22px;font-size:12.5px;font-weight:600;z-index:800;transition:.3s;opacity:0}
 .toast.on{transform:translateX(-50%);opacity:1}
+
+/* ========= AI ASSISTANT (floating) ========= */
+.ai-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:var(--ink);color:var(--gold);border:1.5px solid rgba(232,184,62,.5);font-family:'Playfair Display',serif;font-size:21px;box-shadow:var(--sh-md);cursor:pointer;z-index:900;display:flex;align-items:center;justify-content:center;transition:.15s}
+.ai-fab:hover{transform:scale(1.07);background:var(--ink-mid)}
+.ai-panel{position:fixed;bottom:88px;right:24px;width:340px;max-width:calc(100vw - 32px);height:440px;max-height:70vh;background:#fff;border-radius:16px;box-shadow:var(--sh-md);z-index:901;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--border)}
+.ai-panel-head{background:var(--ink);color:#fff;padding:12px 14px;font-weight:700;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;flex:none}
+.ai-panel-head button{background:transparent;border:none;color:rgba(255,255,255,.75);font-size:13px;cursor:pointer;padding:2px 4px}
+.ai-panel-head button:hover{color:#fff}
+.ai-panel-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--cream)}
+.ai-msg{max-width:88%;padding:8px 11px;border-radius:11px;font-size:12.5px;line-height:1.55;white-space:pre-wrap}
+.ai-msg.user{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:3px}
+.ai-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);color:var(--ink);border-bottom-left-radius:3px}
+.ai-msg.pending{align-self:flex-start;background:#fff;border:1px dashed var(--border);color:var(--ink-light);font-style:italic}
+.ai-panel-input{display:flex;gap:6px;padding:10px;border-top:1px solid var(--border);background:#fff;flex:none}
+.ai-panel-input input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:'DM Sans',sans-serif;color:var(--ink)}
+.ai-panel-input input:focus{outline:none;border-color:var(--blue)}
+.ai-panel-input input:disabled{opacity:.6}
+.ai-panel-input button{background:var(--blue);color:#fff;border:none;border-radius:8px;width:34px;font-size:14px;cursor:pointer;flex:none}
+.ai-panel-input button:hover{background:var(--blue-deep)}
+@media(max-width:520px){.ai-panel{right:16px;bottom:80px;width:calc(100vw - 32px)}.ai-fab{right:16px;bottom:16px}}
 .wk-nav{display:flex;align-items:center;gap:6px}
 .wk-lbl{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;min-width:132px;text-align:center;color:var(--ink-mid)}
 .seg-note{background:var(--gold-pale);border:1px solid #eed9a0;border-radius:10px;padding:9px 13px;font-size:11.5px;color:#7a5c10;margin-bottom:14px}
@@ -410,6 +430,19 @@ table.tbl{border-collapse:collapse;width:100%;font-size:12px}
 <div class="tooltip" id="tooltip"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="importFile" accept=".json" style="display:none">
+
+<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Preguntar a la IA sobre el cuadrante">🦉</button>
+<div class="ai-panel" id="aiPanel" style="display:none">
+  <div class="ai-panel-head">
+    <span>🦉 Asistente de Visión Global</span>
+    <button onclick="toggleAiChat()">✕</button>
+  </div>
+  <div class="ai-panel-body" id="aiMessages"></div>
+  <div class="ai-panel-input">
+    <input type="text" id="aiInput" placeholder="Pregunta algo sobre el cuadrante…" onkeydown="if(event.key==='Enter')sendAiQuestion()">
+    <button onclick="sendAiQuestion()">➤</button>
+  </div>
+</div>
 
 <script>
 /* ============ Visión de Proyectos · Artes Búho ============ */
@@ -644,6 +677,68 @@ function renderSide(){
 /* ============ HELPERS ============ */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('on'),2600);}
+
+/* ============ ASISTENTE IA (icono flotante) ============ */
+// Usa la MISMA URL de Apps Script que ya publica el cuadrante (viaja dentro
+// del propio JSON publicado en cuad.config.appsUrl) — no hace falta configurar nada aparte.
+function aiJsonp(url){return new Promise((res,rej)=>{
+  const cb='__aicb'+Math.random().toString(36).slice(2);
+  const s=document.createElement('script');
+  const to=setTimeout(()=>{cleanup();rej(new Error('Tiempo de espera agotado'));},30000);
+  function cleanup(){clearTimeout(to);delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);}
+  window[cb]=(data)=>{cleanup();res(data);};
+  s.onerror=()=>{cleanup();rej(new Error('No se pudo conectar'));};
+  s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;
+  document.body.appendChild(s);
+});}
+function toggleAiChat(){
+  const p=document.getElementById('aiPanel');
+  const opening=p.style.display!=='flex';
+  p.style.display=opening?'flex':'none';
+  if(opening){
+    const box=document.getElementById('aiMessages');
+    if(!box.dataset.greeted){
+      box.dataset.greeted='1';
+      const ready=cuad&&cuad.config&&cuad.config.appsUrl;
+      appendAiMsg('bot', ready
+        ? 'Pregúntame lo que quieras sobre el cuadrante: horas, sobrecargas, proyectos, quién hace qué…'
+        : 'Todavía no hay conexión con el script del cuadrante — sincroniza los datos (↻) e inténtalo de nuevo.');
+    }
+    document.getElementById('aiInput').focus();
+  }
+}
+function appendAiMsg(kind,text){
+  const box=document.getElementById('aiMessages');
+  const div=document.createElement('div');
+  div.className='ai-msg '+kind;
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+  return div;
+}
+async function sendAiQuestion(){
+  const inp=document.getElementById('aiInput');
+  const q=(inp.value||'').trim();
+  if(!q)return;
+  if(!cuad||!cuad.config||!cuad.config.appsUrl){
+    appendAiMsg('bot','No hay conexión con el script del cuadrante todavía — sincroniza los datos (↻).');
+    return;
+  }
+  inp.value='';inp.disabled=true;
+  appendAiMsg('user',q);
+  const pending=appendAiMsg('pending','Pensando…');
+  try{
+    const url=cuad.config.appsUrl+'?action=ask&q='+encodeURIComponent(q)+'&view='+encodeURIComponent(curView);
+    const d=await aiJsonp(url);
+    pending.remove();
+    appendAiMsg('bot', d&&d.ok ? d.answer : ('No he podido responder: '+((d&&d.error)||'error desconocido')));
+  }catch(e){
+    pending.remove();
+    appendAiMsg('bot','Error de conexión: '+e.message);
+  }finally{
+    inp.disabled=false;inp.focus();
+  }
+}
 function initials(n){return (n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 const tt=document.getElementById('tooltip');
 function showTT(html,ev){tt.innerHTML=html;tt.style.display='block';moveTT(ev);}
