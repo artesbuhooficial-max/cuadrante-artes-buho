@@ -819,6 +819,7 @@ function projById(id){for(const p of state.team){const f=(p.projects||[]).find(x
 function projName(id){const p=projById(id);return p?p.name:'';}
 function projEffRate(pr,p){return (pr&&pr.rate!=null&&pr.rate!=='')?(parseFloat(pr.rate)||0):((p&&p.rate)||0);}
 function projBillable(pr){return !pr||pr.billable!==false;}
+function projFullDay(pr){return !!(pr&&pr.fullDay);}
 function todayStr(){return dStr(new Date());}
 function dueInfo(dateStr,done){if(!dateStr)return null;if(done)return{cls:'',label:fmtDue(dateStr)};
   const t=todayStr();if(dateStr<t)return{cls:'over',label:'Vencida · '+fmtDue(dateStr)};
@@ -838,16 +839,21 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 /* ============ STATS ============ */
 function weekStats(p,id){
   const c=p.grid[id]||{};const daily=DAYS.map(()=>0);const projHrs={};let week=0,weekCost=0;
-  Object.keys(c).forEach(k=>{const v=c[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);daily[di]+=SLOT_HOURS;week+=SLOT_HOURS;projHrs[v.p]=(projHrs[v.p]||0)+SLOT_HOURS;
-    const pr=proj(v.p,p);if(projBillable(pr))weekCost+=projEffRate(pr,p)*SLOT_HOURS;}});
+  Object.keys(c).forEach(k=>{const v=c[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);projHrs[v.p]=(projHrs[v.p]||0)+SLOT_HOURS;
+    const pr=proj(v.p,p);
+    // "No laboral" (vacaciones, bajas…) sigue viéndose en su propia fila de proyecto,
+    // pero no cuenta como carga de trabajo en los totales de día/semana.
+    if(!projFullDay(pr)){daily[di]+=SLOT_HOURS;week+=SLOT_HOURS;}
+    if(projBillable(pr))weekCost+=projEffRate(pr,p)*SLOT_HOURS;}});
   return {daily,week,projHrs,weekCost};
 }
-function dayHours(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;
-  return Object.keys(c).filter(k=>k.indexOf(di+'-')===0&&c[k]&&c[k].p).length*SLOT_HOURS;}
+function dayHours(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;let hours=0;
+  Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')!==0)return;const v=c[k];if(!v||!v.p)return;if(!projFullDay(proj(v.p,p)))hours+=SLOT_HOURS;});
+  return hours;}
 function dayCost(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};const di=(date.getDay()+6)%7;let cost=0;
   Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')!==0)return;const v=c[k];if(!v||!v.p)return;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;});
   return cost;}
-function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){hours+=SLOT_HOURS;const pr=proj(v.p,p);if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;}}});});return {hours,cost};}
+function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){const pr=proj(v.p,p);if(!projFullDay(pr))hours+=SLOT_HOURS;if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
 function render(){if(clipProj)exitPasteMode();updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
@@ -1020,7 +1026,7 @@ function renderMonth(){
   // weeks
   const weeks=weeksOfMonth(y,m);let totH=0,totC=0;
   let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th class="'+MC+'">Coste</th></tr></thead><tbody>';
-  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){h+=SLOT_HOURS;const pr=proj(v.p,p);if(projBillable(pr))c+=projEffRate(pr,p)*SLOT_HOURS;}}});});totH+=h;totC+=c;
+  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){const pr=proj(v.p,p);if(!projFullDay(pr))h+=SLOT_HOURS;if(projBillable(pr))c+=projEffRate(pr,p)*SLOT_HOURS;}}});});totH+=h;totC+=c;
     const r1=w.mon.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=addDays(w.mon,6).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     wh+='<tr><td>Semana '+w.info.weekNum+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+M(c)+'</td></tr>';});
   wh+='</tbody><tfoot><tr><td>TOTAL MES</td><td></td><td>'+num(totH)+' h</td><td>'+M(totC)+'</td></tr></tfoot>';
