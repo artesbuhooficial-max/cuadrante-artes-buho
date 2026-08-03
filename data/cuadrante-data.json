@@ -5459,19 +5459,19 @@
     }
   ],
   "ui": {
-    "tab": "calendario",
-    "person": "u4",
-    "weekId": "2026-08-24",
+    "tab": "cuadrante",
+    "person": "xasd2wb",
+    "weekId": "2026-08-31",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 6
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
-    "taskSub": "recur"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -5516,7 +5516,7 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1785415462141
+    "updatedAt": 1785752828259
   },
   "bigEvents": [
     {
