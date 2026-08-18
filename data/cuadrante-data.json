@@ -4883,22 +4883,22 @@
             "p": "xh20a3s"
           },
           "1-20": {
-            "p": "xh20a3s"
+            "p": "xk6kruc"
           },
           "1-21": {
-            "p": "xh20a3s"
+            "p": "xk6kruc"
           },
           "1-22": {
-            "p": "xh20a3s"
+            "p": "p1"
           },
           "1-23": {
-            "p": "xh20a3s"
+            "p": "p1"
           },
           "1-24": {
-            "p": "xh20a3s"
+            "p": "p8"
           },
           "1-25": {
-            "p": "xh20a3s"
+            "p": "p8"
           },
           "1-26": {
             "p": "xh20a3s"
@@ -5950,7 +5950,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
+    "person": "u3",
     "weekId": "2026-08-17",
     "monthScope": "person",
     "monthRef": {
@@ -5961,7 +5961,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "recur"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -6006,7 +6006,7 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1787043261776
+    "updatedAt": 1787044018053
   },
   "bigEvents": [
     {
