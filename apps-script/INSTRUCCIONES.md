@@ -30,6 +30,7 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
    | `MASTER_KEY`    | la clave maestra de Roman (la que quieras)        |
    | `PINS`          | `{"u1":"1234","u2":"5678","u3":"0000"}` (opcional)|
    | `ANTHROPIC_API_KEY` | tu clave de la API de Claude (opcional — ver abajo) |
+   | `DRIVE_BACKUP_FOLDER_ID` | ID de una carpeta de Drive (opcional — ver abajo) |
 
    - El **token** de GitHub se crea en GitHub → *Settings → Developer settings →
      Personal access tokens → Fine-grained tokens*, con permiso **Contents: Read & Write**
@@ -41,6 +42,21 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
      interpreta el cuadrante con Claude). Sin esta propiedad, todo lo demás funciona igual
      — el icono solo mostrará un aviso de que falta configurar. Créala en
      [console.anthropic.com](https://console.anthropic.com) → API Keys.
+   - `DRIVE_BACKUP_FOLDER_ID` activa una **copia de seguridad centralizada**: cada vez que
+     alguien publica, además de subirse a GitHub se guarda (o actualiza) un archivo
+     `cuadrante-backup.json` en esa carpeta de Drive — sin sueldos, igual que lo público.
+     Para configurarla:
+     1. En [Google Drive](https://drive.google.com), crea una carpeta (p. ej. *Cuadrante ·
+        Backups*) con **la misma cuenta de Google con la que has desplegado este script**.
+     2. Ábrela y copia el ID de la URL: `drive.google.com/drive/folders/`**`ESTE-TROZO`**.
+     3. Pégalo como valor de `DRIVE_BACKUP_FOLDER_ID`.
+     4. Comparte la carpeta con el resto del equipo (botón *Compartir*, con los correos de
+        Gmail de cada uno, o con un enlace) para que todos puedan abrirla si algún día hace
+        falta recuperar algo.
+     Drive guarda el **historial de versiones** de ese archivo automáticamente (clic derecho
+     → *Gestionar versiones*), así que cada publicación queda como un punto de recuperación
+     sin necesidad de ir creando archivos sueltos. Es opcional: sin esta propiedad, todo lo
+     demás sigue funcionando igual.
    - Guarda.
 
 ## 3. Desplegar como aplicación web
@@ -71,6 +87,9 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
 - **Asistente de Visión Global** (icono 🦉 flotante, si pusiste `ANTHROPIC_API_KEY`): responde
   preguntas sobre el cuadrante usando Claude, leyendo únicamente los datos ya publicados
   (sin sueldos). Cada pregunta cuesta céntimos — normal para el uso puntual de un equipo pequeño.
+- **Copia de seguridad en Drive** (si pusiste `DRIVE_BACKUP_FOLDER_ID`): cada publicación deja
+  además una copia en esa carpeta compartida, aparte de la copia local que cada persona se
+  descarga automáticamente al publicar desde su propio ordenador.
 
 ## Cambiar PIN o clave maestra
 

@@ -19,6 +19,13 @@
  *     ANTHROPIC_API_KEY  sk-ant-...  (opcional: activa el asistente de
  *                        Visión Global — icono flotante que interpreta el
  *                        cuadrante con Claude. Créala en console.anthropic.com)
+ *     DRIVE_BACKUP_FOLDER_ID  (opcional: cada publicación guarda además una copia
+ *                        SIN sueldos en un archivo cuadrante-backup.json dentro de
+ *                        esa carpeta de Drive — compártela con el equipo para tener
+ *                        un backup centralizado. El ID es la parte de la URL de la
+ *                        carpeta tras /folders/. Drive guarda el historial de
+ *                        versiones solo, así que sirve como punto de recuperación
+ *                        de cada publicación sin acumular archivos sueltos.)
  *
  * DESPLIEGUE:
  *   Implementar  →  Nueva implementación  →  Aplicación web
@@ -180,7 +187,16 @@ function doPost(e){
     (pub.team || []).forEach(function(m){ m.salary = 0; m.rate = 0; });
 
     // 3) Commit del archivo público en GitHub.
-    return _out(_commit('data/cuadrante-data.json', JSON.stringify(pub, null, 2)));
+    var pubJson = JSON.stringify(pub, null, 2);
+    var result = _commit('data/cuadrante-data.json', pubJson);
+
+    // 4) Copia de seguridad en Drive (si está configurada) — best-effort: un fallo aquí
+    //    (carpeta mal puesta, sin permiso…) nunca debe tumbar la publicación en GitHub,
+    //    que es la que de verdad importa. Se guarda la misma versión SIN sueldos que se
+    //    publica en GitHub — nunca la versión con salary/rate reales.
+    try { _backupToDrive(pubJson); } catch (e) {}
+
+    return _out(result);
   }
 
   if (action === 'setpins'){
@@ -198,6 +214,29 @@ function doPost(e){
   }
 
   return _out({ ok: false, error: 'Acción desconocida' });
+}
+
+/* ---- Copia de seguridad en Google Drive, compartida con todo el equipo ----
+ * Guarda SIEMPRE el mismo archivo (lo sobrescribe) dentro de la carpeta indicada en
+ * DRIVE_BACKUP_FOLDER_ID — Drive conserva el historial de versiones automáticamente
+ * (clic derecho al archivo → "Gestionar versiones"), así que no hace falta crear un
+ * archivo nuevo cada vez para tener un punto de recuperación de cada publicación.
+ * Se ejecuta con la cuenta de Google que desplegó el script (la misma que ya usa para
+ * publicar en GitHub) — por eso no hace falta que cada persona autorice nada aparte;
+ * solo hay que compartir esa carpeta de Drive con el resto del equipo para que puedan
+ * verla y descargarla si algún día hace falta.
+ */
+function _backupToDrive(content){
+  var folderId = _get('DRIVE_BACKUP_FOLDER_ID', '');
+  if (!folderId) return; // no configurado — la copia en Drive es opcional
+  var folder = DriveApp.getFolderById(folderId);
+  var name = 'cuadrante-backup.json';
+  var files = folder.getFilesByName(name);
+  if (files.hasNext()){
+    files.next().setContent(content);
+  } else {
+    folder.createFile(name, content, 'application/json');
+  }
 }
 
 /* ---- Commit a GitHub usando el token guardado en Propiedades del script ---- */

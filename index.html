@@ -623,10 +623,14 @@ async function publishViaAppsScript(){
   if(btn){btn.textContent='⏳ Publicando…';btn.disabled=true;}
   try{
     state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
+    // copia de seguridad local en ESTE ordenador antes de enviar nada — así, pase lo que
+    // pase con la publicación (o con la de cualquier otro más tarde), siempre queda un
+    // archivo de recuperación de lo que había en el momento de publicar.
+    try{exportJSON(true);}catch(e){}
     // no-cors: la respuesta es opaca (no legible), pero el commit se hace en el servidor.
     await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state})});
     lastKnownRemoteAt=state.meta.updatedAt;
-    toast('✓ Enviado a publicar — el equipo lo verá al recargar (~1 min)');
+    toast('✓ Publicado (copia de seguridad descargada) — el equipo lo verá al recargar (~1 min)');
     updateSaveUI();
   }catch(e){
     toast('Error al publicar: '+e.message);
@@ -649,6 +653,8 @@ async function publishToGitHub(){
     const headers={'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json'};
     // Sellar la marca de tiempo: así esta versión gana sobre las copias locales del resto
     state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);
+    // copia de seguridad local en ESTE ordenador antes de enviar nada (ver nota igual en publishViaAppsScript)
+    try{exportJSON(true);}catch(e){}
     // Codificar contenido en base64 (compatible con UTF-8)
     const json=JSON.stringify(state,null,2);
     const bytes=new TextEncoder().encode(json);
@@ -669,7 +675,7 @@ async function publishToGitHub(){
     }
     if(putR.ok){
       lastKnownRemoteAt=state.meta.updatedAt;
-      toast('✓ Publicado — todos verán los cambios en ~1 min');
+      toast('✓ Publicado (copia de seguridad descargada) — todos verán los cambios en ~1 min');
       if(btn){btn.textContent='☁ Publicar';btn.disabled=false;}
       updateSaveUI();
     }else{
@@ -1804,7 +1810,18 @@ function switchTab(t){if(clipProj)exitPasteMode();state.ui.tab=t;storeSet(state)
   renderPeople();if(t==='cuadrante')renderGrid();if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();if(t==='equipo')renderEquipo();if(t==='notas')renderNotas();if(t==='tareas')renderTareas();}
 
 /* ============ BACKUP (download/upload) ============ */
-function exportJSON(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cuadrante_artesbuho_'+dStr(new Date())+'.json';a.click();toast('Backup descargado');}
+function exportJSON(silent){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const now=new Date();
+  // fecha + hora en el nombre: en modo "backup automático al publicar" puede haber
+  // varias copias el mismo día, y así no se pisan ni se numeran como "(1)", "(2)"…
+  const stamp=dStr(now)+'_'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0');
+  a.download='cuadrante_artesbuho_'+stamp+'.json';
+  a.click();
+  if(!silent)toast('Backup descargado');
+}
 function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';
   inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);migrate();storeSet(state);closeModal();switchTab(state.ui.tab||'cuadrante');render();toast('Datos restaurados');}catch(e){toast('Archivo no válido');}};r.readAsText(f);};inp.click();}
 
