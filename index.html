@@ -611,10 +611,9 @@ async function guardStalePublish(){
   const ru=(fresh.meta&&fresh.meta.updatedAt)||0;
   if(ru<=lastKnownRemoteAt)return true;
   const proceed=confirm('⚠️ Alguien ha publicado cambios más recientes que los que tienes cargados.\n\nSi publicas ahora podrías borrar su trabajo (como pasó antes con Miriam y Daniel).\n\nAceptar → se descarga primero una copia de seguridad de TUS cambios sin publicar, y luego se traen los cambios más recientes (sustituyendo tu copia local). Después podrás revisar y publicar de nuevo.\nCancelar → no hacer nada por ahora.');
-  if(proceed){
-    try{exportJSON();}catch(e){}
-    await pullRemote();
-  }
+  // ya hemos preguntado aquí con este aviso específico — pullRemote(true) no vuelve a
+  // preguntar, pero sigue haciendo la copia de seguridad automática si hay cambios locales.
+  if(proceed)await pullRemote(true);
   return false;
 }
 async function publishViaAppsScript(){
@@ -1869,8 +1868,21 @@ async function boot(){
   await initFile();
   switchTab(state.ui.tab||'cuadrante');render();
 }
-// Traer manualmente los últimos datos publicados (sobrescribe la copia local)
-async function pullRemote(){
+// Traer manualmente los últimos datos publicados (sobrescribe la copia local).
+// skipConfirm=true se usa cuando quien llama (guardStalePublish) ya ha preguntado
+// con su propio aviso — aquí no se vuelve a preguntar, pero SÍ se hace la copia
+// de seguridad igualmente si hay cambios locales de por medio.
+async function pullRemote(skipConfirm){
+  // Cambios locales guardados después del último punto de sincronización conocido
+  // (arranque, sincronización o publicación) que aún no se han publicado — si los hay,
+  // sincronizar ahora los borraría sin avisar, que es justo lo que le pasó a Daniel al
+  // pulsar "Sincronizar" con toda la semana del 17-23 de agosto todavía sin publicar.
+  const hasLocalChanges=((state.meta&&state.meta.updatedAt)||0)>lastKnownRemoteAt;
+  if(hasLocalChanges&&!skipConfirm){
+    const proceed=confirm('⚠️ Tienes cambios locales que todavía no se han publicado.\n\nSincronizar ahora los sustituirá por la última versión publicada — se perderán si no los publicas antes (como pasó con el trabajo de Daniel).\n\nAceptar → se descarga primero una copia de seguridad, y luego se sincroniza.\nCancelar → no hacer nada por ahora (puedes publicar primero si quieres conservarlos).');
+    if(!proceed)return;
+  }
+  if(hasLocalChanges){try{exportJSON();}catch(e){}}
   const remote=await fetchRemote();
   if(!remote){toast('No se pudo leer el archivo publicado');return;}
   lastKnownRemoteAt=(remote.meta&&remote.meta.updatedAt)||0;
