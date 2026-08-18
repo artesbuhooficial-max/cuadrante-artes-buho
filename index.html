@@ -601,10 +601,20 @@ let lastKnownRemoteAt=0;
 // Miriam (dos publicaciones casi a la vez, una pisando silenciosamente a la otra).
 async function guardStalePublish(){
   const fresh=await fetchRemote();
-  const ru=(fresh&&fresh.meta&&fresh.meta.updatedAt)||0;
+  if(!fresh){
+    // Si no se pudo comprobar (fallo de red, etc.) NO asumimos que es seguro publicar —
+    // antes, un fallo aquí devolvía ru=0 y la guarda se saltaba en silencio, dejando pasar
+    // una publicación desactualizada sin avisar (así se perdió el trabajo de Daniel).
+    toast('No se pudo comprobar si hay una versión más reciente publicada — revisa tu conexión e inténtalo de nuevo');
+    return false;
+  }
+  const ru=(fresh.meta&&fresh.meta.updatedAt)||0;
   if(ru<=lastKnownRemoteAt)return true;
-  const proceed=confirm('⚠️ Alguien ha publicado cambios más recientes que los que tienes cargados.\n\nSi publicas ahora podrías borrar su trabajo (como pasó antes con las horas de Miriam).\n\nAceptar → traer esos cambios primero (sustituye tus ediciones locales aún no publicadas). Después podrás revisar y publicar de nuevo.\nCancelar → no hacer nada por ahora.');
-  if(proceed)await pullRemote();
+  const proceed=confirm('⚠️ Alguien ha publicado cambios más recientes que los que tienes cargados.\n\nSi publicas ahora podrías borrar su trabajo (como pasó antes con Miriam y Daniel).\n\nAceptar → se descarga primero una copia de seguridad de TUS cambios sin publicar, y luego se traen los cambios más recientes (sustituyendo tu copia local). Después podrás revisar y publicar de nuevo.\nCancelar → no hacer nada por ahora.');
+  if(proceed){
+    try{exportJSON();}catch(e){}
+    await pullRemote();
+  }
   return false;
 }
 async function publishViaAppsScript(){
