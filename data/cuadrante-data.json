@@ -1662,22 +1662,22 @@
             "p": "xa3kx1b"
           },
           "0-24": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "0-25": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "0-26": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "0-27": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "0-28": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "0-29": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "1-20": {
             "p": "xa3kx1b"
@@ -1692,22 +1692,22 @@
             "p": "xa3kx1b"
           },
           "1-24": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "1-25": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "1-26": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "1-27": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "1-28": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "1-29": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "2-20": {
             "p": "xa3kx1b"
@@ -1722,22 +1722,22 @@
             "p": "xa3kx1b"
           },
           "2-24": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "2-25": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "2-26": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "2-27": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "2-28": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "2-29": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "3-20": {
             "p": "xa3kx1b"
@@ -1752,22 +1752,22 @@
             "p": "xa3kx1b"
           },
           "3-24": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "3-25": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "3-26": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "3-27": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "3-28": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "3-29": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "4-20": {
             "p": "xa3kx1b"
@@ -1782,22 +1782,82 @@
             "p": "xa3kx1b"
           },
           "4-24": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "4-25": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "4-26": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "4-27": {
-            "p": "xa3kx1b"
+            "p": "xle8jpb"
           },
           "4-28": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
           },
           "4-29": {
-            "p": "x8vl3wj"
+            "p": "xle8jpb"
+          },
+          "0-30": {
+            "p": "xle8jpb"
+          },
+          "0-31": {
+            "p": "xle8jpb"
+          },
+          "1-30": {
+            "p": "xle8jpb"
+          },
+          "1-31": {
+            "p": "xle8jpb"
+          },
+          "2-30": {
+            "p": "xle8jpb"
+          },
+          "2-31": {
+            "p": "xle8jpb"
+          },
+          "3-30": {
+            "p": "xle8jpb"
+          },
+          "3-31": {
+            "p": "xle8jpb"
+          },
+          "4-30": {
+            "p": "xle8jpb"
+          },
+          "4-31": {
+            "p": "xle8jpb"
+          },
+          "0-34": {
+            "p": "xle8jpb"
+          },
+          "0-35": {
+            "p": "xle8jpb"
+          },
+          "1-34": {
+            "p": "xle8jpb"
+          },
+          "1-35": {
+            "p": "xle8jpb"
+          },
+          "2-34": {
+            "p": "xle8jpb"
+          },
+          "2-35": {
+            "p": "xle8jpb"
+          },
+          "3-34": {
+            "p": "xle8jpb"
+          },
+          "3-35": {
+            "p": "xle8jpb"
+          },
+          "4-34": {
+            "p": "xle8jpb"
+          },
+          "4-35": {
+            "p": "xle8jpb"
           }
         },
         "2026-08-31": {
@@ -6213,8 +6273,8 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
-    "weekId": "2026-08-17",
+    "person": "u1",
+    "weekId": "2026-08-24",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -6269,7 +6329,7 @@
   "extraTasks": [],
   "milestones": [],
   "meta": {
-    "updatedAt": 1787051891843
+    "updatedAt": 1787052773361
   },
   "bigEvents": [
     {
