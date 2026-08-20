@@ -6905,13 +6905,13 @@
     }
   ],
   "ui": {
-    "tab": "cuadrante",
+    "tab": "tareas",
     "person": "xasd2wb",
     "weekId": "2026-08-24",
-    "monthScope": "person",
+    "monthScope": "empresa",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 7
     },
     "resRef": {
       "y": 2026,
@@ -6956,24 +6956,6 @@
       "done": false,
       "createdBy": "u1",
       "created": 1784019853665
-    },
-    {
-      "id": "xxmnvgi",
-      "text": "Reunión con David y Román.",
-      "owner": "xasd2wb",
-      "deadline": "2026-08-03",
-      "done": true,
-      "createdBy": "xasd2wb",
-      "created": 1787250971958
-    },
-    {
-      "id": "xq6jiop",
-      "text": "Ver temas Respond.io con David.",
-      "owner": "xasd2wb",
-      "deadline": "2026-08-03",
-      "done": true,
-      "createdBy": "xasd2wb",
-      "created": 1787251036620
     }
   ],
   "recurring": [],
@@ -7197,7 +7179,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1787254849320
+    "updatedAt": 1787254989686
   },
   "bigEvents": [
     {
