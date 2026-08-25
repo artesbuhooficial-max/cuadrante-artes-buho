@@ -171,26 +171,38 @@ function doPost(e){
   var action = body.action || 'publish';
 
   if (action === 'publish'){
-    var state = body.state || {};
+    var incoming = body.state || {};
+
     // 1) Capturar sueldos hacia el almacén privado (solo si vienen con valor,
     //    para que un usuario bloqueado (sueldos a 0) no pise los guardados).
+    //    Se mira el envío TAL CUAL llega, antes de fusionar nada.
     var econ = _json('ECON', {});
-    (state.team || []).forEach(function(m){
+    (incoming.team || []).forEach(function(m){
       if (m && (m.salary || m.rate)){
         econ[m.id] = { salary: m.salary || 0, rate: m.rate || 0 };
       }
     });
     _setJson('ECON', econ);
 
-    // 2) Construir la versión PÚBLICA sin sueldos ni precios/hora.
+    // 2) Fusión persona por persona con lo que YA está publicado — la solución de fondo
+    //    a lo que le pasó a Miriam y a Daniel (dos veces cada uno): antes, publicar
+    //    sustituía el archivo entero, así que bastaba con que UN navegador tuviera una
+    //    copia desactualizada de OTRA persona para borrar su trabajo. Ahora solo se
+    //    confía en el grid/proyectos de quien de verdad ha editado algo en este
+    //    navegador (dirtyPeople) — el resto del equipo se conserva exactamente como
+    //    estaba ya publicado, sin importar qué copia (quizá vieja) hubiera de ellos
+    //    en quien está publicando. Da igual quién publique ni desde qué ordenador.
+    var state = _mergePublish(incoming, body.dirtyPeople);
+
+    // 3) Construir la versión PÚBLICA sin sueldos ni precios/hora.
     var pub = JSON.parse(JSON.stringify(state));
     (pub.team || []).forEach(function(m){ m.salary = 0; m.rate = 0; });
 
-    // 3) Commit del archivo público en GitHub.
+    // 4) Commit del archivo público en GitHub.
     var pubJson = JSON.stringify(pub, null, 2);
     var result = _commit('data/cuadrante-data.json', pubJson);
 
-    // 4) Copia de seguridad en Drive (si está configurada) — best-effort: un fallo aquí
+    // 5) Copia de seguridad en Drive (si está configurada) — best-effort: un fallo aquí
     //    (carpeta mal puesta, sin permiso…) nunca debe tumbar la publicación en GitHub,
     //    que es la que de verdad importa. Se guarda la misma versión SIN sueldos que se
     //    publica en GitHub — nunca la versión con salary/rate reales.
@@ -214,6 +226,75 @@ function doPost(e){
   }
 
   return _out({ ok: false, error: 'Acción desconocida' });
+}
+
+/* ---- Traer la versión YA publicada ahora mismo (no lo que el cliente cree que hay) ----
+ * Se usa para fusionar con seguridad en cada publicación — así da igual si el navegador
+ * que publica tiene una copia desactualizada de otras personas: nunca se usa para
+ * pisarlas. raw.githubusercontent.com no tiene caché larga (a diferencia de
+ * artesbuhooficial-max.github.io), así que esta lectura es prácticamente instantánea.
+ */
+function _fetchPublished(){
+  try {
+    var owner = _get('GITHUB_OWNER', 'artesbuhooficial-max');
+    var repo = _get('GITHUB_REPO', 'cuadrante-artes-buho');
+    var branch = _get('GITHUB_BRANCH', 'master');
+    var url = 'https://raw.githubusercontent.com/' + owner + '/' + repo + '/' + branch +
+      '/data/cuadrante-data.json?t=' + new Date().getTime();
+    var r = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    if (r.getResponseCode() !== 200) return null;
+    return JSON.parse(r.getContentText());
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ---- Fusión persona por persona al publicar ----
+ * Motivo: publicar sustituía el archivo entero. Si Ana y Bruno publican con pocos
+ * minutos de diferencia, y el navegador de Bruno aún no había recibido el cambio de
+ * Ana, la publicación de Bruno pisaba silenciosamente el trabajo de Ana — exactamente
+ * lo que le pasó a Miriam y a Daniel, dos veces cada uno.
+ *
+ * `dirtyPeople` es la lista de ids de personas cuyo grid/proyectos SÍ se han tocado de
+ * verdad en el navegador que publica (lo rellena el propio cliente). Solo esas se
+ * publican tal cual llegan; el resto del equipo se conserva exactamente como estaba ya
+ * publicado, sin importar qué copia (quizá vieja) tuviera de ellas quien publica. El
+ * alta o baja de personas SÍ se respeta siempre (se decide por la lista de personas que
+ * llega, no por lo publicado), así que añadir o eliminar a alguien sigue funcionando.
+ *
+ * Compatibilidad: si `dirtyPeople` no viene en la petición (undefined — un navegador con
+ * la versión de código anterior a este cambio), se usa el comportamiento de siempre
+ * (confiar en el envío entero tal cual) para no romper nada mientras se actualiza cada
+ * dispositivo. Lo mismo si no se pudo leer lo ya publicado (fallo de red puntual).
+ */
+function _mergePublish(incoming, dirtyPeople){
+  var currentPub = _fetchPublished();
+  if (!currentPub || dirtyPeople === undefined){
+    return incoming;
+  }
+  var dirty = {};
+  (dirtyPeople || []).forEach(function(id){ dirty[id] = true; });
+
+  var mergedTeam = (incoming.team || []).map(function(incP){
+    if (dirty[incP.id]) return incP; // quien publica ha tocado esto de verdad: se queda tal cual
+    var pubP = null;
+    (currentPub.team || []).forEach(function(p){ if (p.id === incP.id) pubP = p; });
+    if (!pubP) return incP; // persona nueva que aún no existía en lo publicado
+    // Conservar SU grid y SUS proyectos ya publicados (más fiables que la copia que
+    // pueda tener de ellos quien publica) — pero respetar el resto de sus campos
+    // (nombre, rol, color…) tal como llegan, porque eso sí puede editarlo cualquiera
+    // sin que sea un riesgo real de perder horas trabajadas.
+    var merged = {};
+    Object.keys(incP).forEach(function(k){ merged[k] = incP[k]; });
+    merged.grid = pubP.grid;
+    merged.projects = pubP.projects;
+    return merged;
+  });
+
+  var result = {};
+  Object.keys(incoming).forEach(function(k){ result[k] = incoming[k]; });
+  result.team = mergedTeam;
+  return result;
 }
 
 /* ---- Copia de seguridad en Google Drive, compartida con todo el equipo ----

@@ -596,6 +596,19 @@ async function confirmPin(pid){
 // "parece" más nuevo), esto sirve para detectar si ALGUIEN MÁS ha publicado algo desde
 // entonces sin que nos hayamos enterado.
 let lastKnownRemoteAt=0;
+// Quién ha tocado su horario/proyectos en ESTE navegador desde la última publicación —
+// el servidor (Apps Script) usa esto para fusionar de verdad en vez de sustituir el
+// archivo entero: SOLO se publica el grid/proyectos de quien está aquí marcado, el resto
+// del equipo se conserva tal cual estaba ya publicado, sin importar qué copia (quizá
+// desactualizada) de ellos hubiera en este navegador. Así da igual quién publique ni
+// desde qué ordenador — es la solución de fondo a lo que le pasó a Miriam y Daniel.
+// Se guarda en state.meta (sobrevive a recargas) y se vacía tras cada publicación.
+function markDirty(pid){
+  if(!pid)return;
+  state.meta=state.meta||{};
+  if(!state.meta.dirtyPeople)state.meta.dirtyPeople=[];
+  if(state.meta.dirtyPeople.indexOf(pid)===-1)state.meta.dirtyPeople.push(pid);
+}
 // Comprueba justo antes de publicar si hay una versión más reciente que la que conocemos.
 // Si la hay, avisa y NO deja publicar directamente — así no se repite lo que le pasó a
 // Miriam (dos publicaciones casi a la vez, una pisando silenciosamente a la otra).
@@ -627,9 +640,18 @@ async function publishViaAppsScript(){
     // pase con la publicación (o con la de cualquier otro más tarde), siempre queda un
     // archivo de recuperación de lo que había en el momento de publicar.
     try{exportJSON(true);}catch(e){}
+    // Quién ha tocado su horario/proyectos en este navegador desde la última publicación
+    // (siempre incluye a la persona seleccionada ahora mismo, por si algo se editó sin
+    // pasar por markDirty). El servidor solo confía en ESTOS al fusionar — el resto del
+    // equipo se conserva tal cual estaba ya publicado, así da igual si este navegador
+    // tenía una copia desactualizada de ellos.
+    const dirtySet=new Set(state.meta.dirtyPeople||[]);
+    if(state.ui.person)dirtySet.add(state.ui.person);
+    const dirtyPeople=[...dirtySet];
     // no-cors: la respuesta es opaca (no legible), pero el commit se hace en el servidor.
-    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state})});
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state,dirtyPeople})});
     lastKnownRemoteAt=state.meta.updatedAt;
+    state.meta.dirtyPeople=[];save();
     toast('✓ Publicado (copia de seguridad descargada) — el equipo lo verá al recargar (~1 min)');
     updateSaveUI();
   }catch(e){
@@ -1160,6 +1182,7 @@ function applyDavidRestDay(ev){
   if(!nl)return 'David no tiene un proyecto "No laboral" — créalo primero';
   const restDate=addDays(parseId(ev.date),1);
   blockFullDayFor(david,restDate,nl.id,'Descanso obligatorio · después de '+ev.title);
+  markDirty(david.id);
   return 'descanso de David bloqueado el '+dStr(restDate);
 }
 function blockFullDayFor(person,date,projectId,note){
@@ -1242,6 +1265,7 @@ function assign(pid){if(!popCtx)return;const p=curPerson();const c=cells(p,state
   const slots=(pr&&pr.fullDay)?allDaySlots():popCtx.slots;
   slots.forEach(s=>{const k=di+'-'+s;
     if(pid===null)delete c[k];else c[k]={p:pid,n:note.trim()||undefined};});
+  markDirty(p.id);
   save();closePop();renderGrid();renderStats();renderLegend();renderPersonStrip();
   if(pr&&pr.fullDay){toast('Día completo marcado como "'+pr.name+'"');openReasonPicker(di,pr);}}
 
@@ -1265,6 +1289,7 @@ function setDayReason(di,pid,fixedReason){
   const custom=(document.getElementById('reasonNote')||{}).value||'';
   const reason=fixedReason||custom.trim();
   Object.keys(c).forEach(k=>{if(k.indexOf(di+'-')===0&&c[k]&&c[k].p===pid)c[k].n=reason||undefined;});
+  markDirty(p.id);
   save();closeReasonPicker();renderGrid();
 }
 function closeReasonPickerOnce(e){const el=document.getElementById('reasonEl');if(el&&!el.contains(e.target))closeReasonPicker();}
@@ -1272,6 +1297,7 @@ function closeReasonPicker(){const el=document.getElementById('reasonEl');if(el)
 function saveNote(){if(!popCtx)return;const p=curPerson();const c=cells(p,state.ui.weekId);
   const note=(document.getElementById('popNote')||{}).value||'';
   popCtx.slots.forEach(s=>{const k=popCtx.di+'-'+s;if(c[k])c[k].n=note.trim()||undefined;});
+  markDirty(p.id);
   save();closePop();renderGrid();}
 
 /* ============ COPIAR / PEGAR PROYECTO (rellenar el cuadrante rápido) ============ */
@@ -1289,6 +1315,7 @@ function pasteAt(di,slots){
   const c=cells(p,state.ui.weekId);
   const targetSlots=pr.fullDay?allDaySlots():slots;
   targetSlots.forEach(s=>{c[di+'-'+s]={p:pr.id,n:undefined};});
+  markDirty(p.id);
   save();renderGrid();renderStats();renderLegend();renderPersonStrip();
 }
 function cellDown(ev,di,slots){
@@ -1325,6 +1352,7 @@ function delProject(id){if(!confirm('¿Eliminar proyecto? Se vaciarán los bloqu
   const p=curPerson();
   p.projects=(p.projects||[]).filter(pr=>pr.id!==id);
   Object.keys(p.grid).forEach(wk=>{Object.keys(p.grid[wk]).forEach(k=>{if(p.grid[wk][k]&&p.grid[wk][k].p===id)delete p.grid[wk][k];});});
+  markDirty(p.id); // solo se vacían bloques de ESTA persona — el resto del equipo no se toca
   save();render();}
 function openProject(id){const pr=proj(id);if(!pr)return;pickColor=pr.color;const p=curPerson();
   modal('<div class="modal"><header><h3>Editar proyecto</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+
@@ -1351,6 +1379,7 @@ function saveProject(id){const name=(document.getElementById('pName').value||'')
   const fullDay=document.getElementById('pFullDay').checked;
   // aplicar a todas las personas que tengan este proyecto (catálogo compartido de la oficina)
   state.team.forEach(p=>{(p.projects||[]).forEach(pr=>{if(pr.id===id){pr.name=name;pr.color=pickColor;pr.rate=rate;pr.billable=billable;pr.fullDay=fullDay;}});});
+  state.team.forEach(p=>markDirty(p.id)); // el cambio afecta al catálogo de todo el mundo
   save();closeModal();render();toast('Proyecto actualizado');}
 
 /* ============ MODALS ============ */
@@ -1368,7 +1397,8 @@ function openPerson(id){const p=id?person(id):{name:'',role:'',color:PALETTE[sta
 function paintSwatches(hostId){const h=document.getElementById(hostId);h.innerHTML='';PALETTE.forEach(c=>{const s=document.createElement('div');s.className='s'+(c===pickColor?' sel':'');s.style.background=c;s.onclick=()=>{pickColor=c;paintSwatches(hostId);};h.appendChild(s);});}
 function savePerson(id){const name=document.getElementById('mName').value.trim();if(!name){toast('Pon un nombre');return;}
   const data={name,role:document.getElementById('mRole').value.trim(),color:pickColor,salary:parseFloat(document.getElementById('mSal').value)||0,rate:parseFloat(document.getElementById('mRate').value)||0};
-  if(id)Object.assign(person(id),data);else{const np={id:uid(),...data,grid:{}};state.team.push(np);state.ui.person=np.id;}
+  if(id){Object.assign(person(id),data);markDirty(id);}
+  else{const np={id:uid(),...data,grid:{}};state.team.push(np);state.ui.person=np.id;markDirty(np.id);}
   save();closeModal();render();toast('Guardado');}
 function delPerson(id){if(state.team.length<=1){toast('Debe quedar al menos una persona');return;}if(!confirm('¿Eliminar a esta persona y su cuadrante?'))return;
   state.team=state.team.filter(t=>t.id!==id);state.objectives=state.objectives.filter(o=>o.owner!==id);if(state.ui.person===id)state.ui.person=state.team[0].id;save();closeModal();render();}
