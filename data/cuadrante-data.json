@@ -6858,7 +6858,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u3",
+    "person": "u1",
     "weekId": "2026-08-24",
     "monthScope": "person",
     "monthRef": {
@@ -6869,7 +6869,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -7131,7 +7131,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1787653421149
+    "updatedAt": 1787660076281
   },
   "bigEvents": [
     {
