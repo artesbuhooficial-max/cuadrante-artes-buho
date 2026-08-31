@@ -1836,6 +1836,42 @@
           },
           "0-25": {
             "p": "xk6kruc"
+          },
+          "1-20": {
+            "p": "x41fhdn"
+          },
+          "1-21": {
+            "p": "x41fhdn"
+          },
+          "1-22": {
+            "p": "x41fhdn"
+          },
+          "1-23": {
+            "p": "x41fhdn"
+          },
+          "1-24": {
+            "p": "x41fhdn"
+          },
+          "1-25": {
+            "p": "x41fhdn"
+          },
+          "1-26": {
+            "p": "x8vl3wj"
+          },
+          "1-27": {
+            "p": "x8vl3wj"
+          },
+          "1-28": {
+            "p": "x8vl3wj"
+          },
+          "1-29": {
+            "p": "x8vl3wj"
+          },
+          "1-30": {
+            "p": "x8vl3wj"
+          },
+          "1-31": {
+            "p": "x8vl3wj"
           }
         }
       },
@@ -6989,18 +7025,18 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u3",
+    "person": "u1",
     "weekId": "2026-08-31",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 6
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
-    "taskSub": "hitos"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -7271,9 +7307,10 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1788162898771,
+    "updatedAt": 1788163136092,
     "dirtyPeople": [
-      "u3"
+      "u3",
+      "u1"
     ]
   },
   "bigEvents": [
