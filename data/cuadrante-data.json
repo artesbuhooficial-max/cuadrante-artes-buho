@@ -8133,6 +8133,15 @@
         }
       ],
       "grid": {}
+    },
+    {
+      "id": "xwn3rwh",
+      "name": "Adrian",
+      "role": "",
+      "color": "#16a34a",
+      "salary": 0,
+      "rate": 0,
+      "grid": {}
     }
   ],
   "objectives": [
@@ -8161,18 +8170,18 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "xwn3rwh",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 7
     },
     "resRef": {
       "y": 2026,
-      "m": 5
+      "m": 7
     },
-    "taskSub": "todo"
+    "taskSub": "recur"
   },
   "notes": [],
   "tasks": [
@@ -8461,9 +8470,10 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1788891126018,
+    "updatedAt": 1788941798655,
     "dirtyPeople": [
-      "u3"
+      "u3",
+      "xwn3rwh"
     ]
   },
   "bigEvents": [
