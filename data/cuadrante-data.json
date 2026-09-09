@@ -7950,6 +7950,30 @@
           },
           "1-37": {
             "p": "x3p3cnv"
+          },
+          "1-22": {
+            "p": "x09g91h"
+          },
+          "1-23": {
+            "p": "x09g91h"
+          },
+          "1-24": {
+            "p": "x09g91h"
+          },
+          "1-25": {
+            "p": "x09g91h"
+          },
+          "1-26": {
+            "p": "x09g91h"
+          },
+          "1-27": {
+            "p": "x09g91h"
+          },
+          "1-28": {
+            "p": "x09g91h"
+          },
+          "1-29": {
+            "p": "x09g91h"
           }
         }
       },
@@ -8141,7 +8165,16 @@
       "color": "#16a34a",
       "salary": 0,
       "rate": 0,
-      "grid": {}
+      "grid": {},
+      "projects": [
+        {
+          "id": "xcc414h",
+          "name": "No laboral",
+          "color": "#16a34a",
+          "billable": false,
+          "fullDay": true
+        }
+      ]
     }
   ],
   "objectives": [
@@ -8170,7 +8203,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xwn3rwh",
+    "person": "xasd2wb",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
@@ -8179,9 +8212,9 @@
     },
     "resRef": {
       "y": 2026,
-      "m": 7
+      "m": 5
     },
-    "taskSub": "recur"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -8470,10 +8503,11 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1788941798655,
+    "updatedAt": 1788946494090,
     "dirtyPeople": [
       "u3",
-      "xwn3rwh"
+      "xwn3rwh",
+      "xasd2wb"
     ]
   },
   "bigEvents": [
