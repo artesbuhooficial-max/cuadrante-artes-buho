@@ -8202,8 +8202,8 @@
     }
   ],
   "ui": {
-    "tab": "cuadrante",
-    "person": "xasd2wb",
+    "tab": "tareas",
+    "person": "u2",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
@@ -8253,6 +8253,56 @@
       "done": false,
       "createdBy": "u1",
       "created": 1784019853665
+    },
+    {
+      "id": "xq0bs6z",
+      "text": "Escuela online Guitarra (niveles 0-1-2)",
+      "owner": "u3",
+      "projectId": "p1",
+      "deadline": "2026-09-28",
+      "done": false,
+      "createdBy": "u3",
+      "created": 1788952713879
+    },
+    {
+      "id": "xmmte66",
+      "text": "Escuela online Canto (niveles 0-1-2)",
+      "owner": "u3",
+      "projectId": "p1",
+      "deadline": "2026-09-28",
+      "done": false,
+      "createdBy": "u3",
+      "created": 1788952735150
+    },
+    {
+      "id": "xgtthet",
+      "text": "Biblioteca online AB",
+      "owner": "u3",
+      "projectId": "p1",
+      "deadline": "2026-09-28",
+      "done": false,
+      "createdBy": "u3",
+      "created": 1788952756154
+    },
+    {
+      "id": "x8vebu9",
+      "text": "Revista AB",
+      "owner": "u3",
+      "projectId": "p1",
+      "deadline": "2026-09-30",
+      "done": false,
+      "createdBy": "u3",
+      "created": 1788952774497
+    },
+    {
+      "id": "xxom449",
+      "text": "Cerrar calendario de la escuela",
+      "owner": "u2",
+      "projectId": "p1",
+      "deadline": "2026-09-28",
+      "done": false,
+      "createdBy": "u2",
+      "created": 1788952815523
     }
   ],
   "recurring": [],
@@ -8503,7 +8553,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1788946494090,
+    "updatedAt": 1788952819333,
     "dirtyPeople": [
       "u3",
       "xwn3rwh",
