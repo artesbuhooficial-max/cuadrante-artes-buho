@@ -6,7 +6,8 @@
     "granularity": "half",
     "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec",
     "vacasMigrated": true,
-    "noLaboralMigrated": true
+    "noLaboralMigrated": true,
+    "priorityStarter20260911": true
   },
   "projects": [],
   "team": [
@@ -22,8 +23,8 @@
           "id": "prio-20260911-1",
           "date": "2026-09-11",
           "title": "App de Mailing para empezar la semana que viene",
-          "estimatedHours": null,
-          "progress": 0,
+          "estimatedHours": 6,
+          "progress": 50,
           "done": false,
           "order": 0,
           "created": 1789113600000
@@ -32,9 +33,9 @@
           "id": "prio-20260911-2",
           "date": "2026-09-11",
           "title": "Video corregido de Sin Guion Trio",
-          "estimatedHours": null,
-          "progress": 0,
-          "done": false,
+          "estimatedHours": 0.3333333333333333,
+          "progress": 100,
+          "done": true,
           "order": 1,
           "created": 1789113600001
         },
@@ -43,7 +44,7 @@
           "date": "2026-09-11",
           "title": "Averiguar funcionamiento de Wassap Bussines para arreglar embudo Grupos",
           "estimatedHours": null,
-          "progress": 0,
+          "progress": 10,
           "done": false,
           "order": 2,
           "created": 1789113600002
@@ -4490,7 +4491,8 @@
           "billable": true,
           "fullDay": false
         }
-      ]
+      ],
+      "priorities": []
     },
     {
       "id": "u3",
@@ -6619,7 +6621,8 @@
           "name": "dar clase",
           "color": "#16a34a"
         }
-      ]
+      ],
+      "priorities": []
     },
     {
       "id": "xasd2wb",
@@ -8166,7 +8169,8 @@
           "billable": true,
           "fullDay": false
         }
-      ]
+      ],
+      "priorities": []
     },
     {
       "id": "u4",
@@ -8256,7 +8260,8 @@
           "fullDay": true
         }
       ],
-      "grid": {}
+      "grid": {},
+      "priorities": []
     },
     {
       "id": "xwn3rwh",
@@ -8274,7 +8279,8 @@
           "billable": false,
           "fullDay": true
         }
-      ]
+      ],
+      "priorities": []
     }
   ],
   "objectives": [
@@ -8303,19 +8309,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "u1",
     "weekId": "2026-09-07",
-    "priorityDate": "2026-09-11",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 7
     },
     "resRef": {
       "y": 2026,
-      "m": 5
+      "m": 7
     },
-    "taskSub": "todo"
+    "taskSub": "recur",
+    "priorityDate": "2026-09-11"
   },
   "notes": [],
   "tasks": [
@@ -8654,11 +8660,12 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789113269493,
+    "updatedAt": 1789117273441,
     "dirtyPeople": [
       "u3",
       "xwn3rwh",
-      "xasd2wb"
+      "xasd2wb",
+      "u1"
     ]
   },
   "bigEvents": [
