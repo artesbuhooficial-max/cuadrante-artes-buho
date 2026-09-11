@@ -6540,6 +6540,24 @@
           },
           "3-41": {
             "p": "x6njpre"
+          },
+          "4-20": {
+            "p": "xk6kruc"
+          },
+          "4-21": {
+            "p": "xk6kruc"
+          },
+          "4-22": {
+            "p": "p1"
+          },
+          "4-23": {
+            "p": "p1"
+          },
+          "4-24": {
+            "p": "p1"
+          },
+          "4-25": {
+            "p": "p1"
           }
         }
       },
@@ -6622,7 +6640,18 @@
           "color": "#16a34a"
         }
       ],
-      "priorities": []
+      "priorities": [
+        {
+          "id": "x60v7u7",
+          "date": "2026-09-11",
+          "title": "Revisar pagos",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1789118653301
+        }
+      ]
     },
     {
       "id": "xasd2wb",
@@ -8309,7 +8338,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
+    "person": "u3",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
@@ -8318,9 +8347,9 @@
     },
     "resRef": {
       "y": 2026,
-      "m": 7
+      "m": 5
     },
-    "taskSub": "recur",
+    "taskSub": "todo",
     "priorityDate": "2026-09-11"
   },
   "notes": [],
@@ -8660,7 +8689,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789117273441,
+    "updatedAt": 1789121364519,
     "dirtyPeople": [
       "u3",
       "xwn3rwh",
