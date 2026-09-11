@@ -6,8 +6,7 @@
     "granularity": "half",
     "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec",
     "vacasMigrated": true,
-    "noLaboralMigrated": true,
-    "priorityStarter20260911": true
+    "noLaboralMigrated": true
   },
   "projects": [],
   "team": [
@@ -18,88 +17,6 @@
       "color": "#1d4ed8",
       "salary": 0,
       "rate": 0,
-      "priorities": [
-        {
-          "id": "prio-20260911-1",
-          "date": "2026-09-11",
-          "title": "App de Mailing para empezar la semana que viene",
-          "estimatedHours": 6,
-          "progress": 50,
-          "done": false,
-          "order": 0,
-          "created": 1789113600000
-        },
-        {
-          "id": "prio-20260911-2",
-          "date": "2026-09-11",
-          "title": "Video corregido de Sin Guion Trio",
-          "estimatedHours": 0.3333333333333333,
-          "progress": 100,
-          "done": true,
-          "order": 1,
-          "created": 1789113600001
-        },
-        {
-          "id": "prio-20260911-3",
-          "date": "2026-09-11",
-          "title": "Averiguar funcionamiento de Wassap Bussines para arreglar embudo Grupos",
-          "estimatedHours": null,
-          "progress": 10,
-          "done": false,
-          "order": 2,
-          "created": 1789113600002
-        },
-        {
-          "id": "prio-20260911-4",
-          "date": "2026-09-11",
-          "title": "Envios a Noches de Neon",
-          "estimatedHours": null,
-          "progress": 0,
-          "done": false,
-          "order": 3,
-          "created": 1789113600003
-        },
-        {
-          "id": "prio-20260911-5",
-          "date": "2026-09-11",
-          "title": "Envios a Leads Escuela",
-          "estimatedHours": null,
-          "progress": 0,
-          "done": false,
-          "order": 4,
-          "created": 1789113600004
-        },
-        {
-          "id": "prio-20260911-6",
-          "date": "2026-09-11",
-          "title": "Cerrar consultoria de cierre de Mario Cassado",
-          "estimatedHours": null,
-          "progress": 0,
-          "done": false,
-          "order": 5,
-          "created": 1789113600005
-        },
-        {
-          "id": "prio-20260911-7",
-          "date": "2026-09-11",
-          "title": "Teresa bolo abueletes",
-          "estimatedHours": null,
-          "progress": 0,
-          "done": false,
-          "order": 6,
-          "created": 1789113600006
-        },
-        {
-          "id": "prio-20260911-8",
-          "date": "2026-09-11",
-          "title": "Automatizar ese proceso",
-          "estimatedHours": null,
-          "progress": 0,
-          "done": false,
-          "order": 7,
-          "created": 1789113600007
-        }
-      ],
       "grid": {
         "2026-06-29": {
           "0-22": {
@@ -4491,8 +4408,7 @@
           "billable": true,
           "fullDay": false
         }
-      ],
-      "priorities": []
+      ]
     },
     {
       "id": "u3",
@@ -6540,24 +6456,6 @@
           },
           "3-41": {
             "p": "x6njpre"
-          },
-          "4-20": {
-            "p": "xk6kruc"
-          },
-          "4-21": {
-            "p": "xk6kruc"
-          },
-          "4-22": {
-            "p": "p1"
-          },
-          "4-23": {
-            "p": "p1"
-          },
-          "4-24": {
-            "p": "p1"
-          },
-          "4-25": {
-            "p": "p1"
           }
         }
       },
@@ -6638,18 +6536,6 @@
           "id": "x6njpre",
           "name": "dar clase",
           "color": "#16a34a"
-        }
-      ],
-      "priorities": [
-        {
-          "id": "x60v7u7",
-          "date": "2026-09-11",
-          "title": "Revisar pagos",
-          "estimatedHours": 1,
-          "progress": 100,
-          "done": true,
-          "order": 0,
-          "created": 1789118653301
         }
       ]
     },
@@ -8106,6 +7992,132 @@
           },
           "1-29": {
             "p": "x09g91h"
+          },
+          "2-20": {
+            "p": "x09g91h"
+          },
+          "2-21": {
+            "p": "x09g91h"
+          },
+          "2-22": {
+            "p": "x6fm5ya"
+          },
+          "2-23": {
+            "p": "x6fm5ya"
+          },
+          "2-24": {
+            "p": "x6fm5ya"
+          },
+          "2-25": {
+            "p": "x6fm5ya"
+          },
+          "2-26": {
+            "p": "x95ibqt"
+          },
+          "2-27": {
+            "p": "x95ibqt"
+          },
+          "2-28": {
+            "p": "x09g91h"
+          },
+          "2-29": {
+            "p": "x09g91h"
+          },
+          "2-34": {
+            "p": "x09g91h"
+          },
+          "2-35": {
+            "p": "x09g91h"
+          },
+          "2-36": {
+            "p": "x09g91h"
+          },
+          "2-37": {
+            "p": "x09g91h"
+          },
+          "2-38": {
+            "p": "x09g91h"
+          },
+          "2-39": {
+            "p": "x09g91h"
+          },
+          "3-32": {
+            "p": "x3p3cnv"
+          },
+          "3-33": {
+            "p": "x3p3cnv"
+          },
+          "3-34": {
+            "p": "x3p3cnv"
+          },
+          "3-35": {
+            "p": "x3p3cnv"
+          },
+          "3-36": {
+            "p": "x3p3cnv"
+          },
+          "3-37": {
+            "p": "x3p3cnv"
+          },
+          "3-18": {
+            "p": "x09g91h"
+          },
+          "3-19": {
+            "p": "x09g91h"
+          },
+          "3-20": {
+            "p": "x09g91h"
+          },
+          "3-21": {
+            "p": "x09g91h"
+          },
+          "3-22": {
+            "p": "x09g91h"
+          },
+          "3-23": {
+            "p": "x09g91h"
+          },
+          "3-24": {
+            "p": "x09g91h"
+          },
+          "3-25": {
+            "p": "x09g91h"
+          },
+          "3-26": {
+            "p": "x09g91h"
+          },
+          "3-27": {
+            "p": "x09g91h"
+          },
+          "3-28": {
+            "p": "x09g91h"
+          },
+          "3-29": {
+            "p": "x09g91h"
+          },
+          "4-18": {
+            "p": "x09g91h"
+          },
+          "4-19": {
+            "p": "x09g91h"
+          },
+          "4-20": {
+            "p": "xy15wdb"
+          },
+          "4-21": {
+            "p": "xy15wdb"
+          },
+          "4-22": {
+            "p": "xy15wdb"
+          },
+          "4-23": {
+            "p": "xy15wdb"
+          },
+          "4-24": {
+            "p": "x09g91h"
+          },
+          "4-25": {
+            "p": "x09g91h"
           }
         }
       },
@@ -8198,8 +8210,7 @@
           "billable": true,
           "fullDay": false
         }
-      ],
-      "priorities": []
+      ]
     },
     {
       "id": "u4",
@@ -8289,8 +8300,7 @@
           "fullDay": true
         }
       ],
-      "grid": {},
-      "priorities": []
+      "grid": {}
     },
     {
       "id": "xwn3rwh",
@@ -8308,8 +8318,7 @@
           "billable": false,
           "fullDay": true
         }
-      ],
-      "priorities": []
+      ]
     }
   ],
   "objectives": [
@@ -8338,7 +8347,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u3",
+    "person": "xasd2wb",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
@@ -8349,8 +8358,7 @@
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo",
-    "priorityDate": "2026-09-11"
+    "taskSub": "todo"
   },
   "notes": [],
   "tasks": [
@@ -8389,56 +8397,6 @@
       "done": false,
       "createdBy": "u1",
       "created": 1784019853665
-    },
-    {
-      "id": "xq0bs6z",
-      "text": "Escuela online Guitarra (niveles 0-1-2)",
-      "owner": "u3",
-      "projectId": "p1",
-      "deadline": "2026-09-28",
-      "done": false,
-      "createdBy": "u3",
-      "created": 1788952713879
-    },
-    {
-      "id": "xmmte66",
-      "text": "Escuela online Canto (niveles 0-1-2)",
-      "owner": "u3",
-      "projectId": "p1",
-      "deadline": "2026-09-28",
-      "done": false,
-      "createdBy": "u3",
-      "created": 1788952735150
-    },
-    {
-      "id": "xgtthet",
-      "text": "Biblioteca online AB",
-      "owner": "u3",
-      "projectId": "p1",
-      "deadline": "2026-09-28",
-      "done": false,
-      "createdBy": "u3",
-      "created": 1788952756154
-    },
-    {
-      "id": "x8vebu9",
-      "text": "Revista AB",
-      "owner": "u3",
-      "projectId": "p1",
-      "deadline": "2026-09-30",
-      "done": false,
-      "createdBy": "u3",
-      "created": 1788952774497
-    },
-    {
-      "id": "xxom449",
-      "text": "Cerrar calendario de la escuela",
-      "owner": "u2",
-      "projectId": "p1",
-      "deadline": "2026-09-28",
-      "done": false,
-      "createdBy": "u2",
-      "created": 1788952815523
     }
   ],
   "recurring": [],
@@ -8689,12 +8647,11 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789121364519,
+    "updatedAt": 1789121979817,
     "dirtyPeople": [
       "u3",
       "xwn3rwh",
-      "xasd2wb",
-      "u1"
+      "xasd2wb"
     ]
   },
   "bigEvents": [
