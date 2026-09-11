@@ -6,7 +6,8 @@
     "granularity": "half",
     "appsUrl": "https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec",
     "vacasMigrated": true,
-    "noLaboralMigrated": true
+    "noLaboralMigrated": true,
+    "priorityStarter20260911": true
   },
   "projects": [],
   "team": [
@@ -2193,6 +2194,88 @@
           "rate": null,
           "billable": true,
           "fullDay": false
+        }
+      ],
+      "priorities": [
+        {
+          "id": "prio-20260911-1",
+          "date": "2026-09-11",
+          "title": "App de Mailing para empezar la semana que viene",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1789113600000
+        },
+        {
+          "id": "prio-20260911-2",
+          "date": "2026-09-11",
+          "title": "Video corregido de Sin Guion Trio",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1789113600001
+        },
+        {
+          "id": "prio-20260911-3",
+          "date": "2026-09-11",
+          "title": "Averiguar funcionamiento de Wassap Bussines para arreglar embudo Grupos",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1789113600002
+        },
+        {
+          "id": "prio-20260911-4",
+          "date": "2026-09-11",
+          "title": "Envios a Noches de Neon",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 3,
+          "created": 1789113600003
+        },
+        {
+          "id": "prio-20260911-5",
+          "date": "2026-09-11",
+          "title": "Envios a Leads Escuela",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 4,
+          "created": 1789113600004
+        },
+        {
+          "id": "prio-20260911-6",
+          "date": "2026-09-11",
+          "title": "Cerrar consultoria de cierre de Mario Cassado",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 5,
+          "created": 1789113600005
+        },
+        {
+          "id": "prio-20260911-7",
+          "date": "2026-09-11",
+          "title": "Teresa bolo abueletes",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 6,
+          "created": 1789113600006
+        },
+        {
+          "id": "prio-20260911-8",
+          "date": "2026-09-11",
+          "title": "Automatizar ese proceso",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 7,
+          "created": 1789113600007
         }
       ]
     },
@@ -4408,7 +4491,8 @@
           "billable": true,
           "fullDay": false
         }
-      ]
+      ],
+      "priorities": []
     },
     {
       "id": "u3",
@@ -6537,7 +6621,8 @@
           "name": "dar clase",
           "color": "#16a34a"
         }
-      ]
+      ],
+      "priorities": []
     },
     {
       "id": "xasd2wb",
@@ -8210,7 +8295,8 @@
           "billable": true,
           "fullDay": false
         }
-      ]
+      ],
+      "priorities": []
     },
     {
       "id": "u4",
@@ -8300,7 +8386,8 @@
           "fullDay": true
         }
       ],
-      "grid": {}
+      "grid": {},
+      "priorities": []
     },
     {
       "id": "xwn3rwh",
@@ -8318,7 +8405,8 @@
           "billable": false,
           "fullDay": true
         }
-      ]
+      ],
+      "priorities": []
     }
   ],
   "objectives": [
@@ -8347,18 +8435,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
+    "person": "u1",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 6
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo"
+    "taskSub": "todo",
+    "priorityDate": "2026-09-11"
   },
   "notes": [],
   "tasks": [
@@ -8647,7 +8736,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789124557633,
+    "updatedAt": 1789125763611,
     "dirtyPeople": [
       "xasd2wb"
     ]
