@@ -13,7 +13,7 @@ Identidad corporativa de Artes Búho (azul cobalto + dorado sobre crema). No req
 - **Calendario de objetivos.** Objetivos por persona o de empresa (en dorado), **vinculables a un proyecto**, con fecha límite y estado pendiente / en curso / hecho.
 - **Tareas.** Pestaña con cuatro secciones: **To-Do** (con proyecto y deadline), **Recurrentes** (diaria/semanal/mensual), **Extraordinarias** (dejando constancia de quién las manda) e **Hitos** de proyecto con fecha límite. Los vencimientos se resaltan en rojo.
 - **Cajón de tareas en el cuadrante.** Bajo la rejilla semanal hay una fila 📋 con una casilla por día: las tareas, hitos y **recurrentes** de ese día aparecen ahí como chips. Se marcan como hechas con un clic (la recurrente se marca solo esa semana, sin borrarse) y desde `+ tarea` se crea una nueva sin salir del cuadrante.
-- **Prioridades por día.** Encima del horario, cada persona dispone de una lista diaria ordenable con check, porcentaje de avance, barra de progreso y horas estimadas. El resumen calcula automáticamente lo completado y las horas aproximadas pendientes.
+- **Prioridades por día.** Encima del horario, cada persona dispone de una lista diaria ordenable con check, porcentaje de avance, barra de progreso y dedicación estimada en horas y minutos. El resumen calcula automáticamente lo completado y el tiempo aproximado pendiente.
 - **Resumen de empresa (privado).** Tabla mensual con salario, €/hora, horas, coste y delta por persona. **Solo lo ve Roman (master)** con su clave maestra; cada persona ve únicamente sus propios datos económicos. En la vista *Mes · Empresa*, el coste del equipo también queda reservado al master.
 
 ## Guardado
