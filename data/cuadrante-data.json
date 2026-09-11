@@ -17,6 +17,88 @@
       "color": "#1d4ed8",
       "salary": 0,
       "rate": 0,
+      "priorities": [
+        {
+          "id": "prio-20260911-1",
+          "date": "2026-09-11",
+          "title": "App de Mailing para empezar la semana que viene",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1789113600000
+        },
+        {
+          "id": "prio-20260911-2",
+          "date": "2026-09-11",
+          "title": "Video corregido de Sin Guion Trio",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1789113600001
+        },
+        {
+          "id": "prio-20260911-3",
+          "date": "2026-09-11",
+          "title": "Averiguar funcionamiento de Wassap Bussines para arreglar embudo Grupos",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1789113600002
+        },
+        {
+          "id": "prio-20260911-4",
+          "date": "2026-09-11",
+          "title": "Envios a Noches de Neon",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 3,
+          "created": 1789113600003
+        },
+        {
+          "id": "prio-20260911-5",
+          "date": "2026-09-11",
+          "title": "Envios a Leads Escuela",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 4,
+          "created": 1789113600004
+        },
+        {
+          "id": "prio-20260911-6",
+          "date": "2026-09-11",
+          "title": "Cerrar consultoria de cierre de Mario Cassado",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 5,
+          "created": 1789113600005
+        },
+        {
+          "id": "prio-20260911-7",
+          "date": "2026-09-11",
+          "title": "Teresa bolo abueletes",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 6,
+          "created": 1789113600006
+        },
+        {
+          "id": "prio-20260911-8",
+          "date": "2026-09-11",
+          "title": "Automatizar ese proceso",
+          "estimatedHours": null,
+          "progress": 0,
+          "done": false,
+          "order": 7,
+          "created": 1789113600007
+        }
+      ],
       "grid": {
         "2026-06-29": {
           "0-22": {
@@ -8223,6 +8305,7 @@
     "tab": "cuadrante",
     "person": "u2",
     "weekId": "2026-09-07",
+    "priorityDate": "2026-09-11",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -8571,7 +8654,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789034006778,
+    "updatedAt": 1789113269493,
     "dirtyPeople": [
       "u3",
       "xwn3rwh",

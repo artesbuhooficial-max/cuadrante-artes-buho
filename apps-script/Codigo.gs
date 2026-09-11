@@ -255,7 +255,7 @@ function _fetchPublished(){
  * Ana, la publicación de Bruno pisaba silenciosamente el trabajo de Ana — exactamente
  * lo que le pasó a Miriam y a Daniel, dos veces cada uno.
  *
- * `dirtyPeople` es la lista de ids de personas cuyo grid/proyectos SÍ se han tocado de
+ * `dirtyPeople` es la lista de ids de personas cuyo grid/proyectos/prioridades SÍ se han tocado de
  * verdad en el navegador que publica (lo rellena el propio cliente). Solo esas se
  * publican tal cual llegan; el resto del equipo se conserva exactamente como estaba ya
  * publicado, sin importar qué copia (quizá vieja) tuviera de ellas quien publica. El
@@ -280,7 +280,7 @@ function _mergePublish(incoming, dirtyPeople){
     var pubP = null;
     (currentPub.team || []).forEach(function(p){ if (p.id === incP.id) pubP = p; });
     if (!pubP) return incP; // persona nueva que aún no existía en lo publicado
-    // Conservar SU grid y SUS proyectos ya publicados (más fiables que la copia que
+    // Conservar SU grid, SUS proyectos y SUS prioridades ya publicadas (más fiables que la copia que
     // pueda tener de ellos quien publica) — pero respetar el resto de sus campos
     // (nombre, rol, color…) tal como llegan, porque eso sí puede editarlo cualquiera
     // sin que sea un riesgo real de perder horas trabajadas.
@@ -288,6 +288,7 @@ function _mergePublish(incoming, dirtyPeople){
     Object.keys(incP).forEach(function(k){ merged[k] = incP[k]; });
     merged.grid = pubP.grid;
     merged.projects = pubP.projects;
+    merged.priorities = pubP.priorities || [];
     return merged;
   });
 

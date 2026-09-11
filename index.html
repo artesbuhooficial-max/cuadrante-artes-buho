@@ -302,6 +302,64 @@
   .td-add{font-size:.65rem;font-weight:700;color:var(--muted-2);background:transparent;border:1px dashed var(--cream-line);border-radius:6px;padding:3px 0;cursor:pointer;width:100%}
   .td-add:hover{color:var(--blue);border-color:var(--blue)}
   .drawer-lbl{color:var(--muted);font-weight:700;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;text-align:right;padding-right:12px;vertical-align:top}
+
+  /* ===== PRIORIDADES DIARIAS ===== */
+  .priority-board{background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px;box-shadow:var(--shadow);overflow:hidden}
+  .prio-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;background:linear-gradient(120deg,#F4F7FF,#FFFBEE);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .prio-kicker{font-size:.66rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .prio-head h3{font-size:1.08rem;margin:0;color:var(--navy);letter-spacing:-.01em}
+  .prio-head p{font-size:.78rem;color:var(--muted);margin:5px 0 0;line-height:1.4}
+  .prio-summary{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+  .prio-stat{min-width:104px;background:rgba(255,255,255,.78);border:1px solid rgba(231,226,212,.9);border-radius:10px;padding:8px 11px}
+  .prio-stat .k{display:block;font-size:.59rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+  .prio-stat .v{display:block;font-size:1rem;font-weight:800;color:var(--navy);margin-top:2px;font-variant-numeric:tabular-nums}
+  .prio-stat .v.blue{color:var(--blue)}
+  .prio-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--paper)}
+  .prio-day{min-width:0;background:transparent;border:1px solid transparent;border-radius:10px;padding:8px 6px;color:var(--muted);text-align:center;transition:.15s}
+  .prio-day:hover{border-color:var(--blue-light);color:var(--blue)}
+  .prio-day.active{background:var(--blue);color:#fff;box-shadow:0 6px 14px -8px rgba(29,78,216,.85)}
+  .prio-day.today:not(.active){background:var(--blue-light);color:var(--blue-deep)}
+  .prio-day .dn{display:block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+  .prio-day .dd{display:block;font-size:.95rem;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+  .prio-day .dc{display:block;font-size:.61rem;font-weight:700;margin-top:3px;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prio-panel{padding:16px 18px 18px}
+  .prio-day-progress{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;align-items:center;gap:10px;margin-bottom:13px;color:var(--muted);font-size:.74rem;font-weight:700}
+  .prio-progress-track{height:8px;border-radius:99px;background:var(--blue-light);overflow:hidden}
+  .prio-progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),#22C55E);transition:width .25s ease}
+  .prio-list{display:flex;flex-direction:column;gap:8px}
+  .prio-row{display:grid;grid-template-columns:38px minmax(0,1fr) 104px auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 10px 10px 8px;background:#fff;transition:.15s}
+  .prio-row:hover{border-color:#C9D6F5;box-shadow:0 8px 20px -18px rgba(14,33,72,.55)}
+  .prio-row.done{background:#F7FBF7;border-color:#D7ECD9}
+  .prio-rank{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .prio-num{font-size:.67rem;font-weight:800;color:var(--muted-2);font-variant-numeric:tabular-nums}
+  .prio-check{width:25px;height:25px;border-radius:8px;border:2px solid #CCD3E0;background:var(--paper);color:#fff;display:grid;place-items:center;font-size:.78rem;font-weight:900;padding:0}
+  .prio-check:hover{border-color:var(--green)}
+  .prio-check.on{background:var(--green);border-color:var(--green)}
+  .prio-main{min-width:0}
+  .prio-title{display:block;width:100%;border:0;background:transparent;padding:1px 2px 5px;color:var(--navy);font:600 .88rem/1.35 'Inter',system-ui,sans-serif;outline:none}
+  .prio-title:focus{box-shadow:inset 0 -2px 0 var(--blue)}
+  .prio-row.done .prio-title{text-decoration:line-through;color:var(--muted)}
+  .prio-progress-row{display:grid;grid-template-columns:minmax(100px,1fr) 38px;gap:8px;align-items:center}
+  .prio-range{width:100%;height:4px;accent-color:var(--blue);cursor:pointer}
+  .prio-pct{font-size:.68rem;font-weight:800;color:var(--blue);text-align:right;font-variant-numeric:tabular-nums}
+  .prio-hours{display:flex;align-items:center;gap:5px;border:1px solid var(--cream-line);background:var(--cream);border-radius:9px;padding:7px 8px;white-space:nowrap}
+  .prio-hours input{width:50px;border:0;background:transparent;outline:none;color:var(--navy);font:800 .82rem 'Inter',system-ui,sans-serif;text-align:right;font-variant-numeric:tabular-nums}
+  .prio-hours span{font-size:.64rem;font-weight:700;color:var(--muted)}
+  .prio-actions{display:flex;align-items:center;gap:3px}
+  .prio-action{width:28px;height:28px;border-radius:7px;background:transparent;color:var(--muted);font-size:.76rem;font-weight:800;padding:0}
+  .prio-action:hover{background:var(--blue-light);color:var(--blue)}
+  .prio-action:disabled{opacity:.25;cursor:default;background:transparent;color:var(--muted)}
+  .prio-action.del:hover{background:#FEE2E2;color:#B91C1C}
+  .prio-empty{text-align:center;padding:22px 12px;color:var(--muted);font-size:.84rem;border:1px dashed var(--line);border-radius:11px}
+  .prio-add{display:grid;grid-template-columns:minmax(180px,1fr) 124px auto;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .prio-add input{background:var(--cream);border:1px solid var(--cream-line);border-radius:9px;padding:9px 11px;color:var(--navy);font:500 .84rem 'Inter',system-ui,sans-serif;outline:none;min-width:0}
+  .prio-add input:focus{border-color:var(--blue)}
+  @media(max-width:760px){
+    .prio-head{align-items:flex-start}.prio-summary{width:100%}.prio-stat{flex:1}
+    .prio-days{display:flex;overflow-x:auto}.prio-day{min-width:78px;flex:1}
+    .prio-panel{padding:13px 12px 15px}.prio-row{grid-template-columns:34px minmax(0,1fr) auto}.prio-hours{grid-column:2}.prio-actions{grid-column:3;grid-row:1/3}
+    .prio-add{grid-template-columns:1fr 104px}.prio-add .btn{grid-column:1/-1;justify-content:center}
+  }
   body.no-team-money .tv{visibility:hidden}
 </style>
 </head>
@@ -349,6 +407,7 @@
       <button class="btn ghost spacer" onclick="weekToday()">Semana actual</button>
     </div>
     <div class="person-strip" id="personStrip"></div>
+    <section class="priority-board" id="priorityBoard" aria-label="Prioridades diarias"></section>
     <div class="paste-bar" id="pasteBar" style="display:none"></div>
     <div class="grid-card"><div class="grid-scroll"><table class="grid" id="gridTable"></table></div></div>
     <div class="below">
@@ -596,7 +655,7 @@ async function confirmPin(pid){
 // "parece" más nuevo), esto sirve para detectar si ALGUIEN MÁS ha publicado algo desde
 // entonces sin que nos hayamos enterado.
 let lastKnownRemoteAt=0;
-// Quién ha tocado su horario/proyectos en ESTE navegador desde la última publicación —
+// Quién ha tocado su horario/proyectos/prioridades en ESTE navegador desde la última publicación —
 // el servidor (Apps Script) usa esto para fusionar de verdad en vez de sustituir el
 // archivo entero: SOLO se publica el grid/proyectos de quien está aquí marcado, el resto
 // del equipo se conserva tal cual estaba ya publicado, sin importar qué copia (quizá
@@ -640,7 +699,7 @@ async function publishViaAppsScript(){
     // pase con la publicación (o con la de cualquier otro más tarde), siempre queda un
     // archivo de recuperación de lo que había en el momento de publicar.
     try{exportJSON(true);}catch(e){}
-    // Quién ha tocado su horario/proyectos en este navegador desde la última publicación
+    // Quién ha tocado su horario/proyectos/prioridades en este navegador desde la última publicación
     // (siempre incluye a la persona seleccionada ahora mismo, por si algo se editó sin
     // pasar por markDirty). El servidor solo confía en ESTOS al fusionar — el resto del
     // equipo se conserva tal cual estaba ya publicado, así da igual si este navegador
@@ -726,6 +785,20 @@ function uid(){return 'x'+Math.random().toString(36).slice(2,8);}
 
 /* ============ SEED ============ */
 const PALETTE=['#1d4ed8','#d97706','#0891b2','#db2777','#16a34a','#7c3aed','#0ea5e9','#475569','#dc2626','#ca8a04'];
+const PRIORITY_STARTER_DATE='2026-09-11';
+const PRIORITY_STARTER_TITLES=[
+  'App de Mailing para empezar la semana que viene',
+  'Video corregido de Sin Guion Trio',
+  'Averiguar funcionamiento de Wassap Bussines para arreglar embudo Grupos',
+  'Envios a Noches de Neon',
+  'Envios a Leads Escuela',
+  'Cerrar consultoria de cierre de Mario Cassado',
+  'Teresa bolo abueletes',
+  'Automatizar ese proceso'
+];
+function starterPriorities(){return PRIORITY_STARTER_TITLES.map((title,i)=>({
+  id:'prio-20260911-'+(i+1),date:PRIORITY_STARTER_DATE,title,estimatedHours:null,progress:0,done:false,order:i,created:1789113600000+i
+}));}
 function seed(){
   const todayMon=weekId(mondayOf(new Date()));const now=new Date();
   const dp=()=>[
@@ -751,7 +824,7 @@ function seed(){
     notes:[],
     tasks:[],recurring:[],extraTasks:[],milestones:[],
     meta:{updatedAt:Date.now()},
-    ui:{tab:'cuadrante',person:'u1',weekId:todayMon,monthScope:'person',taskSub:'todo',
+    ui:{tab:'cuadrante',person:'u1',weekId:todayMon,priorityDate:dStr(now),monthScope:'person',taskSub:'todo',
         monthRef:{y:now.getFullYear(),m:now.getMonth()},resRef:{y:now.getFullYear(),m:now.getMonth()}}
   };
 }
@@ -769,6 +842,7 @@ function migrate(){
   const u=state.ui;
   u.tab=u.tab||'cuadrante';u.person=u.person||(state.team[0]&&state.team[0].id);
   u.weekId=u.weekId||weekId(mondayOf(now));u.monthScope=u.monthScope||'person';
+  u.priorityDate=u.priorityDate||dStr(now);
   u.monthRef=u.monthRef||{y:now.getFullYear(),m:now.getMonth()};
   u.resRef=u.resRef||{y:now.getFullYear(),m:now.getMonth()};
   // migrate flat grids (old "di-h" keys) into the current week
@@ -801,7 +875,31 @@ function migrate(){
     state.team.forEach(p=>{if(!p.projects||!p.projects.length)p.projects=gp.map(pr=>Object.assign({},pr));});
     state.projects=[];
   }
-  state.team.forEach(p=>{if(!p.projects)p.projects=[];});
+  state.team.forEach(p=>{
+    if(!p.projects)p.projects=[];
+    if(!Array.isArray(p.priorities))p.priorities=[];
+    p.priorities.forEach((x,i)=>{
+      x.progress=Math.max(0,Math.min(100,parseInt(x.progress,10)||0));
+      x.done=!!x.done||x.progress===100;
+      if(x.done)x.progress=100;
+      if(x.order==null)x.order=i;
+      if(x.estimatedHours==null||x.estimatedHours==='')x.estimatedHours=null;
+      else x.estimatedHours=Math.max(0,parseFloat(x.estimatedHours)||0);
+    });
+  });
+  // Conserva en los navegadores que ya tenían datos locales las prioridades habladas
+  // para David el viernes 11/09/2026. La marca impide volver a crearlas si luego se borran.
+  if(!state.config.priorityStarter20260911){
+    const david=state.team.find(p=>p.id==='u1')||state.team.find(p=>/^david$/i.test(p.name||''));
+    if(david){
+      const existing=new Set(david.priorities.map(x=>x.id));
+      starterPriorities().forEach(x=>{if(!existing.has(x.id))david.priorities.push(x);});
+      u.person=david.id;
+    }
+    u.weekId=weekId(mondayOf(parseId(PRIORITY_STARTER_DATE)));
+    u.priorityDate=PRIORITY_STARTER_DATE;
+    state.config.priorityStarter20260911=true;
+  }
   if(!state.notes)state.notes=[];
   if(!state.tasks)state.tasks=[];
   if(!state.recurring)state.recurring=[];
@@ -906,7 +1004,7 @@ function dayCost(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};
 function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){const pr=proj(v.p,p);if(!projFullDay(pr))hours+=SLOT_HOURS;if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
-function render(){if(clipProj)exitPasteMode();updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
+function render(){if(clipProj)exitPasteMode();updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderPriorityBoard();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
 
 function renderPeople(){
   const host=document.getElementById('people');
@@ -929,8 +1027,8 @@ function renderWeekNav(){
   document.getElementById('wnTop').textContent='Semana '+info.weekNum+' de '+new Date(info.year,info.month,1).toLocaleDateString('es-ES',{month:'long'})+' '+info.year;
   document.getElementById('wnRange').textContent=r1+' – '+r2;
 }
-function weekMove(n){const m=mondayOf(parseId(state.ui.weekId));m.setDate(m.getDate()+7*n);state.ui.weekId=weekId(m);save();render();}
-function weekToday(){state.ui.weekId=weekId(mondayOf(new Date()));save();render();}
+function weekMove(n){const m=mondayOf(parseId(state.ui.weekId));m.setDate(m.getDate()+7*n);state.ui.weekId=weekId(m);state.ui.priorityDate=state.ui.weekId;save();render();}
+function weekToday(){const now=new Date();state.ui.weekId=weekId(mondayOf(now));state.ui.priorityDate=dStr(now);save();render();}
 
 function renderPersonStrip(){
   const p=curPerson();const mon=parseId(state.ui.weekId);const info=weekInfo(mon);
@@ -958,6 +1056,64 @@ function renderPersonStrip(){
 }
 function field(label,key,val,suffix){const mvc=(key==='salary'||key==='rate')?' mv-field':'';return '<div class="field'+mvc+'"><label>'+label+'</label><div class="val"><input type="number" value="'+(val||0)+'" onchange="updPerson(\''+key+'\',this.value)"><span class="suffix">'+suffix+'</span></div></div>';}
 function updPerson(key,v){curPerson()[key]=parseFloat(v)||0;save();renderPersonStrip();renderStats();renderMonth();renderSummary();}
+
+/* ============ PRIORIDADES DIARIAS ============ */
+function priorityDateForWeek(){
+  const start=state.ui.weekId,end=dStr(addDays(parseId(start),6));let ds=state.ui.priorityDate;
+  if(!ds||ds<start||ds>end){const today=dStr(new Date());ds=(today>=start&&today<=end)?today:start;state.ui.priorityDate=ds;storeSet(state);}
+  return ds;
+}
+function prioritiesForDay(p,ds){return (p.priorities||[]).filter(x=>x.date===ds).sort((a,b)=>(a.order||0)-(b.order||0)||(a.created||0)-(b.created||0));}
+function priorityPct(x){return x.done?100:Math.max(0,Math.min(100,parseInt(x.progress,10)||0));}
+function dayPriorityPct(list){return list.length?Math.round(list.reduce((sum,x)=>sum+priorityPct(x),0)/list.length):0;}
+function fmtPrioHours(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:Number(n)%1?1:0,maximumFractionDigits:2})+' h';}
+function priorityDayLabel(ds){const s=parseId(ds).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});return s.charAt(0).toUpperCase()+s.slice(1);}
+function renderPriorityBoard(){
+  const host=document.getElementById('priorityBoard');if(!host)return;
+  const p=curPerson(),mon=parseId(state.ui.weekId),selected=priorityDateForWeek();
+  let days='';
+  DAYS.forEach((day,di)=>{
+    const date=addDays(mon,di),ds=dStr(date),list=prioritiesForDay(p,ds),pct=dayPriorityPct(list),isToday=ds===dStr(new Date());
+    days+='<button class="prio-day'+(ds===selected?' active':'')+(isToday?' today':'')+'" onclick="selectPriorityDay(\''+ds+'\')">'+
+      '<span class="dn">'+day+'</span><span class="dd">'+date.getDate()+'</span><span class="dc">'+(list.length?(list.length+' '+(list.length===1?'prioridad':'prioridades')+' · '+pct+'%'):'Sin prioridades')+'</span></button>';
+  });
+  const list=prioritiesForDay(p,selected),done=list.filter(x=>priorityPct(x)===100).length,pct=dayPriorityPct(list);
+  const estimated=list.reduce((sum,x)=>sum+(x.estimatedHours||0),0);
+  const pending=list.reduce((sum,x)=>sum+(x.estimatedHours||0)*(1-priorityPct(x)/100),0);
+  let rows='';
+  list.forEach((x,i)=>{
+    const xp=priorityPct(x),hours=x.estimatedHours==null?'':x.estimatedHours;
+    rows+='<div class="prio-row'+(xp===100?' done':'')+'">'+
+      '<div class="prio-rank"><span class="prio-num">'+(i+1)+'</span><button class="prio-check'+(xp===100?' on':'')+'" aria-label="'+(xp===100?'Reabrir':'Completar')+' prioridad" aria-pressed="'+(xp===100?'true':'false')+'" onclick="togglePriority(\''+x.id+'\')">'+(xp===100?'✓':'')+'</button></div>'+
+      '<div class="prio-main"><input class="prio-title" value="'+esc(x.title)+'" aria-label="Nombre de la prioridad '+(i+1)+'" onchange="updatePriorityTitle(\''+x.id+'\',this.value)">'+
+        '<div class="prio-progress-row"><input class="prio-range" type="range" min="0" max="100" step="5" value="'+xp+'" aria-label="Progreso de '+esc(x.title)+'" oninput="previewPriorityProgress(this)" onchange="setPriorityProgress(\''+x.id+'\',this.value)"><span class="prio-pct">'+xp+'%</span></div></div>'+
+      '<label class="prio-hours" title="Horas estimadas para concluir esta acción"><input type="number" min="0" step="0.25" placeholder="—" value="'+hours+'" aria-label="Horas estimadas de '+esc(x.title)+'" onchange="updatePriorityHours(\''+x.id+'\',this.value)"><span>h estim.</span></label>'+
+      '<div class="prio-actions"><button class="prio-action" title="Subir prioridad" aria-label="Subir prioridad" onclick="movePriority(\''+x.id+'\',-1)"'+(i===0?' disabled':'')+'>↑</button><button class="prio-action" title="Bajar prioridad" aria-label="Bajar prioridad" onclick="movePriority(\''+x.id+'\',1)"'+(i===list.length-1?' disabled':'')+'>↓</button><button class="prio-action del" title="Eliminar prioridad" aria-label="Eliminar prioridad" onclick="deletePriority(\''+x.id+'\')">✕</button></div>'+
+    '</div>';
+  });
+  if(!rows)rows='<div class="prio-empty">Este día todavía no tiene prioridades. Añade la primera debajo.</div>';
+  host.innerHTML='<div class="prio-head"><div><div class="prio-kicker">Foco diario · '+esc(p.name)+'</div><h3>Prioridades del '+priorityDayLabel(selected).toLowerCase()+'</h3><p>Ordénalas, ajusta su avance y estima el tiempo necesario sin ligarlas a una hora concreta.</p></div>'+
+    '<div class="prio-summary"><div class="prio-stat"><span class="k">Completadas</span><span class="v">'+done+' / '+list.length+'</span></div><div class="prio-stat"><span class="k">Progreso</span><span class="v blue">'+pct+'%</span></div><div class="prio-stat"><span class="k">Horas estimadas</span><span class="v">'+(estimated?fmtPrioHours(estimated):'Sin estimar')+'</span></div></div></div>'+
+    '<div class="prio-days">'+days+'</div><div class="prio-panel">'+
+      '<div class="prio-day-progress"><span>Avance del día</span><div class="prio-progress-track"><div class="prio-progress-fill" style="width:'+pct+'%"></div></div><span>'+(estimated?'Quedan ≈ '+fmtPrioHours(pending):pct+'% completado')+'</span></div>'+
+      '<div class="prio-list">'+rows+'</div><div class="prio-add"><input id="prioTitle" type="text" placeholder="Nueva prioridad para este día…" onkeydown="if(event.key===\'Enter\')addPriority(\''+selected+'\')"><input id="prioHours" type="number" min="0" step="0.25" placeholder="Horas estimadas" onkeydown="if(event.key===\'Enter\')addPriority(\''+selected+'\')"><button class="btn primary" onclick="addPriority(\''+selected+'\')">+ Añadir prioridad</button></div></div>';
+}
+function selectPriorityDay(ds){state.ui.priorityDate=ds;storeSet(state);renderPriorityBoard();}
+function findPriority(id){const p=curPerson();return {p,x:(p.priorities||[]).find(item=>item.id===id)};}
+function priorityChanged(p){markDirty(p.id);save();renderPriorityBoard();}
+function addPriority(ds){
+  const title=val('prioTitle');if(!title){toast('Escribe la prioridad');return;}
+  const p=curPerson(),list=prioritiesForDay(p,ds),raw=val('prioHours');
+  p.priorities=p.priorities||[];p.priorities.push({id:uid(),date:ds,title,estimatedHours:raw===''?null:Math.max(0,parseFloat(raw)||0),progress:0,done:false,order:list.length,created:Date.now()});
+  priorityChanged(p);toast('Prioridad añadida al '+priorityDayLabel(ds).toLowerCase());
+}
+function updatePriorityTitle(id,value){const r=findPriority(id),title=String(value||'').trim();if(!r.x)return;if(!title){toast('La prioridad no puede quedar vacía');renderPriorityBoard();return;}r.x.title=title;markDirty(r.p.id);save();}
+function updatePriorityHours(id,value){const r=findPriority(id);if(!r.x)return;const raw=String(value||'').trim();r.x.estimatedHours=raw===''?null:Math.max(0,parseFloat(raw)||0);priorityChanged(r.p);}
+function previewPriorityProgress(input){const label=input.closest('.prio-progress-row').querySelector('.prio-pct');if(label)label.textContent=input.value+'%';}
+function setPriorityProgress(id,value){const r=findPriority(id);if(!r.x)return;r.x.progress=Math.max(0,Math.min(100,parseInt(value,10)||0));r.x.done=r.x.progress===100;priorityChanged(r.p);}
+function togglePriority(id){const r=findPriority(id);if(!r.x)return;const complete=priorityPct(r.x)===100;r.x.done=!complete;r.x.progress=complete?0:100;priorityChanged(r.p);}
+function movePriority(id,direction){const r=findPriority(id);if(!r.x)return;const list=prioritiesForDay(r.p,r.x.date),index=list.findIndex(x=>x.id===id),target=index+direction;if(index<0||target<0||target>=list.length)return;const moved=list[index];list[index]=list[target];list[target]=moved;list.forEach((x,i)=>x.order=i);priorityChanged(r.p);}
+function deletePriority(id){const r=findPriority(id);if(!r.x||!confirm('¿Eliminar esta prioridad?'))return;r.p.priorities=r.p.priorities.filter(x=>x.id!==id);prioritiesForDay(r.p,r.x.date).forEach((x,i)=>x.order=i);priorityChanged(r.p);}
 
 const _HOUR_COL_W=78,_DAY_COL_DEF=150;
 let _colW=Array(7).fill(null);
@@ -1837,7 +1993,7 @@ function quickAddTask(ds){
 function switchTab(t){if(clipProj)exitPasteMode();state.ui.tab=t;storeSet(state);
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   ['cuadrante','mes','calendario','resumen','equipo','notas','tareas'].forEach(v=>{document.getElementById('view-'+v).style.display=(v===t)?'':'none';});
-  renderPeople();if(t==='cuadrante')renderGrid();if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();if(t==='equipo')renderEquipo();if(t==='notas')renderNotas();if(t==='tareas')renderTareas();}
+  renderPeople();if(t==='cuadrante'){renderPriorityBoard();renderGrid();}if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();if(t==='equipo')renderEquipo();if(t==='notas')renderNotas();if(t==='tareas')renderTareas();}
 
 /* ============ BACKUP (download/upload) ============ */
 function exportJSON(silent){
