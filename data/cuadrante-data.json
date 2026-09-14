@@ -8441,19 +8441,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
-    "weekId": "2026-09-07",
+    "person": "u3",
+    "weekId": "2026-09-14",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 8
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-11"
+    "priorityDate": "2026-09-14"
   },
   "notes": [],
   "tasks": [
@@ -8760,7 +8760,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789369646840,
+    "updatedAt": 1789379959779,
     "dirtyPeople": [
       "xasd2wb"
     ]
