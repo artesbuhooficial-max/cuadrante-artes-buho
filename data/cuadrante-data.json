@@ -8209,12 +8209,6 @@
           },
           "4-25": {
             "p": "x09g91h"
-          },
-          "4-26": {
-            "p": "x09g91h"
-          },
-          "4-27": {
-            "p": "x09g91h"
           }
         }
       },
@@ -8744,11 +8738,29 @@
       "deadline": "2026-09-07",
       "status": "pend",
       "created": 1788865202088
+    },
+    {
+      "id": "xkgmxg0",
+      "text": "Reunión Interna Equipo.",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-09-11",
+      "status": "pend",
+      "created": 1789369594927
+    },
+    {
+      "id": "xzhbor4",
+      "text": "Reunión Interna RespondIo",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-09-11",
+      "status": "pend",
+      "created": 1789369610227
     }
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789369572131,
+    "updatedAt": 1789369646840,
     "dirtyPeople": [
       "xasd2wb"
     ]
