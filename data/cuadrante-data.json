@@ -8668,9 +8668,105 @@
       "grid": {
         "2026-09-07": {
           "0-18": {
-            "p": "xbs9zru"
+            "p": "xncmrji"
           },
           "0-19": {
+            "p": "xncmrji"
+          },
+          "0-20": {
+            "p": "xncmrji"
+          },
+          "0-21": {
+            "p": "xncmrji"
+          },
+          "0-22": {
+            "p": "xncmrji"
+          },
+          "0-23": {
+            "p": "xncmrji"
+          },
+          "0-24": {
+            "p": "xt3bria"
+          },
+          "0-25": {
+            "p": "xt3bria"
+          },
+          "0-26": {
+            "p": "xt3bria"
+          },
+          "0-27": {
+            "p": "xt3bria"
+          },
+          "0-28": {
+            "p": "xt3bria"
+          },
+          "0-29": {
+            "p": "xt3bria"
+          },
+          "0-30": {
+            "p": "xt3bria"
+          },
+          "0-31": {
+            "p": "xt3bria"
+          },
+          "0-32": {
+            "p": "xncmrji"
+          },
+          "0-33": {
+            "p": "xncmrji"
+          },
+          "0-34": {
+            "p": "xbs9zru"
+          },
+          "1-18": {
+            "p": "xt3bria"
+          },
+          "1-19": {
+            "p": "xbs9zru"
+          },
+          "1-20": {
+            "p": "xt3bria"
+          },
+          "1-21": {
+            "p": "xbs9zru"
+          },
+          "1-22": {
+            "p": "xt3bria"
+          },
+          "1-23": {
+            "p": "xbs9zru"
+          },
+          "1-24": {
+            "p": "xt3bria"
+          },
+          "1-25": {
+            "p": "xbs9zru"
+          },
+          "1-26": {
+            "p": "xt3bria"
+          },
+          "1-27": {
+            "p": "xbs9zru"
+          },
+          "1-28": {
+            "p": "xt3bria"
+          },
+          "1-29": {
+            "p": "xbs9zru"
+          },
+          "1-30": {
+            "p": "xt3bria"
+          },
+          "1-31": {
+            "p": "xbs9zru"
+          },
+          "1-32": {
+            "p": "xbs9zru"
+          },
+          "1-33": {
+            "p": "xbs9zru"
+          },
+          "1-34": {
             "p": "xbs9zru"
           }
         }
@@ -8685,8 +8781,27 @@
         },
         {
           "id": "xbs9zru",
-          "name": "CONTACTOS BELLA BESTIA",
-          "color": "#d97706"
+          "name": "Contactos Bella Bestia",
+          "color": "#0ea5e9",
+          "rate": null,
+          "billable": true,
+          "fullDay": false
+        },
+        {
+          "id": "xt3bria",
+          "name": "Promoción Bella Bestia",
+          "color": "#db2777",
+          "rate": null,
+          "billable": true,
+          "fullDay": false
+        },
+        {
+          "id": "xncmrji",
+          "name": "Tareas Extraordinarias",
+          "color": "#ca8a04",
+          "rate": null,
+          "billable": true,
+          "fullDay": false
         }
       ],
       "priorities": []
@@ -9037,11 +9152,14 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789398301810,
+    "updatedAt": 1789399881551,
     "dirtyPeople": [
-      "u3",
+      "xwn3rwh",
       "u1",
-      "xwn3rwh"
+      "u2",
+      "u3",
+      "xasd2wb",
+      "u4"
     ]
   },
   "bigEvents": [
