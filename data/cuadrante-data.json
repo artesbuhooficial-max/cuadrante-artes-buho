@@ -2202,7 +2202,7 @@
           "date": "2026-09-11",
           "title": "App de Mailing para empezar la semana que viene",
           "estimatedHours": null,
-          "progress": 0,
+          "progress": 20,
           "done": false,
           "order": 0,
           "created": 1789113600000
@@ -8665,7 +8665,16 @@
       "color": "#16a34a",
       "salary": 0,
       "rate": 0,
-      "grid": {},
+      "grid": {
+        "2026-09-07": {
+          "0-18": {
+            "p": "xbs9zru"
+          },
+          "0-19": {
+            "p": "xbs9zru"
+          }
+        }
+      },
       "projects": [
         {
           "id": "xcc414h",
@@ -8673,6 +8682,11 @@
           "color": "#16a34a",
           "billable": false,
           "fullDay": true
+        },
+        {
+          "id": "xbs9zru",
+          "name": "CONTACTOS BELLA BESTIA",
+          "color": "#d97706"
         }
       ],
       "priorities": []
@@ -8704,7 +8718,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
+    "person": "xwn3rwh",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
@@ -8716,7 +8730,7 @@
       "m": 7
     },
     "taskSub": "recur",
-    "priorityDate": "2026-09-11"
+    "priorityDate": "2026-09-07"
   },
   "notes": [],
   "tasks": [
@@ -9023,9 +9037,11 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789397509003,
+    "updatedAt": 1789398301810,
     "dirtyPeople": [
-      "u3"
+      "u3",
+      "u1",
+      "xwn3rwh"
     ]
   },
   "bigEvents": [
