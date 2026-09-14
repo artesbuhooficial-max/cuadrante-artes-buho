@@ -8209,6 +8209,12 @@
           },
           "4-25": {
             "p": "x09g91h"
+          },
+          "4-26": {
+            "p": "x09g91h"
+          },
+          "4-27": {
+            "p": "x09g91h"
           }
         }
       },
@@ -8441,12 +8447,12 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "xasd2wb",
     "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 7
     },
     "resRef": {
       "y": 2026,
@@ -8742,9 +8748,9 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789125789368,
+    "updatedAt": 1789369572131,
     "dirtyPeople": [
-      "u2"
+      "xasd2wb"
     ]
   },
   "bigEvents": [
