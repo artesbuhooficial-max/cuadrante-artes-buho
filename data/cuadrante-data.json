@@ -8889,8 +8889,8 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
-    "weekId": "2026-09-14",
+    "person": "xwn3rwh",
+    "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -8898,10 +8898,10 @@
     },
     "resRef": {
       "y": 2026,
-      "m": 5
+      "m": 7
     },
-    "taskSub": "todo",
-    "priorityDate": "2026-09-14"
+    "taskSub": "recur",
+    "priorityDate": "2026-09-21"
   },
   "notes": [],
   "tasks": [
@@ -9208,7 +9208,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789454612803,
+    "updatedAt": 1789463326831,
     "dirtyPeople": [
       "xwn3rwh",
       "u1",
