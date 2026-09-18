@@ -7030,6 +7030,36 @@
           "done": false,
           "order": 1,
           "created": 1789380051526
+        },
+        {
+          "id": "xqgt2qz",
+          "date": "2026-09-15",
+          "title": "Crear grupos de Whatssap",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1789719405083
+        },
+        {
+          "id": "x57g7i5",
+          "date": "2026-09-15",
+          "title": "Reunion con loc chicos",
+          "estimatedHours": 2,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1789719421651
+        },
+        {
+          "id": "xmt4yfo",
+          "date": "2026-09-15",
+          "title": "Ver pagos",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1789719429367
         }
       ]
     },
@@ -9029,19 +9059,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "u3",
     "weekId": "2026-09-14",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 8
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-14"
+    "priorityDate": "2026-09-15"
   },
   "notes": [],
   "tasks": [
@@ -9348,8 +9378,10 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789579436173,
-    "dirtyPeople": []
+    "updatedAt": 1789726520118,
+    "dirtyPeople": [
+      "u3"
+    ]
   },
   "bigEvents": [
     {
