@@ -7060,6 +7060,36 @@
           "done": true,
           "order": 2,
           "created": 1789719429367
+        },
+        {
+          "id": "x82rl02",
+          "date": "2026-09-21",
+          "title": "Ir a la Bella Bestia a por las cuentas",
+          "estimatedHours": 0.6666666666666666,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1789726549455
+        },
+        {
+          "id": "xwd2684",
+          "date": "2026-09-21",
+          "title": "Imprimir carteles, y precios",
+          "estimatedHours": 0.3333333333333333,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1789726570402
+        },
+        {
+          "id": "xr9xpdx",
+          "date": "2026-09-21",
+          "title": "Revisar pagos fin de semana",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1789726589666
         }
       ]
     },
@@ -9060,7 +9090,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u3",
-    "weekId": "2026-09-14",
+    "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -9071,7 +9101,7 @@
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-15"
+    "priorityDate": "2026-09-21"
   },
   "notes": [],
   "tasks": [
@@ -9378,7 +9408,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789726520118,
+    "updatedAt": 1789726595910,
     "dirtyPeople": [
       "u3"
     ]
