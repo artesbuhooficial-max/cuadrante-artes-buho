@@ -7272,66 +7272,6 @@
           "done": false,
           "order": 1,
           "created": 1789380051526
-        },
-        {
-          "id": "xqgt2qz",
-          "date": "2026-09-15",
-          "title": "Crear grupos de Whatssap",
-          "estimatedHours": 1,
-          "progress": 0,
-          "done": false,
-          "order": 0,
-          "created": 1789719405083
-        },
-        {
-          "id": "x57g7i5",
-          "date": "2026-09-15",
-          "title": "Reunion con loc chicos",
-          "estimatedHours": 2,
-          "progress": 100,
-          "done": true,
-          "order": 1,
-          "created": 1789719421651
-        },
-        {
-          "id": "xmt4yfo",
-          "date": "2026-09-15",
-          "title": "Ver pagos",
-          "estimatedHours": 1,
-          "progress": 100,
-          "done": true,
-          "order": 2,
-          "created": 1789719429367
-        },
-        {
-          "id": "x82rl02",
-          "date": "2026-09-21",
-          "title": "Ir a la Bella Bestia a por las cuentas",
-          "estimatedHours": 0.6666666666666666,
-          "progress": 0,
-          "done": false,
-          "order": 0,
-          "created": 1789726549455
-        },
-        {
-          "id": "xwd2684",
-          "date": "2026-09-21",
-          "title": "Imprimir carteles, y precios",
-          "estimatedHours": 0.3333333333333333,
-          "progress": 0,
-          "done": false,
-          "order": 1,
-          "created": 1789726570402
-        },
-        {
-          "id": "xr9xpdx",
-          "date": "2026-09-21",
-          "title": "Revisar pagos fin de semana",
-          "estimatedHours": 1,
-          "progress": 0,
-          "done": false,
-          "order": 2,
-          "created": 1789726589666
         }
       ]
     },
@@ -8970,6 +8910,156 @@
           },
           "2-27": {
             "p": "x95ibqt"
+          },
+          "0-22": {
+            "p": "x6n3x6j"
+          },
+          "0-23": {
+            "p": "x6n3x6j"
+          },
+          "0-24": {
+            "p": "x09g91h"
+          },
+          "0-25": {
+            "p": "x09g91h"
+          },
+          "0-26": {
+            "p": "x09g91h"
+          },
+          "0-27": {
+            "p": "x09g91h"
+          },
+          "0-34": {
+            "p": "xmom4jb"
+          },
+          "0-35": {
+            "p": "xmom4jb"
+          },
+          "0-36": {
+            "p": "xmom4jb"
+          },
+          "0-37": {
+            "p": "xmom4jb"
+          },
+          "0-38": {
+            "p": "xmom4jb"
+          },
+          "0-39": {
+            "p": "xmom4jb"
+          },
+          "1-18": {
+            "p": "x09g91h"
+          },
+          "1-19": {
+            "p": "x09g91h"
+          },
+          "1-20": {
+            "p": "x09g91h"
+          },
+          "1-21": {
+            "p": "x09g91h"
+          },
+          "1-22": {
+            "p": "x6n3x6j"
+          },
+          "1-23": {
+            "p": "x6n3x6j"
+          },
+          "2-28": {
+            "p": "xy15wdb"
+          },
+          "2-29": {
+            "p": "xy15wdb"
+          },
+          "1-24": {
+            "p": "xuquwgd"
+          },
+          "1-25": {
+            "p": "xuquwgd"
+          },
+          "1-26": {
+            "p": "xxsj8h6"
+          },
+          "1-27": {
+            "p": "xxsj8h6"
+          },
+          "2-18": {
+            "p": "x09g91h"
+          },
+          "2-19": {
+            "p": "x09g91h"
+          },
+          "2-20": {
+            "p": "x6fm5ya"
+          },
+          "2-21": {
+            "p": "x6fm5ya"
+          },
+          "2-22": {
+            "p": "xmom4jb"
+          },
+          "2-23": {
+            "p": "xmom4jb"
+          },
+          "2-34": {
+            "p": "xmom4jb"
+          },
+          "2-35": {
+            "p": "xmom4jb"
+          },
+          "2-36": {
+            "p": "xmom4jb"
+          },
+          "2-37": {
+            "p": "xmom4jb"
+          },
+          "2-24": {
+            "p": "x09g91h"
+          },
+          "2-25": {
+            "p": "x09g91h"
+          },
+          "3-20": {
+            "p": "xy15wdb"
+          },
+          "3-21": {
+            "p": "xy15wdb"
+          },
+          "3-22": {
+            "p": "xy15wdb"
+          },
+          "3-23": {
+            "p": "xy15wdb"
+          },
+          "3-24": {
+            "p": "xy15wdb"
+          },
+          "3-25": {
+            "p": "xy15wdb"
+          },
+          "3-18": {
+            "p": "xy15wdb"
+          },
+          "3-19": {
+            "p": "xy15wdb"
+          },
+          "3-16": {
+            "p": "xy15wdb"
+          },
+          "3-17": {
+            "p": "xy15wdb"
+          },
+          "3-26": {
+            "p": "xy15wdb"
+          },
+          "3-27": {
+            "p": "xy15wdb"
+          },
+          "4-18": {
+            "p": "xy15wdb"
+          },
+          "4-19": {
+            "p": "xy15wdb"
           }
         }
       },
@@ -9331,19 +9421,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u3",
-    "weekId": "2026-09-21",
+    "person": "xasd2wb",
+    "weekId": "2026-09-14",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 8
+      "m": 7
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-21"
+    "priorityDate": "2026-09-14"
   },
   "notes": [],
   "tasks": [
@@ -9646,13 +9736,31 @@
       "deadline": "2026-09-11",
       "status": "pend",
       "created": 1789369610227
+    },
+    {
+      "id": "xyq42u5",
+      "text": "Reunión interna equipo",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-09-16",
+      "status": "pend",
+      "created": 1789978260823
+    },
+    {
+      "id": "xz90ddc",
+      "text": "Reunión interna equipo.",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-09-17",
+      "status": "pend",
+      "created": 1789978280924
     }
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1789975469115,
+    "updatedAt": 1789978354324,
     "dirtyPeople": [
-      "u3"
+      "xasd2wb"
     ]
   },
   "bigEvents": [
