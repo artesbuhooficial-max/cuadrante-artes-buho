@@ -7280,18 +7280,6 @@
           "2-27": {
             "p": "p1"
           },
-          "2-30": {
-            "p": "p1"
-          },
-          "2-31": {
-            "p": "p1"
-          },
-          "2-32": {
-            "p": "p1"
-          },
-          "2-33": {
-            "p": "p1"
-          },
           "4-18": {
             "p": "p1"
           },
@@ -7365,10 +7353,10 @@
             "p": "x6njpre"
           },
           "1-42": {
-            "p": "x6njpre"
+            "p": "p3"
           },
           "1-43": {
-            "p": "x6njpre"
+            "p": "p3"
           },
           "1-38": {
             "p": "x6njpre"
@@ -7423,6 +7411,18 @@
           },
           "3-43": {
             "p": "x6njpre"
+          },
+          "2-36": {
+            "p": "p3"
+          },
+          "2-37": {
+            "p": "p3"
+          },
+          "2-34": {
+            "p": "p3"
+          },
+          "2-35": {
+            "p": "p3"
           }
         }
       },
@@ -7525,6 +7525,56 @@
           "done": false,
           "order": 1,
           "created": 1789380051526
+        },
+        {
+          "id": "x1rk0et",
+          "date": "2026-09-23",
+          "title": "Revisar pagos",
+          "estimatedHours": 0.5,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1790102815128
+        },
+        {
+          "id": "xhrx3sc",
+          "date": "2026-09-23",
+          "title": "Ir a la bella beestia",
+          "estimatedHours": 0.75,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1790102824892
+        },
+        {
+          "id": "xvofjzv",
+          "date": "2026-09-23",
+          "title": "Abusos sexuales",
+          "estimatedHours": 0.3333333333333333,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1790102842229
+        },
+        {
+          "id": "xe9y510",
+          "date": "2026-09-23",
+          "title": "Oscar de Music Bus",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 3,
+          "created": 1790102877522
+        },
+        {
+          "id": "xjufz5i",
+          "date": "2026-09-23",
+          "title": "Corregir los documentos de la bella bestia (están mal)",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 4,
+          "created": 1790103113547
         }
       ]
     },
@@ -9968,19 +10018,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "u3",
     "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 8
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-21"
+    "priorityDate": "2026-09-23"
   },
   "notes": [],
   "tasks": [
@@ -10314,7 +10364,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790083299610,
+    "updatedAt": 1790103488988,
     "dirtyPeople": [
       "u1",
       "xwn3rwh",
