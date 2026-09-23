@@ -6939,6 +6939,30 @@
           },
           "3-41": {
             "p": "x6njpre"
+          },
+          "4-20": {
+            "p": "xk6kruc"
+          },
+          "4-21": {
+            "p": "xk6kruc"
+          },
+          "4-22": {
+            "p": "xk6kruc"
+          },
+          "4-23": {
+            "p": "xk6kruc"
+          },
+          "4-24": {
+            "p": "xk6kruc"
+          },
+          "4-25": {
+            "p": "xk6kruc"
+          },
+          "4-26": {
+            "p": "p1"
+          },
+          "4-27": {
+            "p": "p1"
           }
         },
         "2026-09-14": {
@@ -10025,7 +10049,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u3",
-    "weekId": "2026-09-21",
+    "weekId": "2026-09-07",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -10036,7 +10060,7 @@
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-23"
+    "priorityDate": "2026-09-07"
   },
   "notes": [],
   "tasks": [
@@ -10370,7 +10394,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790151833551,
+    "updatedAt": 1790151979049,
     "dirtyPeople": [
       "u3"
     ]
