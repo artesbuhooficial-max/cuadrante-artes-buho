@@ -7423,6 +7423,12 @@
           },
           "2-35": {
             "p": "p3"
+          },
+          "2-16": {
+            "p": "p1"
+          },
+          "2-17": {
+            "p": "p1"
           }
         }
       },
@@ -7571,8 +7577,8 @@
           "date": "2026-09-23",
           "title": "Corregir los documentos de la bella bestia (están mal)",
           "estimatedHours": 1,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 4,
           "created": 1790103113547
         }
@@ -10364,14 +10370,9 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790103488988,
+    "updatedAt": 1790151833551,
     "dirtyPeople": [
-      "u1",
-      "xwn3rwh",
-      "u2",
-      "u3",
-      "xasd2wb",
-      "u4"
+      "u3"
     ]
   },
   "bigEvents": [
