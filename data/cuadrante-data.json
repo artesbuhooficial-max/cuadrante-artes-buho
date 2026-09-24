@@ -9661,10 +9661,10 @@
             "p": "xmom4jb"
           },
           "0-28": {
-            "p": "xmom4jb"
+            "p": "xy15wdb"
           },
           "0-29": {
-            "p": "xmom4jb"
+            "p": "xy15wdb"
           },
           "0-36": {
             "p": "xmom4jb"
@@ -9676,6 +9676,150 @@
             "p": "xmom4jb"
           },
           "0-39": {
+            "p": "xmom4jb"
+          },
+          "1-18": {
+            "p": "x09g91h"
+          },
+          "1-19": {
+            "p": "x09g91h"
+          },
+          "1-20": {
+            "p": "x6n3x6j"
+          },
+          "1-21": {
+            "p": "x6n3x6j"
+          },
+          "1-22": {
+            "p": "xmom4jb"
+          },
+          "1-23": {
+            "p": "xmom4jb"
+          },
+          "1-24": {
+            "p": "xmom4jb"
+          },
+          "1-25": {
+            "p": "xmom4jb"
+          },
+          "1-26": {
+            "p": "xxsj8h6"
+          },
+          "1-27": {
+            "p": "xxsj8h6"
+          },
+          "1-28": {
+            "p": "xmom4jb"
+          },
+          "1-29": {
+            "p": "xmom4jb"
+          },
+          "2-20": {
+            "p": "x6n3x6j"
+          },
+          "2-21": {
+            "p": "x6n3x6j"
+          },
+          "2-22": {
+            "p": "xmom4jb"
+          },
+          "2-23": {
+            "p": "xmom4jb"
+          },
+          "2-24": {
+            "p": "x95ibqt"
+          },
+          "2-25": {
+            "p": "x95ibqt"
+          },
+          "2-26": {
+            "p": "x95ibqt"
+          },
+          "2-27": {
+            "p": "x95ibqt"
+          },
+          "2-28": {
+            "p": "xmom4jb"
+          },
+          "2-29": {
+            "p": "xmom4jb"
+          },
+          "2-36": {
+            "p": "xmom4jb"
+          },
+          "2-37": {
+            "p": "xmom4jb"
+          },
+          "2-38": {
+            "p": "xmom4jb"
+          },
+          "2-39": {
+            "p": "xmom4jb"
+          },
+          "2-40": {
+            "p": "xmom4jb"
+          },
+          "2-41": {
+            "p": "xmom4jb"
+          },
+          "3-20": {
+            "p": "x09g91h"
+          },
+          "3-21": {
+            "p": "x09g91h"
+          },
+          "3-22": {
+            "p": "x09g91h"
+          },
+          "3-23": {
+            "p": "x09g91h"
+          },
+          "3-24": {
+            "p": "xxsj8h6"
+          },
+          "3-25": {
+            "p": "xxsj8h6"
+          },
+          "3-26": {
+            "p": "xmom4jb"
+          },
+          "3-27": {
+            "p": "xmom4jb"
+          },
+          "3-28": {
+            "p": "xmom4jb"
+          },
+          "3-29": {
+            "p": "xmom4jb"
+          },
+          "3-18": {
+            "p": "xuquwgd"
+          },
+          "3-19": {
+            "p": "xuquwgd"
+          },
+          "4-20": {
+            "p": "xy15wdb"
+          },
+          "4-21": {
+            "p": "xy15wdb"
+          },
+          "4-22": {
+            "p": "x09g91h"
+          },
+          "4-23": {
+            "p": "x09g91h"
+          },
+          "4-24": {
+            "p": "xmom4jb"
+          },
+          "4-25": {
+            "p": "xmom4jb"
+          },
+          "4-26": {
+            "p": "xmom4jb"
+          },
+          "4-27": {
             "p": "xmom4jb"
           }
         }
@@ -10222,19 +10366,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u2",
+    "person": "xasd2wb",
     "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 6
+      "m": 7
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-21"
+    "priorityDate": "2026-09-23"
   },
   "notes": [],
   "tasks": [
@@ -10564,12 +10708,32 @@
       "deadline": "2026-09-18",
       "status": "pend",
       "created": 1789978437491
+    },
+    {
+      "id": "xqn3ahl",
+      "text": "Reunión interna de equipo.",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-09-21",
+      "status": "pend",
+      "created": 1790249078008
+    },
+    {
+      "id": "xytb3i1",
+      "text": "Reunión interna.",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-09-25",
+      "status": "pend",
+      "created": 1790249167491
     }
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790159401653,
-    "dirtyPeople": []
+    "updatedAt": 1790249175418,
+    "dirtyPeople": [
+      "xasd2wb"
+    ]
   },
   "bigEvents": [
     {
