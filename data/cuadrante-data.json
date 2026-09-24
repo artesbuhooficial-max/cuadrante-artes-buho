@@ -2305,6 +2305,66 @@
           },
           "1-29": {
             "p": "xa3kx1b"
+          },
+          "2-20": {
+            "p": "xle8jpb"
+          },
+          "2-21": {
+            "p": "xle8jpb"
+          },
+          "2-22": {
+            "p": "p2"
+          },
+          "2-23": {
+            "p": "p2"
+          },
+          "2-24": {
+            "p": "xj2lt3t"
+          },
+          "2-25": {
+            "p": "xj2lt3t"
+          },
+          "2-28": {
+            "p": "xa3kx1b"
+          },
+          "2-29": {
+            "p": "xa3kx1b"
+          },
+          "2-26": {
+            "p": "xa3kx1b"
+          },
+          "2-27": {
+            "p": "xa3kx1b"
+          },
+          "3-20": {
+            "p": "xle8jpb"
+          },
+          "3-21": {
+            "p": "xle8jpb"
+          },
+          "3-22": {
+            "p": "xle8jpb"
+          },
+          "3-23": {
+            "p": "xle8jpb"
+          },
+          "3-24": {
+            "p": "xk6kruc"
+          },
+          "3-25": {
+            "p": "xle8jpb"
+          },
+          "3-26": {
+            "p": "xa3kx1b"
+          },
+          "3-27": {
+            "p": "xa3kx1b"
+          },
+          "3-28": {
+            "p": "xa3kx1b"
+          },
+          "3-29": {
+            "p": "xa3kx1b"
           }
         }
       },
@@ -2497,6 +2557,56 @@
           "done": false,
           "order": 0,
           "created": 1790083084139
+        },
+        {
+          "id": "xz4vf1z",
+          "date": "2026-09-23",
+          "title": "Ideacion de la cascada de agente para automatizar todo lo de la empresa nueva de Roman",
+          "estimatedHours": 0.5,
+          "progress": 45,
+          "done": false,
+          "order": 0,
+          "created": 1790249611526
+        },
+        {
+          "id": "xbbxpmo",
+          "date": "2026-09-23",
+          "title": "Reunion sobre siguientes pasos Mailing",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1790249634923
+        },
+        {
+          "id": "xjsx5ey",
+          "date": "2026-09-23",
+          "title": "Recorte de Videos para Noches de Neon (consmo alto de Tokens, no tanto de tiempo)",
+          "estimatedHours": 0.25,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1790249675626
+        },
+        {
+          "id": "xx8xqqd",
+          "date": "2026-09-23",
+          "title": "Pavoneo 360º acabar la implementación de Mario Cassado, pasar precios a Miguel",
+          "estimatedHours": 0.75,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1790249710746
+        },
+        {
+          "id": "xs2tthw",
+          "date": "2026-09-24",
+          "title": "Documento oficial para Roman para contrato de Music Show con David",
+          "estimatedHours": 0.5833333333333334,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1790249784478
         }
       ]
     },
@@ -10366,7 +10476,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xasd2wb",
+    "person": "u1",
     "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
@@ -10375,10 +10485,10 @@
     },
     "resRef": {
       "y": 2026,
-      "m": 5
+      "m": 7
     },
-    "taskSub": "todo",
-    "priorityDate": "2026-09-23"
+    "taskSub": "recur",
+    "priorityDate": "2026-09-24"
   },
   "notes": [],
   "tasks": [
@@ -10730,9 +10840,10 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790249175418,
+    "updatedAt": 1790249869666,
     "dirtyPeople": [
-      "xasd2wb"
+      "xasd2wb",
+      "u1"
     ]
   },
   "bigEvents": [
