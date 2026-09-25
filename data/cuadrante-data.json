@@ -7619,22 +7619,16 @@
             "p": "p1"
           },
           "4-28": {
-            "p": "p1"
+            "p": "x21oppt"
           },
           "4-29": {
-            "p": "p1"
+            "p": "x21oppt"
           },
           "4-30": {
-            "p": "p1"
+            "p": "x21oppt"
           },
           "4-31": {
-            "p": "p1"
-          },
-          "4-32": {
-            "p": "p1"
-          },
-          "4-33": {
-            "p": "p1"
+            "p": "x21oppt"
           },
           "3-28": {
             "p": "p1"
@@ -8059,6 +8053,11 @@
           "id": "x6njpre",
           "name": "dar clase",
           "color": "#16a34a"
+        },
+        {
+          "id": "x21oppt",
+          "name": "Hacer Informes",
+          "color": "#7c3aed"
         }
       ],
       "priorities": [
@@ -10719,7 +10718,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "u3",
-    "weekId": "2026-09-28",
+    "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -10730,7 +10729,7 @@
       "m": 5
     },
     "taskSub": "todo",
-    "priorityDate": "2026-09-28"
+    "priorityDate": "2026-09-21"
   },
   "notes": [],
   "tasks": [
@@ -11082,10 +11081,8 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790330467382,
+    "updatedAt": 1790337699060,
     "dirtyPeople": [
-      "xasd2wb",
-      "u1",
       "u3"
     ]
   },
