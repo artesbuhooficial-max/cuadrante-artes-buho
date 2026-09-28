@@ -2365,6 +2365,150 @@
           },
           "3-29": {
             "p": "xa3kx1b"
+          },
+          "4-16": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-17": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-18": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-19": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-20": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-21": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-22": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-23": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-24": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-25": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-26": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-27": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-28": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-29": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-30": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-31": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-32": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-33": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-34": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-35": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-36": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-37": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-38": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-39": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-40": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-41": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-42": {
+            "p": "xcc414h",
+            "n": "Baja"
+          },
+          "4-43": {
+            "p": "xcc414h",
+            "n": "Baja"
+          }
+        },
+        "2026-09-28": {
+          "0-20": {
+            "p": "xk6kruc"
+          },
+          "0-21": {
+            "p": "xk6kruc"
+          },
+          "0-22": {
+            "p": "xk6kruc"
+          },
+          "0-23": {
+            "p": "xk6kruc"
+          },
+          "0-24": {
+            "p": "xk6kruc"
+          },
+          "0-25": {
+            "p": "xk6kruc"
+          },
+          "0-26": {
+            "p": "xk6kruc"
+          },
+          "0-27": {
+            "p": "xk6kruc"
+          },
+          "0-28": {
+            "p": "xk6kruc"
+          },
+          "0-29": {
+            "p": "xk6kruc"
           }
         }
       },
@@ -8086,8 +8230,8 @@
           "date": "2026-09-23",
           "title": "Revisar pagos",
           "estimatedHours": 0.5,
-          "progress": 100,
-          "done": true,
+          "progress": 0,
+          "done": false,
           "order": 0,
           "created": 1790102815128
         },
@@ -8116,8 +8260,8 @@
           "date": "2026-09-23",
           "title": "Oscar de Music Bus",
           "estimatedHours": 1,
-          "progress": 100,
-          "done": true,
+          "progress": 0,
+          "done": false,
           "order": 3,
           "created": 1790102877522
         },
@@ -10809,7 +10953,7 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xwn3rwh",
+    "person": "u1",
     "weekId": "2026-09-28",
     "monthScope": "person",
     "monthRef": {
@@ -11173,10 +11317,10 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790583413000,
+    "updatedAt": 1790588796025,
     "dirtyPeople": [
-      "u3",
-      "xwn3rwh"
+      "xasd2wb",
+      "u1"
     ]
   },
   "bigEvents": [
