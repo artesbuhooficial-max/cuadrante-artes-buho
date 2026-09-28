@@ -7875,6 +7875,12 @@
           },
           "2-17": {
             "p": "p1"
+          },
+          "0-16": {
+            "p": "p1"
+          },
+          "0-17": {
+            "p": "p1"
           }
         },
         "2026-09-28": {
@@ -10953,19 +10959,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u1",
-    "weekId": "2026-09-28",
+    "person": "u3",
+    "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 8
     },
     "resRef": {
       "y": 2026,
-      "m": 7
+      "m": 5
     },
-    "taskSub": "recur",
-    "priorityDate": "2026-09-28"
+    "taskSub": "todo",
+    "priorityDate": "2026-09-21"
   },
   "notes": [],
   "tasks": [
@@ -11317,10 +11323,11 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790588796025,
+    "updatedAt": 1790597728229,
     "dirtyPeople": [
       "xasd2wb",
-      "u1"
+      "u1",
+      "u3"
     ]
   },
   "bigEvents": [
