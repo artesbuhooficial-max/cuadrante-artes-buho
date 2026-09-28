@@ -10653,6 +10653,98 @@
           "0-33": {
             "p": "xt3bria"
           }
+        },
+        "2026-09-28": {
+          "0-18": {
+            "p": "xbs9zru"
+          },
+          "0-19": {
+            "p": "xbs9zru"
+          },
+          "0-20": {
+            "p": "xbs9zru"
+          },
+          "0-21": {
+            "p": "xbs9zru"
+          },
+          "0-22": {
+            "p": "xt3bria"
+          },
+          "0-23": {
+            "p": "xt3bria"
+          },
+          "0-24": {
+            "p": "xt3bria"
+          },
+          "0-25": {
+            "p": "xt3bria"
+          },
+          "0-26": {
+            "p": "xbs9zru"
+          },
+          "0-27": {
+            "p": "xbs9zru"
+          },
+          "0-28": {
+            "p": "xt3bria"
+          },
+          "0-30": {
+            "p": "xt3bria"
+          },
+          "0-31": {
+            "p": "xt3bria"
+          },
+          "0-32": {
+            "p": "xt3bria"
+          },
+          "0-33": {
+            "p": "xt3bria"
+          },
+          "1-18": {
+            "p": "xbs9zru"
+          },
+          "1-19": {
+            "p": "xbs9zru"
+          },
+          "1-20": {
+            "p": "xbs9zru"
+          },
+          "1-21": {
+            "p": "xbs9zru"
+          },
+          "1-22": {
+            "p": "xt3bria"
+          },
+          "1-23": {
+            "p": "xt3bria"
+          },
+          "1-24": {
+            "p": "xt3bria"
+          },
+          "1-25": {
+            "p": "xt3bria"
+          },
+          "1-26": {
+            "p": "xbs9zru"
+          },
+          "1-27": {
+            "p": "xbs9zru"
+          },
+          "1-29": {
+            "p": "xt3bria"
+          },
+          "1-30": {
+            "p": "xt3bria"
+          },
+          "1-31": {
+            "p": "xt3bria"
+          },
+          "1-32": {
+            "p": "xt3bria"
+          },
+          "1-33": {
+            "p": "xt3bria"
+          }
         }
       },
       "projects": [
@@ -10717,19 +10809,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u3",
-    "weekId": "2026-09-21",
+    "person": "xwn3rwh",
+    "weekId": "2026-09-28",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 8
+      "m": 7
     },
     "resRef": {
       "y": 2026,
-      "m": 5
+      "m": 7
     },
-    "taskSub": "todo",
-    "priorityDate": "2026-09-21"
+    "taskSub": "recur",
+    "priorityDate": "2026-09-28"
   },
   "notes": [],
   "tasks": [
@@ -11081,9 +11173,10 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790337699060,
+    "updatedAt": 1790583413000,
     "dirtyPeople": [
-      "u3"
+      "u3",
+      "xwn3rwh"
     ]
   },
   "bigEvents": [
