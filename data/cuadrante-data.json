@@ -10878,7 +10878,7 @@
             "p": "xbs9zru"
           },
           "0-20": {
-            "p": "xbs9zru"
+            "p": "xncmrji"
           },
           "0-21": {
             "p": "xbs9zru"
@@ -10929,10 +10929,10 @@
             "p": "xbs9zru"
           },
           "1-22": {
-            "p": "xt3bria"
+            "p": "xchj0xf"
           },
           "1-23": {
-            "p": "xt3bria"
+            "p": "xchj0xf"
           },
           "1-24": {
             "p": "xt3bria"
@@ -10950,10 +10950,10 @@
             "p": "xt3bria"
           },
           "1-30": {
-            "p": "xt3bria"
+            "p": "xchj0xf"
           },
           "1-31": {
-            "p": "xt3bria"
+            "p": "xchj0xf"
           },
           "1-32": {
             "p": "xt3bria"
@@ -11100,6 +11100,14 @@
           "rate": null,
           "billable": true,
           "fullDay": false
+        },
+        {
+          "id": "xchj0xf",
+          "name": "Reunión",
+          "color": "#16a34a",
+          "rate": null,
+          "billable": true,
+          "fullDay": false
         }
       ],
       "priorities": []
@@ -11132,7 +11140,7 @@
   "ui": {
     "tab": "cuadrante",
     "person": "xwn3rwh",
-    "weekId": "2026-10-05",
+    "weekId": "2026-09-28",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
@@ -11143,7 +11151,7 @@
       "m": 7
     },
     "taskSub": "recur",
-    "priorityDate": "2026-10-05"
+    "priorityDate": "2026-09-28"
   },
   "notes": [],
   "tasks": [
@@ -11495,14 +11503,14 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790685535268,
+    "updatedAt": 1790685651651,
     "dirtyPeople": [
       "u1",
-      "xwn3rwh",
       "u2",
       "u3",
       "xasd2wb",
-      "u4"
+      "u4",
+      "xwn3rwh"
     ]
   },
   "bigEvents": [
