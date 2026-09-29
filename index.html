@@ -154,6 +154,36 @@
   .obj .st{width:7px;height:7px;border-radius:50%;flex:none;background:rgba(255,255,255,.55)}
   .obj.empresa .st{background:rgba(14,33,72,.4)}.obj.done{text-decoration:line-through;opacity:.6}
   .obj.curso .st{background:#fff}.obj.empresa.curso .st{background:var(--navy)}
+  .meeting-badge{width:100%;padding:7px 8px;border:1px solid #BCD0F8;border-left:3px solid var(--blue);border-radius:8px;background:#EDF3FF;color:var(--navy);text-align:left;font-size:.7rem;font-weight:800;line-height:1.3;display:flex;align-items:flex-start;gap:6px;box-shadow:0 3px 10px -8px var(--blue);cursor:pointer}
+  .meeting-badge:hover,.meeting-badge.is-active{background:#DCE9FF;border-color:var(--blue)}
+  .meeting-badge .meeting-icon{font-size:.85rem;line-height:1;flex:none}
+  .meeting-badge .meeting-name{overflow-wrap:anywhere}
+  .meeting-panel{margin-top:15px;background:var(--paper-card);border:1px solid #C9D7F1;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+  .meeting-panel[hidden]{display:none}
+  .meeting-panel-head{background:linear-gradient(115deg,var(--navy),var(--blue-deep));color:#fff;padding:24px 26px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .meeting-panel-head .meeting-kicker{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#F6D681}
+  .meeting-panel-head h3{font-size:1.35rem;line-height:1.2;margin:8px 0 9px;color:#fff}
+  .meeting-panel-head p{max-width:760px;margin:0;color:#DCE7FB;font-size:.86rem;line-height:1.55}
+  .meeting-panel-actions{display:flex;gap:7px;flex-wrap:wrap}
+  .meeting-panel-actions .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.32);color:#fff}
+  .meeting-panel-actions .btn:hover{background:#fff;color:var(--blue-deep)}
+  .meeting-panel-body{padding:22px 25px 25px}
+  .meeting-metrics{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .meeting-metrics span{font-size:.7rem;font-weight:800;color:var(--blue-deep);padding:6px 10px;border-radius:999px;background:var(--blue-light)}
+  .meeting-section{margin-top:20px}
+  .meeting-section h4{margin:0 0 10px;color:var(--navy);font-size:.88rem}
+  .meeting-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:9px}
+  .meeting-card{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+  .meeting-card strong{display:block;font-size:.82rem;color:var(--navy);margin-bottom:5px}
+  .meeting-card p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.5}
+  .meeting-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;counter-reset:meeting-step}
+  .meeting-steps li{counter-increment:meeting-step;display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid var(--cream-line);border-radius:10px;background:var(--cream);font-size:.78rem;line-height:1.45}
+  .meeting-steps li::before{content:counter(meeting-step);display:grid;place-items:center;flex:none;width:23px;height:23px;border-radius:7px;background:var(--gold-bright);color:var(--navy);font-size:.7rem;font-weight:800}
+  .meeting-actions-list{list-style:none;padding:0;margin:0;display:grid;gap:7px}
+  .meeting-actions-list li{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:#F6F9FF;border:1px solid #DFE9FC;border-radius:9px;font-size:.79rem;line-height:1.45}
+  .meeting-actions-list li::before{content:'□';font-size:1.1rem;line-height:1;color:var(--blue);flex:none}
+  .meeting-takeaway{margin-top:20px;padding:14px 16px;border-left:4px solid var(--gold-bright);background:var(--cream);border-radius:0 10px 10px 0;font-size:.79rem;line-height:1.55;color:var(--navy)}
+  .meeting-source{margin-top:13px;color:var(--muted);font-size:.7rem}
   .cal-cell.has-mega{box-shadow:0 0 0 1.5px #EA580C inset}
   .mega-badge{font-size:.7rem;font-weight:800;padding:3px 7px;border-radius:6px;color:#fff;background:linear-gradient(100deg,#EA580C,#C2410C);line-height:1.25;display:flex;align-items:center;gap:5px;cursor:pointer}
   .mega-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
@@ -468,12 +498,14 @@
       <h2 id="calTitle"></h2>
       <div style="display:flex;gap:8px">
         <button class="btn" style="background:linear-gradient(100deg,#EA580C,#C2410C);color:#fff;border-color:#C2410C" onclick="openBigEvent()">🎪 Evento grande</button>
+        <button class="btn" onclick="openMeeting()">+ Reunión</button>
         <button class="btn primary" onclick="openObjective()">+ Objetivo</button>
       </div>
     </div>
     <div class="cal-grid" id="calDow"></div>
     <div class="cal-grid" id="calGrid" style="margin-top:6px"></div>
-    <p class="hint" style="margin-top:14px">Los objetivos en <span style="color:var(--gold);font-weight:700">dorado</span> son de la empresa (se ven con cualquier persona). Toca un día para añadir, o un objetivo para editar.</p>
+    <div class="meeting-panel" id="meetingPanel" hidden></div>
+    <p class="hint" style="margin-top:14px">Las reuniones se abren debajo del calendario al pulsar su tarjeta. Los objetivos en <span style="color:var(--gold);font-weight:700">dorado</span> son de la empresa (se ven con cualquier persona).</p>
     <div class="panel" style="margin-top:18px">
       <h3>🎪 Eventos grandes <span style="color:var(--muted);font-weight:500;font-size:.78rem">(NDN, Maquillaje Rock, Producción Externa… implican más gestión para todo el equipo)</span></h3>
       <div class="mega-list" id="megaList"></div>
@@ -902,6 +934,42 @@ function migrate(){
     state.config.priorityStarter20260911=true;
   }
   if(!state.notes)state.notes=[];
+  if(!Array.isArray(state.objectives))state.objectives=[];
+  // La reunión del 28/09 se publicó primero como objetivo con notas de texto.
+  // Conservar su id y contenido permite actualizar también los navegadores que
+  // todavía tienen aquella copia local, sin duplicar la reunión.
+  const unionSol=state.objectives.find(o=>o.id==='xikdpfb');
+  if(unionSol&&!unionSol.kind){
+    unionSol.kind='meeting';
+    unionSol.meeting={
+      summary:'Proceso comercial de UnionSol para atender, cualificar y acompañar a personas interesadas en locales, traspasos o alquileres. La rapidez, la viabilidad económica y las condiciones documentadas marcan cada fase.',
+      highlights:[
+        'Atención al cliente: responder cuanto antes y siempre dentro de 24 horas; confirmar antes con la propiedad que el local sigue disponible.',
+        'Cualificación: escuchar presupuesto, negocio buscado, zona, público, capacidad de alquiler y plazo de la búsqueda.',
+        'Viabilidad: sumar traspaso, alquiler, fianza, reformas y posibles pérdidas iniciales; explicar que el cliente debe verificar documentalmente la licencia.',
+        'Acompañamiento: proponer opciones adecuadas, concertar visitas y dedicar seguimiento prioritario a las personas con posibilidades reales.',
+        'Formalización: respaldar las ofertas con una señal y dejar por escrito comisiones, condiciones y justificante de visita.'
+      ],
+      milestones:[
+        'Responder al contacto en un máximo de 24 horas.',
+        'Confirmar con la propiedad la disponibilidad del local.',
+        'Cualificar necesidades y capacidad económica.',
+        'Enviar opciones comparables y concertar una visita.',
+        'Revisar inversión total, viabilidad y licencias.',
+        'Presentar la oferta con señal y condiciones documentadas.',
+        'Negociar y mantener el seguimiento hasta el cierre.'
+      ],
+      actions:[
+        'Documentar el protocolo de respuesta en 24 horas y de comprobación de disponibilidad.',
+        'Preparar una lista de preguntas para cualificar al cliente y calcular la inversión total.',
+        'Estandarizar la oferta con señal, la hoja de visita y las condiciones de honorarios.',
+        'Definir el seguimiento cuando el primer local deje de estar disponible.',
+        'Asignar responsable y fecha a estas acciones; la transcripción no los especifica.'
+      ],
+      takeaway:'Los cierres pueden producirse en unos 5 días o prolongarse hasta 1 año; la relación con una persona puede durar hasta 2 años. La transcripción no fija responsables ni fechas para las acciones.',
+      source:'AUDIO UNIONSOL.txt'
+    };
+  }
   if(!state.tasks)state.tasks=[];
   if(!state.recurring)state.recurring=[];
   if(!state.extraTasks)state.extraTasks=[];
@@ -1262,8 +1330,9 @@ function renderMonth(){
 }
 
 /* ============ CALENDAR (objetivos) ============ */
-function calMove(n){let m=state.ui.monthRef.m+n,y=state.ui.monthRef.y;if(m<0){m=11;y--;}if(m>11){m=0;y++;}state.ui.monthRef={y,m};save();renderCalendar();}
-function calToday(){const d=new Date();state.ui.monthRef={y:d.getFullYear(),m:d.getMonth()};save();renderCalendar();}
+let selectedMeetingId=null;
+function calMove(n){let m=state.ui.monthRef.m+n,y=state.ui.monthRef.y;if(m<0){m=11;y--;}if(m>11){m=0;y++;}state.ui.monthRef={y,m};selectedMeetingId=null;save();renderCalendar();}
+function calToday(){const d=new Date();state.ui.monthRef={y:d.getFullYear(),m:d.getMonth()};selectedMeetingId=null;save();renderCalendar();}
 function renderCalendar(){
   const dowHost=document.getElementById('calDow');if(!dowHost.innerHTML){DAYS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;dowHost.appendChild(e);});}
   const {y,m}=state.ui.monthRef;document.getElementById('calTitle').textContent=monthName(y,m);
@@ -1284,13 +1353,77 @@ function renderCalendar(){
       inner+='<div class="mega-badge" title="'+esc(tip)+'" onclick="event.stopPropagation();openBigEvent(\''+e.id+'\')">🎪 '+esc(e.title)+'</div>';
     });
     state.objectives.filter(o=>o.date===ds&&(o.owner==='empresa'||o.owner===pid)).forEach(o=>{
+      if(o.kind==='meeting'){
+        inner+='<button class="meeting-badge'+(selectedMeetingId===o.id?' is-active':'')+'" type="button" aria-expanded="'+(selectedMeetingId===o.id)+'" aria-controls="meetingPanel" onclick="event.stopPropagation();toggleMeeting(\''+o.id+'\')"><span class="meeting-icon">🗣</span><span class="meeting-name">'+esc(o.title)+'</span></button>';
+        return;
+      }
       const isEmp=o.owner==='empresa';const col=isEmp?'var(--gold-bright)':(person(o.owner)?person(o.owner).color:'#888');
       const cls='obj'+(isEmp?' empresa':'')+(o.status==='done'?' done':'')+(o.status==='curso'?' curso':'');
       const pn=o.projectId?projName(o.projectId):'';
       const tip=(pn?'['+pn+'] ':'')+o.title;
       inner+='<div class="'+cls+'" style="background:'+col+'" title="'+esc(tip)+'" onclick="event.stopPropagation();openObjective(\''+o.id+'\')"><span class="st"></span>'+(pn?'<span style="opacity:.85;font-weight:800">'+esc(pn)+' · </span>':'')+esc(o.title)+'</div>';});
     cell.innerHTML=inner;grid.appendChild(cell);}
-  renderBigEvents();
+  renderBigEvents();renderMeetingPanel();
+}
+
+function toggleMeeting(id){
+  selectedMeetingId=selectedMeetingId===id?null:id;
+  renderCalendar();
+  if(selectedMeetingId)requestAnimationFrame(()=>document.getElementById('meetingPanel').scrollIntoView({behavior:'smooth',block:'nearest'}));
+}
+function meetingDetailCard(line){
+  const i=line.indexOf(':');
+  const title=i>0?line.slice(0,i):line;
+  const description=i>0?line.slice(i+1).trim():'';
+  return '<div class="meeting-card"><strong>'+esc(title)+'</strong>'+(description?'<p>'+esc(description)+'</p>':'')+'</div>';
+}
+function renderMeetingPanel(){
+  const host=document.getElementById('meetingPanel');if(!host)return;
+  const o=state.objectives.find(x=>x.id===selectedMeetingId&&x.kind==='meeting');
+  if(!o){host.hidden=true;host.innerHTML='';return;}
+  const d=o.meeting||{};
+  const highlights=Array.isArray(d.highlights)?d.highlights:[];
+  const milestones=Array.isArray(d.milestones)?d.milestones:[];
+  const actions=Array.isArray(d.actions)?d.actions:[];
+  const date=parseId(o.date).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+  host.hidden=false;
+  host.innerHTML='<div class="meeting-panel-head"><div><div class="meeting-kicker">🗣 Reunión · '+esc(date)+'</div><h3>'+esc(o.title)+'</h3>'+
+    (d.summary?'<p>'+esc(d.summary)+'</p>':'')+'</div><div class="meeting-panel-actions"><button class="btn" type="button" onclick="openMeeting(\''+o.id+'\')">✎ Editar</button><button class="btn" type="button" onclick="toggleMeeting(\''+o.id+'\')">✕ Cerrar</button></div></div>'+
+    '<div class="meeting-panel-body"><div class="meeting-metrics"><span>'+highlights.length+' puntos importantes</span><span>'+milestones.length+' hitos</span><span>'+actions.length+' acciones</span></div>'+
+    (highlights.length?'<section class="meeting-section"><h4>Lo más importante</h4><div class="meeting-card-grid">'+highlights.map(meetingDetailCard).join('')+'</div></section>':'')+
+    (milestones.length?'<section class="meeting-section"><h4>Objetivos e hitos del proceso</h4><ol class="meeting-steps">'+milestones.map(s=>'<li>'+esc(s)+'</li>').join('')+'</ol></section>':'')+
+    (actions.length?'<section class="meeting-section"><h4>Acciones a tener en cuenta</h4><ul class="meeting-actions-list">'+actions.map(s=>'<li>'+esc(s)+'</li>').join('')+'</ul></section>':'')+
+    (d.takeaway?'<div class="meeting-takeaway"><strong>Plazos y punto abierto · </strong>'+esc(d.takeaway)+'</div>':'')+
+    (d.source?'<div class="meeting-source">Fuente: '+esc(d.source)+'</div>':'')+'</div>';
+}
+function openMeeting(id,presetDate){
+  const o=id?state.objectives.find(x=>x.id===id&&x.kind==='meeting'):null;
+  if(id&&!o)return;
+  const d=o&&o.meeting||{};
+  const lines=x=>Array.isArray(x)?x.join('\n'):'';
+  modal('<div class="modal" style="max-width:650px"><header><h3>'+(o?'Editar reunión':'Nueva reunión')+'</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+
+    '<div class="inp row"><div><label>Título</label><input id="mtTitle" value="'+esc(o&&o.title||'')+'" placeholder="Reunión · tema principal"></div><div><label>Fecha</label><input id="mtDate" type="date" value="'+(o?o.date:presetDate||dStr(new Date()))+'"></div></div>'+
+    '<div class="inp"><label>Descripción breve</label><textarea id="mtSummary" rows="3" placeholder="Qué se trató y para qué sirve esta reunión">'+esc(d.summary||'')+'</textarea></div>'+
+    '<div class="inp"><label>Puntos importantes · uno por línea</label><textarea id="mtHighlights" rows="5" placeholder="Tema: explicación">'+esc(lines(d.highlights))+'</textarea></div>'+
+    '<div class="inp"><label>Objetivos e hitos · uno por línea</label><textarea id="mtMilestones" rows="5" placeholder="Paso o resultado esperado">'+esc(lines(d.milestones))+'</textarea></div>'+
+    '<div class="inp"><label>Acciones · una por línea</label><textarea id="mtActions" rows="5" placeholder="Acción a realizar">'+esc(lines(d.actions))+'</textarea></div>'+
+    '<div class="inp"><label>Plazos y punto abierto</label><textarea id="mtTakeaway" rows="3">'+esc(d.takeaway||'')+'</textarea></div>'+
+    '<div class="inp"><label>Fuente (opcional)</label><input id="mtSource" value="'+esc(d.source||'')+'" placeholder="Nombre del acta o transcripción"></div></div>'+
+    '<footer><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveMeeting(\''+(id||'')+'\')">Guardar reunión</button></footer></div>');
+}
+function meetingLines(id){
+  return (document.getElementById(id).value||'').split(/\r?\n/).map(s=>s.trim().replace(/^(?:[-•□]|\d+[.)])\s*/,'' )).filter(Boolean);
+}
+function saveMeeting(id){
+  const title=document.getElementById('mtTitle').value.trim();
+  const date=document.getElementById('mtDate').value;
+  if(!title||!date){toast('Escribe el título y la fecha de la reunión');return;}
+  const detail={summary:document.getElementById('mtSummary').value.trim(),highlights:meetingLines('mtHighlights'),milestones:meetingLines('mtMilestones'),actions:meetingLines('mtActions'),takeaway:document.getElementById('mtTakeaway').value.trim(),source:document.getElementById('mtSource').value.trim()};
+  const data={title,date,owner:'empresa',status:'done',kind:'meeting',meeting:detail};
+  const existing=id?state.objectives.find(x=>x.id===id):null;
+  if(existing){Object.assign(existing,data);selectedMeetingId=existing.id;}
+  else{const created={id:uid(),...data};state.objectives.push(created);selectedMeetingId=created.id;}
+  save();closeModal();renderCalendar();toast('Reunión guardada');
 }
 
 /* ============ EVENTOS GRANDES (NDN, Maquillaje Rock, Producción Externa…) ============ */
