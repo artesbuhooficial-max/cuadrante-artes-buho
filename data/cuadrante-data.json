@@ -8023,10 +8023,10 @@
             "p": "p1"
           },
           "2-22": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-23": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-26": {
             "p": "p1"
@@ -8035,22 +8035,10 @@
             "p": "p1"
           },
           "2-24": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-25": {
-            "p": "p1"
-          },
-          "2-30": {
-            "p": "p1"
-          },
-          "2-31": {
-            "p": "p1"
-          },
-          "2-28": {
-            "p": "p1"
-          },
-          "2-29": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-16": {
             "p": "p1"
@@ -8189,6 +8177,12 @@
           },
           "3-43": {
             "p": "x6njpre"
+          },
+          "2-34": {
+            "p": "p3"
+          },
+          "2-35": {
+            "p": "p3"
           }
         }
       },
@@ -8346,6 +8340,86 @@
           "done": true,
           "order": 4,
           "created": 1790103113547
+        },
+        {
+          "id": "xnnn70e",
+          "date": "2026-09-30",
+          "title": "Revisar alumnos de Gracia en la escuela",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1790706031643
+        },
+        {
+          "id": "xt339cg",
+          "date": "2026-09-30",
+          "title": "Horas y salarios de Teresa",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1790706055719
+        },
+        {
+          "id": "xtminej",
+          "date": "2026-09-30",
+          "title": "Revisar contestaciones bella bestia para Isabel",
+          "estimatedHours": 0.5,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1790706074476
+        },
+        {
+          "id": "xxn47zu",
+          "date": "2026-09-30",
+          "title": "Darle un tiento a la produ del jueves que todo este ok",
+          "estimatedHours": 0.16666666666666666,
+          "progress": 0,
+          "done": false,
+          "order": 3,
+          "created": 1790706101039
+        },
+        {
+          "id": "xw0t4oj",
+          "date": "2026-09-30",
+          "title": "Hablar con Roman del caso Gorka",
+          "estimatedHours": 0.25,
+          "progress": 0,
+          "done": false,
+          "order": 4,
+          "created": 1790706176607
+        },
+        {
+          "id": "xt7ugzb",
+          "date": "2026-09-30",
+          "title": "Meter en el embudo a los del correo",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 5,
+          "created": 1790706205781
+        },
+        {
+          "id": "xi4dcir",
+          "date": "2026-09-30",
+          "title": "Preparar documentos para Inicio de curso (Calendario, normas, Cosos de instrumeento)",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 6,
+          "created": 1790706330984
+        },
+        {
+          "id": "xih5p2k",
+          "date": "2026-09-30",
+          "title": "Poner el meensaje de la bella bestia",
+          "estimatedHours": 0.25,
+          "progress": 0,
+          "done": false,
+          "order": 7,
+          "created": 1790706374418
         }
       ]
     },
@@ -11139,19 +11213,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xwn3rwh",
+    "person": "u3",
     "weekId": "2026-09-28",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 8
     },
     "resRef": {
       "y": 2026,
-      "m": 7
+      "m": 5
     },
-    "taskSub": "recur",
-    "priorityDate": "2026-09-28"
+    "taskSub": "todo",
+    "priorityDate": "2026-09-30"
   },
   "notes": [],
   "tasks": [
@@ -11190,6 +11264,15 @@
       "done": false,
       "createdBy": "u1",
       "created": 1784019853665
+    },
+    {
+      "id": "xupeg0w",
+      "text": "Llamadas Bella Bestia",
+      "owner": "u3",
+      "deadline": "2026-09-30",
+      "done": false,
+      "createdBy": "u3",
+      "created": 1790706255392
     }
   ],
   "recurring": [],
@@ -11503,7 +11586,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790685651651,
+    "updatedAt": 1790706376873,
     "dirtyPeople": [
       "u1",
       "u2",
