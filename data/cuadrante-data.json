@@ -11021,23 +11021,31 @@
       "date": "2026-06-29",
       "status": "done",
       "notes": ""
+    },
+    {
+      "id": "xikdpfb",
+      "title": "Reunión Artes Búho · Protocolo comercial UnionSol",
+      "owner": "empresa",
+      "date": "2026-09-28",
+      "status": "done",
+      "notes": "RESUMEN · Reunión Artes Búho (fuente: REUNION ARTES BUHO/AUDIO UNIONSOL.txt)\n\nTEMAS CLAVE\n• Atención al cliente: responder cuanto antes y como máximo en 24 h; confirmar con la propiedad que el local sigue disponible antes de dar expectativas.\n• Cualificación: escuchar y aclarar presupuesto, tipo de negocio, zona y público objetivo, capacidad de alquiler y plazo de búsqueda.\n• Viabilidad y confianza: ser rigurosos con lo posible; el cliente debe verificar documentalmente las licencias. Calcular traspaso, alquiler, fianza, reformas y posibles pérdidas iniciales.\n• Acompañamiento: recomendar locales adecuados, concertar encuentro y visita, y priorizar a los clientes viables con apoyo durante la búsqueda.\n• Formalización: respaldar las ofertas con una señal; dejar por escrito con la propiedad/captador condiciones y comisiones; firmar justificante de visita y condiciones de honorarios.\n\nHITOS DEL PROCESO\n1. Contacto y respuesta (objetivo: ≤24 h).  2. Disponibilidad confirmada.  3. Necesidad y capacidad económica cualificadas.  4. Selección de opciones y visita.  5. Viabilidad, costes y licencias revisados.  6. Oferta con señal y condiciones documentadas.  7. Negociación y seguimiento hasta cierre.\n\nACCIONES A TENER EN CUENTA\n□ Documentar un protocolo de respuesta de 24 h y verificación de disponibilidad.\n□ Preparar checklist de cualificación y cálculo de inversión total.\n□ Estandarizar la oferta con señal, la hoja de visita y las condiciones/comisiones.\n□ Definir seguimiento de clientes cuando el primer local deje de estar disponible.\n□ Asignar responsable y fecha a cada acción: no se especifican en la transcripción.\n\nPLAZOS Y PUNTO ABIERTO\nLa transcripción menciona cierres rápidos en unos 5 días y negociaciones largas de hasta 1 año; la relación con un cliente puede prolongarse hasta 2 años. No fija fechas de hitos ni responsables."
     }
   ],
   "ui": {
-    "tab": "cuadrante",
+    "tab": "calendario",
     "person": "u1",
-    "weekId": "2026-09-07",
+    "weekId": "2026-09-21",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 8
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
     "taskSub": "recur",
-    "priorityDate": "2026-09-07"
+    "priorityDate": "2026-09-21"
   },
   "notes": [],
   "tasks": [
@@ -11389,10 +11397,8 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790668545163,
-    "dirtyPeople": [
-      "u1"
-    ]
+    "updatedAt": 1790673704407,
+    "dirtyPeople": []
   },
   "bigEvents": [
     {
