@@ -2509,6 +2509,72 @@
           },
           "0-29": {
             "p": "xk6kruc"
+          },
+          "1-20": {
+            "p": "xa3kx1b"
+          },
+          "1-21": {
+            "p": "xa3kx1b"
+          },
+          "1-22": {
+            "p": "xa3kx1b"
+          },
+          "1-23": {
+            "p": "xa3kx1b"
+          },
+          "1-24": {
+            "p": "xle8jpb"
+          },
+          "1-25": {
+            "p": "xle8jpb"
+          },
+          "1-26": {
+            "p": "xle8jpb"
+          },
+          "1-27": {
+            "p": "xle8jpb"
+          },
+          "1-28": {
+            "p": "xa3kx1b"
+          },
+          "1-29": {
+            "p": "xa3kx1b"
+          },
+          "1-30": {
+            "p": "xk6kruc"
+          },
+          "1-31": {
+            "p": "xk6kruc"
+          },
+          "2-20": {
+            "p": "xa3kx1b"
+          },
+          "2-21": {
+            "p": "xa3kx1b"
+          },
+          "2-22": {
+            "p": "xa3kx1b"
+          },
+          "2-23": {
+            "p": "xa3kx1b"
+          },
+          "2-24": {
+            "p": "xle8jpb"
+          },
+          "2-25": {
+            "p": "xle8jpb"
+          },
+          "2-26": {
+            "p": "xle8jpb"
+          },
+          "2-27": {
+            "p": "xle8jpb"
+          },
+          "2-28": {
+            "p": "xa3kx1b"
+          },
+          "2-29": {
+            "p": "xa3kx1b"
           }
         }
       },
@@ -10959,19 +11025,19 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "u3",
-    "weekId": "2026-09-21",
+    "person": "u1",
+    "weekId": "2026-09-28",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 8
+      "m": 7
     },
     "resRef": {
       "y": 2026,
       "m": 5
     },
-    "taskSub": "todo",
-    "priorityDate": "2026-09-21"
+    "taskSub": "recur",
+    "priorityDate": "2026-09-28"
   },
   "notes": [],
   "tasks": [
@@ -11323,7 +11389,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1790597728229,
+    "updatedAt": 1790668266386,
     "dirtyPeople": [
       "xasd2wb",
       "u1",
