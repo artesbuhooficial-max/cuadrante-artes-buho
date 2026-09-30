@@ -15,6 +15,7 @@
  *     GITHUB_REPO    cuadrante-artes-buho
  *     GITHUB_BRANCH  master
  *     MASTER_KEY     (la clave maestra de Roman; ve todos los sueldos)
+ *     PUBLISH_KEY    (clave compartida de publicación; distinta de MASTER_KEY)
  *     PINS           {"u1":"1234","u2":"5678","u3":"0000"}   (opcional)
  *     ANTHROPIC_API_KEY  sk-ant-...  (opcional: activa el asistente de
  *                        Visión Global — icono flotante que interpreta el
@@ -38,6 +39,11 @@ function _props(){ return PropertiesService.getScriptProperties(); }
 function _get(k, d){ var v = _props().getProperty(k); return v == null ? d : v; }
 function _json(k, d){ try { return JSON.parse(_get(k, '')) || d; } catch (e) { return d; } }
 function _setJson(k, o){ _props().setProperty(k, JSON.stringify(o)); }
+function _savePublishStatus(id, result){
+  if (/^[a-zA-Z0-9_-]{16,80}$/.test(String(id || ''))){
+    CacheService.getScriptCache().put('publish_' + id, JSON.stringify(result), 300);
+  }
+}
 
 function _out(obj, callback){
   var body = JSON.stringify(obj);
@@ -56,6 +62,13 @@ function doGet(e){
 
   if (action === 'ping'){
     return _out({ ok: true, msg: 'Cuadrante Web App activo' }, cb);
+  }
+
+  if (action === 'publishStatus'){
+    var id = String(p.id || '');
+    if (!/^[a-zA-Z0-9_-]{16,80}$/.test(id)) return _out({ ok: false, error: 'ID inválido' }, cb);
+    var result = CacheService.getScriptCache().get('publish_' + id);
+    return _out(result ? JSON.parse(result) : { pending: true }, cb);
   }
 
   if (action === 'unlock'){
@@ -171,6 +184,20 @@ function doPost(e){
   var action = body.action || 'publish';
 
   if (action === 'publish'){
+    var requestId = String(body.requestId || '');
+    var publishKey = _get('PUBLISH_KEY', '');
+    if (!publishKey || String(body.publishKey || '') !== publishKey){
+      var denied = { ok: false, error: publishKey ? 'Clave de publicación incorrecta' : 'Falta PUBLISH_KEY en Propiedades del script' };
+      _savePublishStatus(requestId, denied);
+      return _out(denied);
+    }
+    var lock = LockService.getScriptLock();
+    if (!lock.tryLock(25000)){
+      var busy = { ok: false, error: 'Otra publicación sigue en curso; inténtalo de nuevo' };
+      _savePublishStatus(requestId, busy);
+      return _out(busy);
+    }
+    try {
     var incoming = body.state || {};
 
     // 1) Capturar sueldos hacia el almacén privado (solo si vienen con valor,
@@ -182,7 +209,6 @@ function doPost(e){
         econ[m.id] = { salary: m.salary || 0, rate: m.rate || 0 };
       }
     });
-    _setJson('ECON', econ);
 
     // 2) Fusión persona por persona con lo que YA está publicado — la solución de fondo
     //    a lo que le pasó a Miriam y a Daniel (dos veces cada uno): antes, publicar
@@ -202,13 +228,24 @@ function doPost(e){
     var pubJson = JSON.stringify(pub, null, 2);
     var result = _commit('data/cuadrante-data.json', pubJson);
 
+    // Los sueldos privados solo cambian si el commit público ha funcionado.
+    if (result.ok) _setJson('ECON', econ);
+
     // 5) Copia de seguridad en Drive (si está configurada) — best-effort: un fallo aquí
     //    (carpeta mal puesta, sin permiso…) nunca debe tumbar la publicación en GitHub,
     //    que es la que de verdad importa. Se guarda la misma versión SIN sueldos que se
     //    publica en GitHub — nunca la versión con salary/rate reales.
-    try { _backupToDrive(pubJson); } catch (e) {}
+    if (result.ok) try { _backupToDrive(pubJson); } catch (e) {}
 
+    _savePublishStatus(requestId, result);
     return _out(result);
+    } catch (err) {
+      var failed = { ok: false, error: String(err && err.message || err).slice(0, 200) };
+      _savePublishStatus(requestId, failed);
+      return _out(failed);
+    } finally {
+      lock.releaseLock();
+    }
   }
 
   if (action === 'setpins'){

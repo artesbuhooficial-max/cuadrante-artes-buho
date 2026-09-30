@@ -28,6 +28,7 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
    | `GITHUB_REPO`   | `cuadrante-artes-buho`                            |
    | `GITHUB_BRANCH` | `master`                                          |
    | `MASTER_KEY`    | la clave maestra de Roman (la que quieras)        |
+   | `PUBLISH_KEY`   | clave compartida para publicar (distinta de `MASTER_KEY`) |
    | `PINS`          | `{"u1":"1234","u2":"5678","u3":"0000"}` (opcional)|
    | `ANTHROPIC_API_KEY` | tu clave de la API de Claude (opcional — ver abajo) |
    | `DRIVE_BACKUP_FOLDER_ID` | ID de una carpeta de Drive (opcional — ver abajo) |
@@ -80,7 +81,9 @@ Se hace **una sola vez**. Necesitas una cuenta de Google (vale la de la oficina)
 ## Cómo funciona a partir de ahora
 
 - **Publicar**: el botón ☁ Publicar envía los datos al script; el script quita los
-  sueldos y sube el resto a GitHub con su token. El equipo lo ve al recargar (~1 min).
+  sueldos y sube el resto a GitHub con su token. Cada miembro introduce la clave
+  compartida de publicación una vez por visita. El botón confirma el resultado real
+  de GitHub antes de mostrar éxito. El equipo lo ve al recargar (~1 min).
 - **Ver sueldos**: cada persona introduce su PIN para ver el suyo; **Roman** introduce
   la **clave maestra** para ver el Resumen y los sueldos de todos.
 - Los sueldos **nunca** quedan en el archivo público `data/cuadrante-data.json`.

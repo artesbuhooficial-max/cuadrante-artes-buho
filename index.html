@@ -721,7 +721,36 @@ async function guardStalePublish(){
   if(proceed)await pullRemote(true);
   return false;
 }
+// La clave de publicación vive solo en memoria durante esta visita.
+let _publishKey='';
+let _publishKeyResolve=null;
+function askPublishKey(){
+  if(_publishKey)return Promise.resolve(_publishKey);
+  return new Promise(resolve=>{
+    _publishKeyResolve=resolve;
+    document.getElementById('modalHost').innerHTML='<div class="scrim" onclick="if(event.target===this)finishPublishKey(false)">'+
+      '<div class="modal" style="max-width:380px"><header><h3>☁ Clave para publicar</h3><button class="btn ghost" onclick="finishPublishKey(false)">✕</button></header>'+
+      '<div class="body"><p class="hint">Introduce la clave compartida de publicación de la oficina.</p><div class="inp"><label>Clave de publicación</label><input id="publishKeyInput" type="password" autocomplete="off" onkeydown="if(event.key===\'Enter\')finishPublishKey(true)"></div></div>'+
+      '<footer><button class="btn" onclick="finishPublishKey(false)">Cancelar</button><button class="btn primary" onclick="finishPublishKey(true)">Publicar</button></footer></div></div>';
+    document.getElementById('publishKeyInput').focus();
+  });
+}
+function finishPublishKey(confirmed){
+  const value=confirmed?(document.getElementById('publishKeyInput')?.value||''):'';
+  closeModal();
+  if(_publishKeyResolve){const resolve=_publishKeyResolve;_publishKeyResolve=null;resolve(value);}
+}
+async function waitPublishStatus(url,id){
+  for(let attempt=0;attempt<20;attempt++){
+    const status=await jsonp(url+(url.includes('?')?'&':'?')+'action=publishStatus&id='+encodeURIComponent(id));
+    if(!status.pending)return status;
+    await new Promise(resolve=>setTimeout(resolve,1500));
+  }
+  throw new Error('No se pudo confirmar la publicación. Comprueba GitHub antes de reintentar.');
+}
 async function publishViaAppsScript(){
+  const publishKey=await askPublishKey();
+  if(!publishKey)return;
   if(!(await guardStalePublish()))return;
   const url=ghGet().appsUrl;
   const btn=document.getElementById('publishBtn');
@@ -740,8 +769,15 @@ async function publishViaAppsScript(){
     const dirtySet=new Set(state.meta.dirtyPeople||[]);
     if(state.ui.person)dirtySet.add(state.ui.person);
     const dirtyPeople=[...dirtySet];
-    // no-cors: la respuesta es opaca (no legible), pero el commit se hace en el servidor.
-    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',state,dirtyPeople})});
+    // La respuesta POST es opaca por CORS. Consultamos después el resultado por ID.
+    const requestId=crypto.randomUUID().replace(/-/g,'');
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'publish',requestId,publishKey,state,dirtyPeople})});
+    const result=await waitPublishStatus(url,requestId);
+    if(!result.ok){
+      if(/clave de publicación/i.test(result.error||''))_publishKey='';
+      throw new Error(result.error||'No se pudo publicar');
+    }
+    _publishKey=publishKey;
     lastKnownRemoteAt=state.meta.updatedAt;
     state.meta.dirtyPeople=[];save();
     toast('✓ Publicado (copia de seguridad descargada) — el equipo lo verá al recargar (~1 min)');
