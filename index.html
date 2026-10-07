@@ -2241,6 +2241,7 @@ async function boot(){
   }
   state=data;migrate();loadPins();
   adoptAppsUrl();
+  initializePriorityReport();
   storeSet(state);
   await initFile();
   switchTab(state.ui.tab||'cuadrante');render();
