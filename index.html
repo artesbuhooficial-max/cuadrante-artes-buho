@@ -582,6 +582,8 @@
 <div id="modalHost"></div>
 <div class="toast" id="toast"></div>
 
+<link rel="stylesheet" href="priorities-report.css">
+<script src="priorities-report.js"></script>
 <script>
 /* ============ STORAGE ============ */
 const KEY='cuadrante_artesbuho_v2';
@@ -1174,7 +1176,7 @@ function dayPriorityPct(list){return list.length?Math.round(list.reduce((sum,x)=
 function priorityDurationParts(n){const total=Math.max(0,Math.round((Number(n)||0)*60));return {hours:Math.floor(total/60),minutes:total%60};}
 function fmtPrioDuration(n){const p=priorityDurationParts(n);if(p.hours&&p.minutes)return p.hours+' h '+p.minutes+' min';if(p.hours)return p.hours+' h';return p.minutes+' min';}
 function priorityDayLabel(ds){const s=parseId(ds).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});return s.charAt(0).toUpperCase()+s.slice(1);}
-function renderPriorityBoard(){
+function renderPriorityEditor(){
   const host=document.getElementById('priorityBoard');if(!host)return;
   const p=curPerson(),mon=parseId(state.ui.weekId),selected=priorityDateForWeek();
   let days='';
