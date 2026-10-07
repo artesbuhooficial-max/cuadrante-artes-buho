@@ -584,6 +584,8 @@
 
 <link rel="stylesheet" href="priorities-report.css">
 <script src="priorities-report.js"></script>
+<link rel="stylesheet" href="voice-priorities.css">
+<script src="voice-priorities.js"></script>
 <script>
 /* ============ STORAGE ============ */
 const KEY='cuadrante_artesbuho_v2';
@@ -2242,6 +2244,7 @@ async function boot(){
   state=data;migrate();loadPins();
   adoptAppsUrl();
   initializePriorityReport();
+  initializeVoicePriorities();
   storeSet(state);
   await initFile();
   switchTab(state.ui.tab||'cuadrante');render();
