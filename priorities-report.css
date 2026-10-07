@@ -1,4 +1,6 @@
 .pr-controls,.pr-summary{display:flex;gap:8px;flex-wrap:wrap}
+.pr-other-views{margin:0 16px 16px;padding:10px 12px;border-top:1px solid var(--line);color:var(--muted);font-size:.75rem}
+.pr-other-views summary{cursor:pointer}.pr-other-views>div{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .pr-summary{padding:16px 20px 0}.pr-summary .prio-stat{flex:1;min-width:160px}
 .pr-explanation{margin:12px 20px;color:var(--muted);font-size:.76rem;line-height:1.6}
 .pr-days{padding:0 16px 16px;display:grid;gap:14px}
@@ -27,7 +29,7 @@
   body.print-priority-report .wrap{max-width:none;padding:0}
   body.print-priority-report #priorityBoard{box-shadow:none;border:0;display:block!important}
   body.print-priority-report #view-cuadrante>*:not(#priorityBoard){display:none!important}
-  body.print-priority-report .pr-controls,body.print-priority-report .pr-edit{display:none!important}
+  body.print-priority-report .pr-controls,body.print-priority-report .pr-edit,body.print-priority-report .pr-other-views{display:none!important}
   body.print-priority-report .pr-table{min-width:0;font-size:9pt}
   body.print-priority-report .pr-day{break-inside:avoid}body.print-priority-report .pr-table-wrap{overflow:visible}
 }

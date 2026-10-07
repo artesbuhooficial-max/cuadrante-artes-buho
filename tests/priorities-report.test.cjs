@@ -11,12 +11,19 @@ const app=readFileSync(join(root,'index.html'),'utf8').match(/<script>([\s\S]*?)
 vm.runInContext(app.replace(/boot\(\);\s*$/,''),context);
 vm.runInContext(`
 state={ui:{weekId:'2026-10-05',person:'a'},config:{granularity:'half'},team:[
- {id:'a',name:'Ana',projects:[{id:'p',name:'Escuela',color:'#123456'}],grid:{'2026-10-05':{'0-18':{p:'p',n:'Preparar clase'}}},priorities:[
+ {id:'a',name:'David',projects:[{id:'p',name:'Escuela',color:'#123456'}],grid:{'2026-10-05':{'0-18':{p:'p',n:'Preparar clase'}}},priorities:[
   {id:'1',date:'2026-10-05',title:'Primera acción',progress:50,estimatedHours:2,actualHours:1,workNotes:'<script>nota</script>'},
   {id:'2',date:'2026-10-12',title:'Lunes de cierre',done:true,estimatedHours:1,actualHours:0}]},
  {id:'b',name:'Bruno',projects:[],grid:{},priorities:[{id:'3',date:'2026-10-06',title:'Segunda acción',progress:0}]}
 ]};`,context);
 const evaluate=expression=>vm.runInContext(expression,context);
+assert.equal(evaluate('priorityScope'),'person');
+evaluate("state.ui.person='b';initializePriorityReport()");
+assert.equal(evaluate('state.ui.person'),'a');
+evaluate('renderPriorityBoard()');assert.ok(!host.innerHTML.includes('Bruno'));
+assert.ok(!host.innerHTML.split('class="pr-summary"')[0].includes('Ver todo el equipo'));
+assert.ok(host.innerHTML.includes('class="pr-other-views"'));
+evaluate("priorityScope='team'");
 assert.equal(evaluate('priorityReportDays().length'),8);
 assert.equal(evaluate('priorityReportDays()[7]'),'2026-10-12');
 const metrics=evaluate('priorityReportMetrics(priorityReportPeople(),priorityReportDays())');

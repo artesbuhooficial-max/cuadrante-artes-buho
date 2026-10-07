@@ -1,7 +1,12 @@
 /* Informe de lunes a lunes. No se deduce tiempo real a partir del avance. */
 let priorityView='report';
-let priorityScope='team';
+let priorityScope='person';
 let priorityReportReturnWeek=null;
+function initializePriorityReport(){
+  const david=state.team.find(p=>String(p.name).trim().toLowerCase()==='david')||state.team.find(p=>p.id==='u1');
+  if(david)state.ui.person=david.id;
+  priorityScope='person';
+}
 
 function priorityReportDays(){
   const monday=mondayOf(parseId(state.ui.weekId));
@@ -80,10 +85,11 @@ function renderPriorityBoard(){
       (rows?'<div class="pr-table-wrap"><table class="pr-table"><thead><tr><th>Persona</th><th>Acción / trabajo realizado</th><th>Avance</th><th>Dedicado</th><th>Estimado</th><th class="pr-edit"></th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p class="pr-empty">No hay prioridades registradas para este día.</p>')+
       (activities?'<details class="pr-grid" open><summary>Actividad del cuadrante · '+fmtPrioDuration(dm.grid)+'</summary>'+activities+'</details>':'<p class="pr-empty">Sin actividad registrada en el cuadrante.</p>')+'</section>';
   });
-  host.innerHTML='<div class="prio-head"><div><div class="prio-kicker">Informe de acciones · '+(priorityScope==='team'?'Todo el equipo':esc(curPerson().name))+'</div><h3>Prioridades de lunes a lunes</h3><p>'+range+'</p></div><div class="pr-controls"><button class="btn'+(priorityScope==='team'?' primary':'')+'" onclick="setPriorityReportScope(\'team\')">Todo el equipo</button><button class="btn'+(priorityScope==='person'?' primary':'')+'" onclick="setPriorityReportScope(\'person\')">'+esc(curPerson().name)+'</button><button class="btn" onclick="printPriorityReport()">Imprimir / PDF</button></div></div>'+
+  host.innerHTML='<div class="prio-head"><div><div class="prio-kicker">Informe de acciones · '+(priorityScope==='team'?'Todo el equipo':esc(curPerson().name))+'</div><h3>Prioridades de lunes a lunes</h3><p>'+range+'</p></div><div class="pr-controls"><button class="btn" onclick="printPriorityReport()">Imprimir / PDF</button></div></div>'+
     '<div class="pr-summary">'+priorityReportStat('Acciones hechas',metrics.done+' / '+metrics.count)+priorityReportStat('Avance medio',metrics.pct==null?'—':metrics.pct+'%')+priorityReportStat('Dedicado a prioridades',metrics.tracked?fmtPrioDuration(metrics.actual):'Sin registrar')+priorityReportStat('Horas en cuadrante',fmtPrioDuration(metrics.grid))+'</div>'+
     '<p class="pr-explanation">El avance es la media de los porcentajes de las acciones. El tiempo dedicado se registra por acción; las horas del cuadrante se muestran aparte y no se suman a ese tiempo. '+metrics.tracked+' de '+metrics.count+' acciones tienen tiempo registrado. El lunes de cierre también aparece al inicio del siguiente informe.</p>'+
-    '<div class="pr-days">'+content+'</div>';
+    '<div class="pr-days">'+content+'</div>'+
+    '<details class="pr-other-views"><summary>Otras vistas</summary><div><button class="btn" onclick="setPriorityReportScope(\'team\')">Ver todo el equipo</button><button class="btn" onclick="setPriorityReportScope(\'person\')">Ver solo '+esc(curPerson().name)+'</button></div></details>';
 }
 function updatePriorityActualTime(id,entry){
   const r=findPriority(id);if(!r.x)return;
