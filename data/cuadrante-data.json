@@ -8259,16 +8259,16 @@
             "p": "p1"
           },
           "2-22": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-23": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-24": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-25": {
-            "p": "p1"
+            "p": "x6njpre"
           },
           "2-26": {
             "p": "p1"
@@ -11471,18 +11471,18 @@
   ],
   "ui": {
     "tab": "cuadrante",
-    "person": "xwn3rwh",
+    "person": "u3",
     "weekId": "2026-10-05",
     "monthScope": "person",
     "monthRef": {
       "y": 2026,
-      "m": 7
+      "m": 8
     },
     "resRef": {
       "y": 2026,
-      "m": 7
+      "m": 5
     },
-    "taskSub": "recur",
+    "taskSub": "todo",
     "priorityDate": "2026-10-05"
   },
   "notes": [],
@@ -11844,7 +11844,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1791190497229,
+    "updatedAt": 1791369354103,
     "dirtyPeople": [
       "u3",
       "xwn3rwh"
