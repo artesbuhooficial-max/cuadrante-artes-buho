@@ -60,6 +60,13 @@ function doGet(e){
   var cb = p.callback || '';
   var action = p.action || 'ping';
 
+  if (action === 'voiceStatus'){
+    var voiceId = String(p.id || '');
+    if (!/^[a-zA-Z0-9_-]{16,80}$/.test(voiceId)) return _out({ok:false,error:'ID inválido'}, cb);
+    var voiceResult = CacheService.getScriptCache().get('voice_' + voiceId);
+    return _out(voiceResult ? JSON.parse(voiceResult) : {pending:true}, cb);
+  }
+
   if (action === 'ping'){
     return _out({ ok: true, msg: 'Cuadrante Web App activo' }, cb);
   }
@@ -182,6 +189,8 @@ function doPost(e){
   catch (err){ return _out({ ok: false, error: 'JSON inválido' }); }
 
   var action = body.action || 'publish';
+
+  if (action === 'organizeVoice') return _out(_voiceRequest(body));
 
   if (action === 'publish'){
     var requestId = String(body.requestId || '');
