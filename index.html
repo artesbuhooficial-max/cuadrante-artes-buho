@@ -586,6 +586,7 @@
 <script src="priorities-report.js"></script>
 <link rel="stylesheet" href="voice-priorities.css">
 <script src="voice-priorities.js"></script>
+<script src="voice-ai.js"></script>
 <script>
 /* ============ STORAGE ============ */
 const KEY='cuadrante_artesbuho_v2';
@@ -728,14 +729,14 @@ async function guardStalePublish(){
 // La clave de publicación vive solo en memoria durante esta visita.
 let _publishKey='';
 let _publishKeyResolve=null;
-function askPublishKey(){
+function askPublishKey(options={}){
   if(_publishKey)return Promise.resolve(_publishKey);
   return new Promise(resolve=>{
     _publishKeyResolve=resolve;
     document.getElementById('modalHost').innerHTML='<div class="scrim" onclick="if(event.target===this)finishPublishKey(false)">'+
-      '<div class="modal" style="max-width:380px"><header><h3>☁ Clave para publicar</h3><button class="btn ghost" onclick="finishPublishKey(false)">✕</button></header>'+
-      '<div class="body"><p class="hint">Introduce la clave compartida de publicación de la oficina.</p><div class="inp"><label>Clave de publicación</label><input id="publishKeyInput" type="password" autocomplete="off" onkeydown="if(event.key===\'Enter\')finishPublishKey(true)"></div></div>'+
-      '<footer><button class="btn" onclick="finishPublishKey(false)">Cancelar</button><button class="btn primary" onclick="finishPublishKey(true)">Publicar</button></footer></div></div>';
+      '<div class="modal" style="max-width:380px"><header><h3>'+esc(options.title||'☁ Clave para publicar')+'</h3><button class="btn ghost" onclick="finishPublishKey(false)">✕</button></header>'+
+      '<div class="body"><p class="hint">'+esc(options.hint||'Introduce la clave compartida de publicación de la oficina.')+'</p><div class="inp"><label>Clave de publicación</label><input id="publishKeyInput" type="password" autocomplete="off" onkeydown="if(event.key===\'Enter\')finishPublishKey(true)"></div></div>'+
+      '<footer><button class="btn" onclick="finishPublishKey(false)">Cancelar</button><button class="btn primary" onclick="finishPublishKey(true)">'+esc(options.button||'Publicar')+'</button></footer></div></div>';
     document.getElementById('publishKeyInput').focus();
   });
 }
