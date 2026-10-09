@@ -38,19 +38,30 @@ async function voiceOrganize(){
     const id=crypto.randomUUID().replace(/-/g,'');
     voiceStatus('La IA está ordenando tu jornada…');
     await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'organizeVoice',requestId:id,publishKey:key,text,defaultDate:date,today:dStr(new Date()),weekStart:state.ui.weekId})});
-    let result;
-    for(let attempt=0;attempt<40;attempt++){
-      if(generation!==voiceAiGeneration)return;
-      result=await jsonp(url+(url.includes('?')?'&':'?')+'action=voiceStatus&id='+encodeURIComponent(id));
-      if(!result.pending)break;
-      await new Promise(resolve=>setTimeout(resolve,1500));
-    }
+    const result=await voiceWaitForResult(url,id,generation);
     if(generation!==voiceAiGeneration)return;
-    if(!result||result.pending)throw new Error('La IA está tardando demasiado. Tu dictado se conserva; puedes reintentar.');
     if(!result.ok){if(result.authError)_publishKey='';throw new Error(result.error||'No se pudo organizar el dictado.');}
     _publishKey=key;voiceAiRender(result);
   }catch(e){if(generation===voiceAiGeneration)voiceStatus(e.message+' El texto original no se ha borrado.');}
   finally{if(generation===voiceAiGeneration){voiceAiBusy=false;voiceAiControls(false);}}
+}
+async function voiceWaitForResult(url,id,generation){
+  const deadline=Date.now()+100000;let connectionFailures=0;
+  while(Date.now()<deadline){
+    if(generation!==voiceAiGeneration)return null;
+    try{
+      const query='action=voiceStatus&id='+encodeURIComponent(id)+'&t='+Date.now();
+      const result=await jsonp(url+(url.includes('?')?'&':'?')+query);
+      connectionFailures=0;
+      if(result&&!result.pending)return result;
+    }catch(error){
+      connectionFailures++;
+      if(connectionFailures>=4)throw new Error('No se pudo consultar Apps Script tras varios intentos. Comprueba la conexión en Ajustes → Probar conexión y vuelve a pulsar Organizar.');
+      voiceStatus('La respuesta de la IA tarda en llegar. Reconectando… ('+connectionFailures+'/3)');
+    }
+    await new Promise(resolve=>setTimeout(resolve,2000));
+  }
+  throw new Error('La IA está tardando demasiado. Vuelve a pulsar Organizar; el dictado sigue disponible.');
 }
 function voiceAiRender(result){
   voicePlan=result.items||[];const preview=document.getElementById('voicePreview');preview.innerHTML='';
