@@ -1,4 +1,5 @@
 /* Dictado organizado por Claude mediante Apps Script, sin claves API en el cliente. */
+const VOICE_APPS_URL='https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec';
 let voiceAiBusy=false,voiceAiGeneration=0;
 const voiceOriginalOpen=voiceOpen,voiceOriginalClose=voiceClose,voiceOriginalCommit=voiceCommit,voiceOriginalStart=voiceStart;
 voiceOpen=function(){
@@ -23,11 +24,10 @@ function voiceAiControls(active){
 }
 async function voiceOrganize(){
   if(voiceListening||voiceAiBusy)return;
-  const text=document.getElementById('voiceText').value.trim(),date=document.getElementById('voiceDate').value,url=ghGet().appsUrl;
+  const text=document.getElementById('voiceText').value.trim(),date=document.getElementById('voiceDate').value,url=VOICE_APPS_URL;
   if(!text){voiceStatus('Primero dicta o escribe tu jornada.');return;}
   if(text.length>12000){voiceStatus('Divide el relato en bloques de menos de 12.000 caracteres.');return;}
   if(!voiceAiValidDate(date)){voiceStatus('Elige una fecha por defecto válida.');return;}
-  if(!url){voiceStatus('Configura la URL de Apps Script en Ajustes para usar la IA. Tu texto se conserva.');return;}
   voiceAiBusy=true;const generation=++voiceAiGeneration;voiceAiControls(true);voiceSaveDraft();
   document.getElementById('voiceSave').hidden=true;document.getElementById('voicePreview').innerHTML='';voicePlan=[];
   try{

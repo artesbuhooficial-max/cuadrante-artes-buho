@@ -26,6 +26,7 @@ async function main(){
   await run('voiceOrganize()');assert.equal(saved,0);assert.equal(rows.length,2);assert.equal(element('voiceSave').hidden,false);
   const request=JSON.parse(posted[0].options.body);assert.equal(request.publishKey,'office-test');assert.equal(request.text,element('voiceText').value);assert.equal(JSON.stringify(request).includes('9999'),false);
   assert.equal(posted[0].options.mode,'no-cors');assert.equal(posted[0].url.includes('office-test'),false);
+  assert.equal(posted[0].url,'https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec');
   assert.equal(rows[1].fields.actualHours.value,'');assert.equal(rows[1].fields.progress.value,'');
   rows.forEach(row=>row.querySelector('[data-field="date"]').value='2026-10-08');
   rows[0].fields.actualHours.value=25;run('voiceCommit()');assert.equal(saved,0);rows[0].fields.actualHours.value=.5;
