@@ -2995,7 +2995,7 @@
           "workNotes": "Se intentó arreglar la plataforma de mailing, que daba errores y se atascaba.",
           "actualHours": null,
           "estimatedHours": null,
-          "progress": 0,
+          "progress": 85,
           "id": "x6hv647",
           "done": false,
           "order": 0,
@@ -3021,7 +3021,7 @@
           "workNotes": "Se corrigieron problemas con los envíos y las plantillas de Noches de Neón para que Daniel pudiera trabajar.",
           "actualHours": null,
           "estimatedHours": null,
-          "progress": 0,
+          "progress": 65,
           "id": "xa1fwr7",
           "done": false,
           "order": 2,
@@ -3034,9 +3034,9 @@
           "workNotes": "Se dedicó tiempo a la mejora e implementación de inteligencia artificial en este cuadrante con reconocimiento de voz. Tiempo aproximado indicado: media hora.",
           "actualHours": 0.5,
           "estimatedHours": null,
-          "progress": 0,
+          "progress": 100,
           "id": "xk6eiky",
-          "done": false,
+          "done": true,
           "order": 3,
           "created": 1791535663852,
           "source": "voice-ai"
@@ -11706,7 +11706,7 @@
       "m": 7
     },
     "taskSub": "recur",
-    "priorityDate": "2026-10-05"
+    "priorityDate": "2026-10-08"
   },
   "notes": [],
   "tasks": [
@@ -12067,7 +12067,7 @@
   ],
   "milestones": [],
   "meta": {
-    "updatedAt": 1791535992605,
+    "updatedAt": 1791536027640,
     "dirtyPeople": [
       "u3",
       "xwn3rwh",
