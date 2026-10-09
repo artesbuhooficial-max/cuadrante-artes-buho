@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
-const elements=new Map();let rows=[],saved=0,posted=[],answer,captureError=false,ended=0,requestKey='office-test',closed=0,jsonpErrorsRemaining=0,jsonpCalls=0,corsErrorsRemaining=0,corsCalls=0;
+const elements=new Map();let rows=[],saved=0,posted=[],answer,captureError=false,ended=0,requestKey='office-test',closed=0,jsonpErrorsRemaining=0,jsonpCalls=0,corsErrorsRemaining=0,corsCalls=0,pingFails=false;
 function element(id){
   if(!elements.has(id))elements.set(id,{value:'',hidden:false,disabled:false,textContent:'',_html:'',children:[],fields:{},
     set innerHTML(v){this._html=v;if(id==='voicePreview')rows=[];},get innerHTML(){return this._html;},
@@ -15,7 +15,7 @@ const ctx=vm.createContext({console,Date,Number,Promise,AbortController,setTimeo
   askPublishKey:async()=>requestKey,voiceStatus:t=>element('voiceStatus').textContent=t,voiceSaveDraft(){},
   voiceOpen(){element('voicePanel').hidden=false;},voiceClose(){closed++;element('voicePanel').hidden=true;},voiceCommit(){throw Error('unexpected manual commit');},
   voiceStart(){ctx.voiceCapture={onerror(){captureError=true;},onend(){ended++;}};},
-  fetch:async(url,options)=>{if(options.method==='POST'){posted.push({url,options});return;}corsCalls++;if(corsErrorsRemaining-->0)throw new Error('CORS');return {ok:true,json:async()=>answer};},jsonp:async()=>{jsonpCalls++;if(jsonpErrorsRemaining-->0)throw new Error('No se pudo conectar');return answer;},
+  fetch:async(url,options)=>{if(options.method==='POST'){posted.push({url,options});return;}if(url.includes('action=ping')){if(pingFails)throw new Error('Failed to fetch');return {ok:true,json:async()=>({ok:true})};}corsCalls++;if(corsErrorsRemaining-->0)throw new Error('CORS');return {ok:true,json:async()=>answer};},jsonp:async()=>{jsonpCalls++;if(pingFails||jsonpErrorsRemaining-->0)throw new Error('No se pudo conectar');return answer;},
   dStr:()=> '2026-10-08',esc:s=>s,uid:()=> 'i'+p.priorities.length,prioritiesForDay:(p,d)=>p.priorities.filter(x=>x.date===d),markDirty(){},save(){saved++;},renderPriorityBoard(){},toast(){}});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'..','voice-ai.js'),'utf8'),ctx);
 const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(resolve));
@@ -39,6 +39,7 @@ async function main(){
   corsErrorsRemaining=3;jsonpErrorsRemaining=2;const beforeRetry=jsonpCalls;await run('voiceOrganize()');assert.equal(jsonpCalls-beforeRetry,3);assert.equal(rows.length,1);
   run('voiceStart();voiceCapture.onend()');await flush();assert.equal(ended,1);assert.equal(rows.length,1);
   const before=posted.length;run("voiceStart();voiceCapture.onerror({error:'not-allowed'});voiceCapture.onend()");await flush();assert.equal(captureError,true);assert.equal(posted.length,before);
+  pingFails=true;await run('voiceOrganize()');assert.equal(posted.length,before);assert.ok(element('voiceStatus').textContent.includes('[IA-4]'));assert.ok(element('voiceStatus').textContent.includes('Failed to fetch'));assert.equal(element('voiceText').value,'Otro relato');
   run('voiceClose()');assert.equal(closed,1);assert.equal(run('voiceAiBusy'),false);
   console.log('OK: propuesta sin autoguardado, transporte privado, vacíos, edición, guardado único, cancelación, errores y organización automática al detener.');
 }

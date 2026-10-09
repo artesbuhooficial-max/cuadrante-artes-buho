@@ -1,5 +1,6 @@
 /* Dictado organizado por Claude mediante Apps Script, sin claves API en el cliente. */
 const VOICE_APPS_URL='https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec';
+const VOICE_AI_VERSION='IA-4';
 let voiceAiBusy=false,voiceAiGeneration=0;
 const voiceOriginalOpen=voiceOpen,voiceOriginalClose=voiceClose,voiceOriginalCommit=voiceCommit,voiceOriginalStart=voiceStart;
 voiceOpen=function(){
@@ -31,6 +32,10 @@ async function voiceOrganize(){
   voiceAiBusy=true;const generation=++voiceAiGeneration;voiceAiControls(true);voiceSaveDraft();
   document.getElementById('voiceSave').hidden=true;document.getElementById('voicePreview').innerHTML='';voicePlan=[];
   try{
+    voiceStatus('Comprobando la conexión con el servicio de IA…');
+    const connection=await voiceReadStatus(url+'?action=ping&t='+Date.now());
+    if(generation!==voiceAiGeneration)return;
+    if(!connection||!connection.ok)throw new Error('El servicio de conexión devolvió una respuesta inesperada.');
     voiceStatus('Introduce la clave compartida de la oficina para usar la IA.');
     const key=await askPublishKey({title:'Organizar jornada con IA',button:'Organizar',hint:'Usa la clave compartida de publicación. No se publicará ningún cambio.'});
     if(generation!==voiceAiGeneration)return;
@@ -42,7 +47,11 @@ async function voiceOrganize(){
     if(generation!==voiceAiGeneration)return;
     if(!result.ok){if(result.authError)_publishKey='';throw new Error(result.error||'No se pudo organizar el dictado.');}
     _publishKey=key;voiceAiRender(result);
-  }catch(e){if(generation===voiceAiGeneration)voiceStatus(e.message+' El texto original no se ha borrado.');}
+  }catch(e){if(generation===voiceAiGeneration){
+    voiceStatus('['+VOICE_AI_VERSION+'] '+e.message+' El texto original se conserva.');
+    const link=document.createElement('a');link.href=VOICE_APPS_URL+'?action=ping';link.target='_blank';link.rel='noopener';link.className='btn';link.textContent='Abrir comprobación de conexión';
+    document.getElementById('voicePreview').appendChild(link);
+  }}
   finally{if(generation===voiceAiGeneration){voiceAiBusy=false;voiceAiControls(false);}}
 }
 async function voiceWaitForResult(url,id,generation){
@@ -56,7 +65,7 @@ async function voiceWaitForResult(url,id,generation){
       if(result&&!result.pending)return result;
     }catch(error){
       connectionFailures++;
-      if(connectionFailures>=4)throw new Error('No se pudo consultar Apps Script tras varios intentos. Comprueba la conexión en Ajustes → Probar conexión y vuelve a pulsar Organizar.');
+      if(connectionFailures>=4)throw new Error('Falló la lectura del resultado después de conectar: '+error.message);
       voiceStatus('La respuesta de la IA tarda en llegar. Reconectando… ('+connectionFailures+'/3)');
     }
     await new Promise(resolve=>setTimeout(resolve,2000));
@@ -71,7 +80,9 @@ async function voiceReadStatus(url){
     if(!response.ok)throw new Error('HTTP '+response.status);
     return await response.json();
   }catch(error){
-    return jsonp(url);
+    try{return await jsonp(url);}catch(alternative){
+      throw new Error('Conexión directa: '+String(error.message||error.name).slice(0,160)+'. Conexión alternativa: '+String(alternative.message||alternative.name).slice(0,160)+'.');
+    }
   }finally{clearTimeout(timeout);}
 }
 function voiceAiRender(result){
