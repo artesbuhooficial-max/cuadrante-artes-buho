@@ -51,7 +51,7 @@ async function voiceWaitForResult(url,id,generation){
     if(generation!==voiceAiGeneration)return null;
     try{
       const query='action=voiceStatus&id='+encodeURIComponent(id)+'&t='+Date.now();
-      const result=await jsonp(url+(url.includes('?')?'&':'?')+query);
+      const result=await voiceReadStatus(url+(url.includes('?')?'&':'?')+query);
       connectionFailures=0;
       if(result&&!result.pending)return result;
     }catch(error){
@@ -62,6 +62,17 @@ async function voiceWaitForResult(url,id,generation){
     await new Promise(resolve=>setTimeout(resolve,2000));
   }
   throw new Error('La IA está tardando demasiado. Vuelve a pulsar Organizar; el dictado sigue disponible.');
+}
+async function voiceReadStatus(url){
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),12000);
+  try{
+    const response=await fetch(url,{mode:'cors',cache:'no-store',signal:controller.signal});
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    return await response.json();
+  }catch(error){
+    return jsonp(url);
+  }finally{clearTimeout(timeout);}
 }
 function voiceAiRender(result){
   voicePlan=result.items||[];const preview=document.getElementById('voicePreview');preview.innerHTML='';

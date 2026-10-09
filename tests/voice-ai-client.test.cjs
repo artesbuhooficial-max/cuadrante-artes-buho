@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
-const elements=new Map();let rows=[],saved=0,posted=[],answer,captureError=false,ended=0,requestKey='office-test',closed=0,jsonpErrorsRemaining=0,jsonpCalls=0;
+const elements=new Map();let rows=[],saved=0,posted=[],answer,captureError=false,ended=0,requestKey='office-test',closed=0,jsonpErrorsRemaining=0,jsonpCalls=0,corsErrorsRemaining=0,corsCalls=0;
 function element(id){
   if(!elements.has(id))elements.set(id,{value:'',hidden:false,disabled:false,textContent:'',_html:'',children:[],fields:{},
     set innerHTML(v){this._html=v;if(id==='voicePreview')rows=[];},get innerHTML(){return this._html;},
@@ -8,14 +8,14 @@ function element(id){
   return elements.get(id);
 }
 const p={id:'u1',name:'David',salary:9999,priorities:[]};
-const ctx=vm.createContext({console,Date,Number,Promise,crypto:{randomUUID:()=> 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'},setTimeout:fn=>fn(),
+const ctx=vm.createContext({console,Date,Number,Promise,AbortController,setTimeout:fn=>{fn();return 1;},clearTimeout(){},crypto:{randomUUID:()=> 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'},
   voiceCapture:null,voiceListening:false,voiceFinal:'',voicePlan:[],window:{SpeechRecognition:function(){}},_publishKey:'',
   document:{getElementById:element,createElement:()=>element('created'+Math.random()),querySelector:selector=>selector.includes('data-field')?(rows.length?{}:null):{},querySelectorAll:()=>rows},
   state:{team:[p],ui:{weekId:'2026-10-05'}},person:id=>id==='u1'?p:null,ghGet:()=>({appsUrl:'https://script.google.com/test/exec'}),
   askPublishKey:async()=>requestKey,voiceStatus:t=>element('voiceStatus').textContent=t,voiceSaveDraft(){},
   voiceOpen(){element('voicePanel').hidden=false;},voiceClose(){closed++;element('voicePanel').hidden=true;},voiceCommit(){throw Error('unexpected manual commit');},
   voiceStart(){ctx.voiceCapture={onerror(){captureError=true;},onend(){ended++;}};},
-  fetch:async(url,options)=>{posted.push({url,options});},jsonp:async()=>{jsonpCalls++;if(jsonpErrorsRemaining-->0)throw new Error('No se pudo conectar');return answer;},
+  fetch:async(url,options)=>{if(options.method==='POST'){posted.push({url,options});return;}corsCalls++;if(corsErrorsRemaining-->0)throw new Error('CORS');return {ok:true,json:async()=>answer};},jsonp:async()=>{jsonpCalls++;if(jsonpErrorsRemaining-->0)throw new Error('No se pudo conectar');return answer;},
   dStr:()=> '2026-10-08',esc:s=>s,uid:()=> 'i'+p.priorities.length,prioritiesForDay:(p,d)=>p.priorities.filter(x=>x.date===d),markDirty(){},save(){saved++;},renderPriorityBoard(){},toast(){}});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'..','voice-ai.js'),'utf8'),ctx);
 const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(resolve));
@@ -24,6 +24,7 @@ async function main(){
   element('voiceText').value='Terminé el cartel en media hora.';element('voiceDate').value='2026-10-08';element('voiceOwner').value='u1';
   answer={ok:true,items:[sample,{...sample,title:'Revisar correo',actualHours:null,progress:null}],warnings:['Revisar la fecha.']};
   await run('voiceOrganize()');assert.equal(saved,0);assert.equal(rows.length,2);assert.equal(element('voiceSave').hidden,false);
+  assert.equal(corsCalls,1);assert.equal(jsonpCalls,0);
   const request=JSON.parse(posted[0].options.body);assert.equal(request.publishKey,'office-test');assert.equal(request.text,element('voiceText').value);assert.equal(JSON.stringify(request).includes('9999'),false);
   assert.equal(posted[0].options.mode,'no-cors');assert.equal(posted[0].url.includes('office-test'),false);
   assert.equal(posted[0].url,'https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec');
@@ -35,7 +36,7 @@ async function main(){
   element('voiceText').value='Otro relato';requestKey='';await run('voiceOrganize()');assert.equal(posted.length,1);assert.ok(element('voiceStatus').textContent.includes('cancelada'));
   requestKey='wrong';answer={ok:false,authError:true,error:'Clave incorrecta'};await run('voiceOrganize()');assert.equal(run('_publishKey'),'');assert.equal(element('voiceText').value,'Otro relato');assert.equal(element('voiceSave').hidden,true);
   requestKey='office-test';answer={ok:true,items:[sample],warnings:[]};
-  jsonpErrorsRemaining=2;const beforeRetry=jsonpCalls;await run('voiceOrganize()');assert.equal(jsonpCalls-beforeRetry,3);assert.equal(rows.length,1);
+  corsErrorsRemaining=3;jsonpErrorsRemaining=2;const beforeRetry=jsonpCalls;await run('voiceOrganize()');assert.equal(jsonpCalls-beforeRetry,3);assert.equal(rows.length,1);
   run('voiceStart();voiceCapture.onend()');await flush();assert.equal(ended,1);assert.equal(rows.length,1);
   const before=posted.length;run("voiceStart();voiceCapture.onerror({error:'not-allowed'});voiceCapture.onend()");await flush();assert.equal(captureError,true);assert.equal(posted.length,before);
   run('voiceClose()');assert.equal(closed,1);assert.equal(run('voiceAiBusy'),false);
