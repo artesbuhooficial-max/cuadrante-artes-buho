@@ -60,6 +60,8 @@ function doGet(e){
   var cb = p.callback || '';
   var action = p.action || 'ping';
 
+  if(action==='sync')return _out(_safeSyncRead(),cb);
+
   if (action === 'voiceStatus'){
     var voiceId = String(p.id || '');
     if (!/^[a-zA-Z0-9_-]{16,80}$/.test(voiceId)) return _out({ok:false,error:'ID inválido'}, cb);
@@ -68,7 +70,7 @@ function doGet(e){
   }
 
   if (action === 'ping'){
-    return _out({ ok: true, msg: 'Cuadrante Web App activo' }, cb);
+    return _out({ ok: true, protocol:2, msg: 'Cuadrante Web App activo · publicación protegida' }, cb);
   }
 
   if (action === 'publishStatus'){
@@ -189,6 +191,12 @@ function doPost(e){
   catch (err){ return _out({ ok: false, error: 'JSON inválido' }); }
 
   var action = body.action || 'publish';
+
+  if(action==='publish2')return _out(_safePublish(body));
+  if(action==='publish'){
+    var outdated={ok:false,code:'CLIENT_UPDATE_REQUIRED',error:'Recarga la página para publicar con la protección nueva. Tus cambios locales se conservan.'};
+    _savePublishStatus(String(body.requestId||''),outdated);return _out(outdated);
+  }
 
   if (action === 'organizeVoice') return _out(_voiceRequest(body));
 

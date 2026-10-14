@@ -1784,7 +1784,7 @@ function openSettings(){const c=state.config;const gh=ghGet();
        '<div class="inp row"><button class="btn primary" id="spSaveBtn" onclick="saveAppsScriptPins()">💾 Guardar PIN en el script</button></div>'
       :'')+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">Copias de seguridad locales</label>'+
-    '<div class="inp row"><button class="btn" onclick="exportJSON()">↓ Descargar backup (.json)</button><button class="btn" onclick="importJSON()">↑ Restaurar backup</button></div>'+
+    '<div class="inp row"><button class="btn" onclick="exportJSON()">↓ Descargar backup (.json)</button><button class="btn" onclick="importJSON()">↑ Recuperar una persona</button><button class="btn" onclick="safeOpenHistory()">↶ Copias locales recientes</button></div>'+
     '</div>'+
     '<footer><button class="btn ghost danger" onclick="resetAll()">Reiniciar todo</button><button class="btn primary" onclick="saveSettings()">Guardar ajustes</button></footer></div>');}
 function saveSettings(){
@@ -2271,7 +2271,9 @@ async function pullRemote(skipConfirm){
   const keepUi=state.ui;state=remote;if(keepUi)state.ui=keepUi;migrate();adoptAppsUrl();storeSet(state);
   closeModal();switchTab(state.ui.tab||'cuadrante');render();toast('✓ Datos publicados cargados');
 }
-boot();
 </script>
+<script src="safe-sync.js?v=20261014-1"></script>
+<script src="publication-safe.js?v=20261014-1"></script>
+<script>boot();</script>
 </body>
 </html>
