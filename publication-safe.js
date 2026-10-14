@@ -5,6 +5,11 @@ const SAFE_DRAFT_KEY='cuadrante_safe_tab_draft_v2';
 const safeOriginalFetch=fetchRemote;
 const safeOriginalStore=storeSet;
 storeSet=function(doc){safeOriginalStore(doc);try{sessionStorage.setItem(SAFE_DRAFT_KEY,JSON.stringify(doc));}catch(e){}};
+const safeOriginalSaveUI=updateSaveUI;
+updateSaveUI=function(){
+  safeOriginalSaveUI();const pill=document.getElementById('saveStatus');if(!pill)return;
+  pill.textContent=safeGet(SAFE_PENDING_KEY)?'⏳ Envío por confirmar':!safeBase?'● Copia pendiente de revisión':SafeSync.equal(SafeSync.publicDoc(state),safeBase)?'✓ Sin cambios pendientes':'● Cambios sin publicar';
+};
 let safeBase=null,safePublishing=false,safeConflictResolver=null,safeConflictData=null,safeBackupCandidate=null;
 function safeGet(key){try{const tabValue=(key===SAFE_BASE_KEY||key===SAFE_PENDING_KEY)?sessionStorage.getItem(key):null;return JSON.parse(tabValue||(key===SAFE_PENDING_KEY?'null':localStorage.getItem(key))||'null');}catch(e){return null;}}
 function safeSet(key,value){const text=JSON.stringify(value);if(key===SAFE_PENDING_KEY){sessionStorage.setItem(key,text);return;}localStorage.setItem(key,text);if(key===SAFE_BASE_KEY)sessionStorage.setItem(key,text);}
@@ -179,4 +184,5 @@ boot=async function(){
     lastKnownRemoteAt=(remote.meta||{}).updatedAt||0;
   }
   migrate();loadPins();adoptAppsUrl();initializePriorityReport();initializeVoicePriorities();storeSet(state);await initFile();switchTab(state.ui.tab||'cuadrante');render();if(notice)toast(notice);
+  const sync=document.getElementById('syncBtn');if(sync)sync.title='Combina lo publicado con tus cambios locales; si hay un conflicto, permite revisar las dos versiones';updateSaveUI();
 };
