@@ -2798,6 +2798,164 @@
           "2-29": {
             "p": "xa3kx1b"
           }
+        },
+        "2026-10-05": {
+          "0-20": {
+            "p": "xa3kx1b"
+          },
+          "0-21": {
+            "p": "xa3kx1b"
+          },
+          "0-22": {
+            "p": "xa3kx1b"
+          },
+          "0-23": {
+            "p": "xa3kx1b"
+          },
+          "0-24": {
+            "p": "xle8jpb"
+          },
+          "0-25": {
+            "p": "xle8jpb"
+          },
+          "0-26": {
+            "p": "xle8jpb"
+          },
+          "0-27": {
+            "p": "xle8jpb"
+          },
+          "0-28": {
+            "p": "xk6kruc"
+          },
+          "0-29": {
+            "p": "xk6kruc"
+          },
+          "0-30": {
+            "p": "xk6kruc"
+          },
+          "0-31": {
+            "p": "xk6kruc"
+          },
+          "1-22": {
+            "p": "xa3kx1b"
+          },
+          "1-23": {
+            "p": "xa3kx1b"
+          },
+          "1-24": {
+            "p": "xa3kx1b"
+          },
+          "1-25": {
+            "p": "xa3kx1b"
+          },
+          "1-26": {
+            "p": "xle8jpb"
+          },
+          "1-27": {
+            "p": "xle8jpb"
+          },
+          "1-28": {
+            "p": "xle8jpb"
+          },
+          "1-29": {
+            "p": "xle8jpb"
+          },
+          "1-30": {
+            "p": "xk6kruc"
+          },
+          "1-31": {
+            "p": "xk6kruc"
+          },
+          "2-22": {
+            "p": "xa3kx1b"
+          },
+          "2-23": {
+            "p": "xa3kx1b"
+          },
+          "2-24": {
+            "p": "xa3kx1b"
+          },
+          "2-25": {
+            "p": "xa3kx1b"
+          },
+          "2-26": {
+            "p": "xle8jpb"
+          },
+          "2-27": {
+            "p": "xle8jpb"
+          },
+          "2-28": {
+            "p": "xle8jpb"
+          },
+          "2-29": {
+            "p": "xle8jpb"
+          },
+          "3-20": {
+            "p": "xa3kx1b"
+          },
+          "3-21": {
+            "p": "xa3kx1b"
+          },
+          "2-20": {
+            "p": "xa3kx1b"
+          },
+          "2-21": {
+            "p": "xa3kx1b"
+          },
+          "3-22": {
+            "p": "xa3kx1b"
+          },
+          "3-23": {
+            "p": "xa3kx1b"
+          },
+          "3-24": {
+            "p": "xk6kruc"
+          },
+          "3-25": {
+            "p": "xk6kruc"
+          },
+          "3-28": {
+            "p": "xk6kruc"
+          },
+          "3-29": {
+            "p": "xk6kruc"
+          },
+          "3-26": {
+            "p": "xle8jpb"
+          },
+          "3-27": {
+            "p": "xle8jpb"
+          },
+          "4-20": {
+            "p": "xa3kx1b"
+          },
+          "4-21": {
+            "p": "xa3kx1b"
+          },
+          "4-22": {
+            "p": "xa3kx1b"
+          },
+          "4-23": {
+            "p": "xa3kx1b"
+          },
+          "4-24": {
+            "p": "xk6kruc"
+          },
+          "4-25": {
+            "p": "xk6kruc"
+          },
+          "4-26": {
+            "p": "xa3kx1b"
+          },
+          "4-27": {
+            "p": "xa3kx1b"
+          },
+          "4-28": {
+            "p": "xa3kx1b"
+          },
+          "4-29": {
+            "p": "xa3kx1b"
+          }
         }
       },
       "projects": [
@@ -3047,6 +3205,253 @@
           "done": true,
           "order": 0,
           "created": 1790249784478
+        },
+        {
+          "id": "xpemw94",
+          "date": "2026-10-07",
+          "title": "App Envios de Mailing",
+          "progress": 85,
+          "done": false,
+          "estimatedHours": null,
+          "actualHours": null,
+          "order": 0,
+          "created": 1791373511101,
+          "source": "voice",
+          "workNotes": "Relizando trabajos de mailing"
+        },
+        {
+          "date": "2026-10-08",
+          "title": "Reparación de plataforma de mailing",
+          "workNotes": "Se intentó arreglar la plataforma de mailing, que daba errores y se atascaba.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 85,
+          "id": "x6hv647",
+          "done": false,
+          "order": 0,
+          "created": 1791535663852,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-08",
+          "title": "Envío de carteles para imprimir en La Bella Bestia",
+          "workNotes": "Se acabaron de enviar los carteles para imprimir en La Bella Bestia.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xt5tjbj",
+          "done": true,
+          "order": 1,
+          "created": 1791535663852,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-08",
+          "title": "Corrección de envíos y plantillas de Noches de Neón",
+          "workNotes": "Se corrigieron problemas con los envíos y las plantillas de Noches de Neón para que Daniel pudiera trabajar.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 65,
+          "id": "xa1fwr7",
+          "done": false,
+          "order": 2,
+          "created": 1791535663852,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-08",
+          "title": "Mejora e implementación de IA con reconocimiento de voz",
+          "workNotes": "Se dedicó tiempo a la mejora e implementación de inteligencia artificial en este cuadrante con reconocimiento de voz. Tiempo aproximado indicado: media hora.",
+          "actualHours": 0.5,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xk6eiky",
+          "done": true,
+          "order": 3,
+          "created": 1791535663852,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-09",
+          "title": "Implementación reconocimiento de voz del cuadrante",
+          "workNotes": "Se deja implementado el reconocimiento de voz del cuadrante. Tarea completada.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xle0my7",
+          "done": true,
+          "order": 0,
+          "created": 1791536313675,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-09",
+          "title": "Reunión con Daniel sobre volumen de contactos de Noches de Neón",
+          "workNotes": "Conversación con Daniel para revisar el volumen de contactos de Noches de Neón, confirmando que es correcto, y consultar si necesita ayuda con algo al respecto.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 30,
+          "id": "x1jaagg",
+          "done": false,
+          "order": 1,
+          "created": 1791536313675,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-09",
+          "title": "Arreglo y verificación de la plataforma de mailing",
+          "workNotes": "Se revisa y arregla la plataforma de mailing. La última implementación realizada con IA se considera correcta. Si el envío de prueba sale bien, la plataforma queda 100% operativa; en caso contrario se aplicarán mejoras. Estado final condicionado al resultado del envío.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 70,
+          "id": "xnaj9gm",
+          "done": false,
+          "order": 2,
+          "created": 1791536313675,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-09",
+          "title": "Envío de campaña Bella Bestia para empresas",
+          "workNotes": "Se procede a realizar el envío de Bella Bestia para empresas a través de la plataforma de mailing, condicionado a que la plataforma funcione correctamente.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 65,
+          "id": "xbhi1gq",
+          "done": false,
+          "order": 3,
+          "created": 1791536313675,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-13",
+          "title": "Reunión con Román sobre cash flow y estructura de ingresos/gastos",
+          "workNotes": "Reunión con Román para analizar el cash flow de la empresa, la estructura de ingresos y gastos. Conclusión: falta un flujo de caja más constante. Se identifica que la venta de Artes Búho está flojeando.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xotuk6m",
+          "done": true,
+          "order": 0,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-13",
+          "title": "Decisión estratégica: incorporarse a ventas de Noches de Neón y apoyo a Daniel",
+          "workNotes": "Se decide que David se incorpore a la venta de Noches de Neón junto con Daniel. Se planifica ayudar a Daniel a realizar el curso de Caja Constantes.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 60,
+          "id": "xiqk7ea",
+          "done": false,
+          "order": 1,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-13",
+          "title": "Organización con Miriam y actualización de datos en Respond.io para etiquetas",
+          "workNotes": "Tras la reunión, coordinación con Miriam para organizar Respond.io. Se encuentra una forma de actualizar la data para que se creen las etiquetas correctamente en la plataforma.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xphglnz",
+          "done": true,
+          "order": 2,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-13",
+          "title": "Análisis de resultados de WhatsApp Marketing vía Respond.io con IA",
+          "workNotes": "Con los datos correctamente tomados, se elabora un balance del WhatsApp marketing a través de Respond.io: cierres de la escuela, ventas conseguidas y demás. El análisis se da forma mediante inteligencia artificial.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xbmk3x3",
+          "done": true,
+          "order": 3,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-14",
+          "title": "Reunión con Román para definir formatos de venta de Noches de Neón",
+          "workNotes": "Reunión con Román para acabar de dar forma a los formatos de venta de Noches de Neón.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 100,
+          "id": "xjx1h0g",
+          "done": true,
+          "order": 0,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-14",
+          "title": "Implementación y ampliación de envíos de mailing con aplicación Jam",
+          "workNotes": "Se implementan de nuevo los envíos de mailing. Se amplía el canal: de la aplicación personal a la aplicación Jam. Se alcanzan más de 200 envíos en el día. La aplicación vuelve a romperse, quedando pendiente de resolución.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 95,
+          "id": "xq70x9c",
+          "done": false,
+          "order": 1,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-14",
+          "title": "Coordinación con Respond.io y Dani para organizar material de trabajo",
+          "workNotes": "Coordinación con Respond.io y con Dani para revisar y definir cómo debería quedar todo el material de trabajo del miércoles.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 70,
+          "id": "xn5021t",
+          "done": false,
+          "order": 2,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-15",
+          "title": "Organización del material de Román y Daniel para ventas de Noches de Neón",
+          "workNotes": "Se organiza todo el material recibido de Román y Daniel para la venta de Noches de Neón.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 50,
+          "id": "x3oy6d5",
+          "done": false,
+          "order": 0,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-15",
+          "title": "Detección de descontrol en listados de seguimiento de Noches de Neón",
+          "workNotes": "Se detecta que los listados de Daniel no reflejan un seguimiento correcto: llegan leads de Bodas.net, de Google Sheets vía automatización desde publicidad, y de Instagram. Se identifica descontrol en la gestión de estos listados.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 90,
+          "id": "xsdlpmi",
+          "done": false,
+          "order": 1,
+          "created": 1792136040883,
+          "source": "voice-ai"
+        },
+        {
+          "date": "2026-10-15",
+          "title": "Creación de aplicación y revisión de productos de Noches de Neón",
+          "workNotes": "Se crea una aplicación para entender los productos de Noches de Neón. Se concluye que el material de venta está todavía verde, aunque se podría empezar a hablar de venta específica.",
+          "actualHours": null,
+          "estimatedHours": null,
+          "progress": 55,
+          "id": "xwdat1n",
+          "done": false,
+          "order": 2,
+          "created": 1792136040883,
+          "source": "voice-ai"
         }
       ]
     },
@@ -12672,13 +13077,17 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792135169000,
+    "updatedAt": 1792136248242,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
       {
         "id": "aff8f3a9e73044ba91867cb783fecf7f",
         "at": 1791979021445
+      },
+      {
+        "id": "cc27937f31b04614865a7722c2715c6a",
+        "at": 1792136248242
       }
     ]
   }
