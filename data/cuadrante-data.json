@@ -3328,7 +3328,7 @@
           "title": "Reunión con Román sobre cash flow y estructura de ingresos/gastos",
           "workNotes": "Reunión con Román para analizar el cash flow de la empresa, la estructura de ingresos y gastos. Conclusión: falta un flujo de caja más constante. Se identifica que la venta de Artes Búho está flojeando.",
           "actualHours": null,
-          "estimatedHours": null,
+          "estimatedHours": 1,
           "progress": 100,
           "id": "xotuk6m",
           "done": true,
@@ -3341,10 +3341,10 @@
           "title": "Decisión estratégica: incorporarse a ventas de Noches de Neón y apoyo a Daniel",
           "workNotes": "Se decide que David se incorpore a la venta de Noches de Neón junto con Daniel. Se planifica ayudar a Daniel a realizar el curso de Caja Constantes.",
           "actualHours": null,
-          "estimatedHours": null,
-          "progress": 60,
+          "estimatedHours": 0.16666666666666666,
+          "progress": 100,
           "id": "xiqk7ea",
-          "done": false,
+          "done": true,
           "order": 1,
           "created": 1792136040883,
           "source": "voice-ai"
@@ -3354,7 +3354,7 @@
           "title": "Organización con Miriam y actualización de datos en Respond.io para etiquetas",
           "workNotes": "Tras la reunión, coordinación con Miriam para organizar Respond.io. Se encuentra una forma de actualizar la data para que se creen las etiquetas correctamente en la plataforma.",
           "actualHours": null,
-          "estimatedHours": null,
+          "estimatedHours": 0.75,
           "progress": 100,
           "id": "xphglnz",
           "done": true,
@@ -3367,7 +3367,7 @@
           "title": "Análisis de resultados de WhatsApp Marketing vía Respond.io con IA",
           "workNotes": "Con los datos correctamente tomados, se elabora un balance del WhatsApp marketing a través de Respond.io: cierres de la escuela, ventas conseguidas y demás. El análisis se da forma mediante inteligencia artificial.",
           "actualHours": null,
-          "estimatedHours": null,
+          "estimatedHours": 0.75,
           "progress": 100,
           "id": "xbmk3x3",
           "done": true,
@@ -3493,7 +3493,7 @@
           "id": "xmj0r9g",
           "date": "2026-10-13",
           "title": "Noches de Neón · primera interfaz CRM",
-          "estimatedHours": 0.5,
+          "estimatedHours": 2,
           "progress": 100,
           "done": true,
           "order": 5,
@@ -3535,7 +3535,7 @@
           "order": 4,
           "created": 1792147391313,
           "actualHours": 1,
-          "workNotes": "Dedicación aproximada validada por David. Cuatro rótulos PDF de 10 × 4 cm para Linze, Altillo, Proyecto Ballena y Hammond York; propuestas con seis portadas en 99 × 69 cm y texto de Yo no soy él. Herramientas: Codex, diseño PDF e imágenes. Dificultad: dos portadas recibidas con resolución limitada; versión de revisión preparada."
+          "workNotes": "Dedicación aproximada validada por David. Cuatro rótulos PDF de 10 × 4 cm para Linze, Altillo, Proyecto Ballena y Hammond York; propuestas con seis portadas en 99 × 69 cm y texto de Yo no soy él. Herramientas: Codex, diseño PDF e imágenes. Dificultad: dos portadas recibidas con resolución limitada; versión de revisión preparada. Se prepararon además tres variantes visuales: editorial experimental, galería de cristal y minimalismo gráfico. Herramienta: ImageGen. Las imágenes generadas podían introducir pequeñas variaciones en las portadas. Esta ampliación mantiene la hora ya registrada para el bloque."
         },
         {
           "id": "x9ig28i",
@@ -3625,7 +3625,7 @@
           "id": "x1665s8",
           "date": "2026-10-16",
           "title": "Noches de Neón · cotejo y conexión",
-          "estimatedHours": 0.5,
+          "estimatedHours": 0.75,
           "progress": 100,
           "done": true,
           "order": 2,
@@ -3637,7 +3637,7 @@
           "id": "xdcp3pg",
           "date": "2026-10-16",
           "title": "Diseño · simulación de cuadros",
-          "estimatedHours": 0.5,
+          "estimatedHours": 0.16666666666666666,
           "progress": 100,
           "done": true,
           "order": 3,
@@ -3668,6 +3668,18 @@
           "created": 1792147414876,
           "actualHours": 0.5,
           "workNotes": "Dedicación aproximada validada por David. Mejora de la fusión de bloques, tareas y prioridades por cambios concretos y publicación de la semana de David. Herramientas: Codex, GitHub Pages, Apps Script y Chrome. Dificultad: conservar cambios de otras personas al recuperar copias antiguas."
+        },
+        {
+          "id": "xbt094l",
+          "date": "2026-10-16",
+          "title": "Pavoneo · lanzamiento de Mario Cassado en YouTube",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 6,
+          "created": 1792163362539,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada de 30 min validada por David. Título y descripción de Mario Cassado — Yo no soy él con créditos y hashtags adaptados al vídeo de referencia. Programado para el 16/10/2026 a las 18:00, hora de Madrid. Herramientas: Codex, Chrome y YouTube Studio. Dificultad: conexión inicial a canales incorrectos, resuelta. Programación confirmada en el chat y estado Programado contrastado en Studio. Fuente: https://studio.youtube.com/video/VcWNVeULSrY/edit"
         }
       ]
     },
@@ -13729,7 +13741,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792152180196,
+    "updatedAt": 1792163381935,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -13752,6 +13764,10 @@
       {
         "id": "793e579a66524a128801b0581e9f1e9b",
         "at": 1792152180196
+      },
+      {
+        "id": "78ea85bb6de74b2ab0b7f5892dcb44ae",
+        "at": 1792163381935
       }
     ]
   }
