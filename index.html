@@ -417,6 +417,11 @@
     <p class="page-sub">Cuadrante por semanas reales con precio pautado y proyectos por bloque, objetivos en calendario y visión mensual de horas y coste por días, semanas y mes completo.</p>
   </div>
 
+  <div id="appHealth" role="status" style="padding:12px;margin:12px 0;border:1px solid #d8bd80;border-radius:12px;background:#fff9e9;color:#162c52">
+    <span id="appHealthText">Abriendo el cuadrante… Si tarda, puedes reintentar sin borrar tus datos.</span>
+    <button class="btn" onclick="location.reload()">Reintentar</button>
+    <button class="btn" id="appRecoveryDownload" hidden onclick="AppStability.download()">Descargar copia original</button>
+  </div>
   <div class="tabs">
     <button class="tab active" data-tab="cuadrante" onclick="switchTab('cuadrante')">Cuadrante</button>
     <button class="tab" data-tab="mes" onclick="switchTab('mes')">Mes · horas y coste</button>
@@ -585,8 +590,8 @@
 <link rel="stylesheet" href="priorities-report.css">
 <script src="priorities-report.js"></script>
 <link rel="stylesheet" href="voice-priorities.css">
-<script src="voice-priorities.js"></script>
-<script src="voice-ai.js?v=20261009-4"></script>
+<script src="voice-priorities.js?v=20261016-1"></script>
+<script src="voice-ai.js?v=20261016-1"></script>
 <script>
 /* ============ STORAGE ============ */
 const KEY='cuadrante_artesbuho_v2';
@@ -598,14 +603,14 @@ function storeSet(d){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){m
 const GH_KEY='cuadrante_gh_cfg';
 // si localStorage está bloqueado en este navegador (modo privado estricto, política del
 // dispositivo, etc.), se guarda en memoria para que al menos funcione durante esta sesión
-function ghGet(){try{return JSON.parse(localStorage.getItem(GH_KEY)||'{}')}catch(e){return window.__ghMem||{};}}
+function ghGet(){try{const value=JSON.parse(localStorage.getItem(GH_KEY)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch(e){return window.__ghMem||{};}}
 function ghSet(c){try{localStorage.setItem(GH_KEY,JSON.stringify(c));}catch(e){window.__ghMem=c;}}
 
 /* ============ PINs ============ */
 const PIN_KEY='cuadrante_pins_v1';
 let _pins={};
 let _unlocked={};
-function loadPins(){try{_pins=JSON.parse(localStorage.getItem(PIN_KEY)||'{}')}catch(e){_pins={};}}
+function loadPins(){try{_pins=JSON.parse(localStorage.getItem(PIN_KEY)||'{}');if(!_pins||typeof _pins!=='object'||Array.isArray(_pins))_pins={};}catch(e){_pins={};}}
 function savePins(){try{localStorage.setItem(PIN_KEY,JSON.stringify(_pins))}catch(e){}}
 function masterPerson(){return state.team.find(p=>p.master);}
 function appsMode(){return !!(ghGet().appsUrl);}
@@ -731,6 +736,7 @@ let _publishKey='';
 let _publishKeyResolve=null;
 function askPublishKey(options={}){
   if(_publishKey)return Promise.resolve(_publishKey);
+  closeModal();
   return new Promise(resolve=>{
     _publishKeyResolve=resolve;
     document.getElementById('modalHost').innerHTML='<div class="scrim" onclick="if(event.target===this)finishPublishKey(false)">'+
@@ -742,8 +748,9 @@ function askPublishKey(options={}){
 }
 function finishPublishKey(confirmed){
   const value=confirmed?(document.getElementById('publishKeyInput')?.value||''):'';
+  const resolve=_publishKeyResolve;_publishKeyResolve=null;
   closeModal();
-  if(_publishKeyResolve){const resolve=_publishKeyResolve;_publishKeyResolve=null;resolve(value);}
+  if(resolve)resolve(value);
 }
 async function waitPublishStatus(url,id){
   for(let attempt=0;attempt<20;attempt++){
@@ -1025,7 +1032,7 @@ function migrate(){
   else if(!romanExists){
     const base=(state.team[0]&&state.team[0].projects)||[];
     const rp=base.map(pr=>Object.assign({},pr));
-    state.team.push({id:'u4',name:'Roman',role:'Dirección · Master',color:'#7c3aed',salary:0,rate:0,master:true,projects:rp,grid:{}});
+    state.team.push({id:state.team.some(p=>p.id==='u4')?uid():'u4',name:'Roman',role:'Dirección · Master',color:'#7c3aed',salary:0,rate:0,master:true,projects:rp,priorities:[],grid:{}});
   }
   // "No laboral" (vacaciones, bajas, festivos…): tiene que ser TRANSVERSAL — el mismo
   // proyecto (mismo id) en el catálogo de todo el mundo, no uno distinto por persona.
@@ -1114,7 +1121,11 @@ function dayCost(p,date){const id=weekId(mondayOf(date));const c=p.grid[id]||{};
 function personMonth(p,y,m){let hours=0,cost=0;weeksOfMonth(y,m).forEach(w=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){const pr=proj(v.p,p);if(!projFullDay(pr))hours+=SLOT_HOURS;if(projBillable(pr))cost+=projEffRate(pr,p)*SLOT_HOURS;}}});});return {hours,cost};}
 
 /* ============ RENDER ============ */
-function render(){if(clipProj)exitPasteMode();updateLockClass();renderPeople();renderWeekNav();renderPersonStrip();renderPriorityBoard();renderGrid();renderStats();renderLegend();renderMonth();renderCalendar();renderSummary();renderEquipo();renderNotas();renderTareas();updateSaveUI();}
+function render(){
+  if(clipProj)exitPasteMode();updateLockClass();renderPeople();
+  const views={cuadrante:()=>{renderWeekNav();renderPersonStrip();renderPriorityBoard();renderGrid();renderStats();renderLegend();},mes:renderMonth,calendario:()=>{renderPersonStrip();renderCalendar();},resumen:renderSummary,equipo:renderEquipo,notas:renderNotas,tareas:renderTareas};
+  (views[state.ui.tab]||views.cuadrante)();updateSaveUI();
+}
 
 function renderPeople(){
   const host=document.getElementById('people');
@@ -1716,8 +1727,14 @@ function saveProject(id){const name=(document.getElementById('pName').value||'')
   save();closeModal();render();toast('Proyecto actualizado');}
 
 /* ============ MODALS ============ */
-function modal(html){document.getElementById('modalHost').innerHTML='<div class="scrim" onclick="if(event.target===this)closeModal()">'+html+'</div>';}
-function closeModal(){document.getElementById('modalHost').innerHTML='';}
+function modal(html){closeModal();document.getElementById('modalHost').innerHTML='<div class="scrim" onclick="if(event.target===this)closeModal()">'+html+'</div>';}
+function closeModal(){
+  document.getElementById('modalHost').innerHTML='';
+  if(_publishKeyResolve){const resolve=_publishKeyResolve;_publishKeyResolve=null;resolve('');}
+  if(typeof safeLegacyScopeResolver!=='undefined'&&safeLegacyScopeResolver){const resolve=safeLegacyScopeResolver;safeLegacyScopeResolver=null;resolve(null);}
+  if(typeof safeConflictResolver!=='undefined'&&safeConflictResolver){const resolve=safeConflictResolver;safeConflictResolver=null;safeConflictData=null;resolve(null);}
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 let pickColor;
 function openPerson(id){const p=id?person(id):{name:'',role:'',color:PALETTE[state.team.length%PALETTE.length],salary:0,rate:0,grid:{}};pickColor=p.color;
   modal('<div class="modal"><header><h3>'+(id?'Editar persona':'Nueva persona')+'</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+
@@ -2167,10 +2184,10 @@ function quickAddTask(ds){
 }
 
 /* ============ TABS ============ */
-function switchTab(t){if(clipProj)exitPasteMode();state.ui.tab=t;storeSet(state);
+function switchTab(t){if(clipProj)exitPasteMode();state.ui.tab=['cuadrante','mes','calendario','resumen','equipo','notas','tareas'].includes(t)?t:'cuadrante';t=state.ui.tab;storeSet(state);
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   ['cuadrante','mes','calendario','resumen','equipo','notas','tareas'].forEach(v=>{document.getElementById('view-'+v).style.display=(v===t)?'':'none';});
-  renderPeople();if(t==='cuadrante'){renderPriorityBoard();renderGrid();}if(t==='mes')renderMonth();if(t==='calendario')renderCalendar();if(t==='resumen')renderSummary();if(t==='equipo')renderEquipo();if(t==='notas')renderNotas();if(t==='tareas')renderTareas();}
+  render();}
 
 /* ============ BACKUP (download/upload) ============ */
 function exportJSON(silent){
@@ -2191,18 +2208,24 @@ function importJSON(){const inp=document.createElement('input');inp.type='file';
 /* ============ SAVE TO PROJECT FILE (File System Access + IndexedDB) ============ */
 const FS=('showSaveFilePicker' in window);
 let fileHandle=null,autoFile=false,writeTimer=null,savedState=true;
-function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('cuadrante_ab',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
-async function idbSet(k,v){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
-async function idbGet(k){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('kv','readonly');const rq=t.objectStore('kv').get(k);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);});}
+function idb(){return new Promise((res,rej)=>{
+  let settled=false;const timer=setTimeout(()=>finish(Error('El archivo local no responde')),3000);
+  function finish(error,db){if(settled){if(db)db.close();return;}settled=true;clearTimeout(timer);if(error)rej(error);else res(db);}
+  let r;try{r=indexedDB.open('cuadrante_ab',1);}catch(e){finish(e);return;}
+  r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('kv'))r.result.createObjectStore('kv');};
+  r.onsuccess=()=>finish(null,r.result);r.onerror=()=>finish(r.error);r.onblocked=()=>finish(Error('Archivo local bloqueado en otra pestaña'));
+});}
+async function idbSet(k,v){const db=await idb();try{return await AppStability.bounded(new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||Error('Guardado cancelado'));}),3000);}finally{db.close();}}
+async function idbGet(k){const db=await idb();try{return await AppStability.bounded(new Promise((res,rej)=>{const t=db.transaction('kv','readonly');const rq=t.objectStore('kv').get(k);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);t.onabort=()=>rej(t.error||Error('Lectura cancelada'));}),3000);}finally{db.close();}}
 async function ensurePerm(h){const o={mode:'readwrite'};if((await h.queryPermission(o))==='granted')return true;if((await h.requestPermission(o))==='granted')return true;return false;}
 async function writeFile(){if(!fileHandle)return;try{if(!(await ensurePerm(fileHandle)))return;const w=await fileHandle.createWritable();await w.write(JSON.stringify(state,null,2));await w.close();savedState=true;updateSaveUI();}catch(e){console.warn(e);}}
 async function connectFile(){if(!FS){toast('Tu navegador no permite guardar en archivo. Usa Ajustes → backup.');return;}
   try{fileHandle=await window.showSaveFilePicker({suggestedName:'cuadrante-data.json',types:[{description:'JSON',accept:{'application/json':['.json']}}]});
-    await idbSet('fileHandle',fileHandle);autoFile=true;localStorage.setItem('cuad_autofile','1');await writeFile();updateSaveUI();toast('Archivo conectado · autoguardado ON');}catch(e){}}
+    await idbSet('fileHandle',fileHandle);autoFile=true;try{localStorage.setItem('cuad_autofile','1');}catch(e){}await writeFile();updateSaveUI();toast('Archivo conectado · autoguardado ON');}catch(e){if(e.name!=='AbortError')toast('No se pudo conectar el archivo. El trabajo local se conserva.');}}
 async function saveToProject(){if(!FS){toast('Tu navegador no permite guardar en archivo. Usa Ajustes → backup.');return;}
   if(fileHandle){await writeFile();toast('Guardado en data/cuadrante-data.json');}else{await connectFile();}}
 function toggleAuto(){if(!FS){toast('No disponible en este navegador.');return;}
-  if(!fileHandle){connectFile();return;}autoFile=!autoFile;localStorage.setItem('cuad_autofile',autoFile?'1':'0');updateSaveUI();toast('Autoguardado '+(autoFile?'ON':'OFF'));}
+  if(!fileHandle){connectFile();return;}autoFile=!autoFile;try{localStorage.setItem('cuad_autofile',autoFile?'1':'0');}catch(e){}updateSaveUI();toast('Autoguardado '+(autoFile?'ON':'OFF'));}
 function updateSaveUI(){const el=document.getElementById('saveStatus');const ab=document.getElementById('autoBtn');const sb=document.getElementById('saveBtn');
   if(!el)return;
   if(fileHandle&&autoFile){el.className='save-pill '+(savedState?'ok':'dirty');el.textContent=savedState?'✓ Guardado en proyecto':'… guardando';}
@@ -2215,13 +2238,12 @@ function updateSaveUI(){const el=document.getElementById('saveStatus');const ab=
 function save(){state.meta=state.meta||{};state.meta.updatedAt=Date.now();storeSet(state);if(autoFile&&fileHandle){savedState=false;updateSaveUI();clearTimeout(writeTimer);writeTimer=setTimeout(writeFile,700);}else updateSaveUI();}
 
 async function initFile(){if(!FS){updateSaveUI();return;}
-  autoFile=localStorage.getItem('cuad_autofile')==='1';
-  try{const h=await idbGet('fileHandle');if(h){fileHandle=h;}}catch(e){}
+  try{autoFile=localStorage.getItem('cuad_autofile')==='1';const h=await idbGet('fileHandle');if(h){fileHandle=h;}}catch(e){autoFile=false;}
   updateSaveUI();}
 
 /* ============ BOOT ============ */
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-async function fetchRemote(){try{const resp=await fetch('./data/cuadrante-data.json?t='+Date.now(),{cache:'no-store'});if(resp.ok)return await resp.json();}catch(e){}return null;}
+async function fetchRemote(){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),7000);try{const resp=await fetch('./data/cuadrante-data.json?t='+Date.now(),{cache:'no-store',signal:controller.signal});if(resp.ok)return await resp.json();}catch(e){}finally{clearTimeout(timer);}return null;}
 // si este dispositivo aún no tiene configurada la URL del Apps Script, la adopta
 // del propio estado publicado (no es secreta) para que Publicar funcione sin tocar Ajustes
 function adoptAppsUrl(){
@@ -2272,8 +2294,12 @@ async function pullRemote(skipConfirm){
   closeModal();switchTab(state.ui.tab||'cuadrante');render();toast('✓ Datos publicados cargados');
 }
 </script>
-<script src="safe-sync.js?v=20261014-1"></script>
-<script src="publication-safe.js?v=20261014-2"></script>
-<script>boot();</script>
+<script src="safe-sync.js?v=20261016-1"></script>
+<script src="app-stability.js?v=20261016-1"></script>
+<script src="publication-safe.js?v=20261016-1"></script>
+<script>
+if(typeof AppStability!=='undefined'&&typeof SafeSync!=='undefined'&&typeof safeReadRemote==='function')boot().catch(e=>AppStability.fail(e));
+else document.getElementById('appHealthText').textContent='No se han cargado todos los archivos. Reintenta la carga; tus datos locales no se han borrado.';
+</script>
 </body>
 </html>

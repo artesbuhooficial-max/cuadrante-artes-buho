@@ -42,7 +42,9 @@ async function voiceOrganize(){
     if(!key){voiceStatus('Organización cancelada. El dictado sigue guardado como borrador.');return;}
     const id=crypto.randomUUID().replace(/-/g,'');
     voiceStatus('La IA está ordenando tu jornada…');
-    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'organizeVoice',requestId:id,publishKey:key,text,defaultDate:date,today:dStr(new Date()),weekStart:state.ui.weekId})});
+    const controller=new AbortController(),postTimer=setTimeout(()=>controller.abort(),45000);
+    try{await fetch(url,{method:'POST',mode:'no-cors',signal:controller.signal,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'organizeVoice',requestId:id,publishKey:key,text,defaultDate:date,today:dStr(new Date()),weekStart:state.ui.weekId})});}
+    finally{clearTimeout(postTimer);}
     const result=await voiceWaitForResult(url,id,generation);
     if(generation!==voiceAiGeneration)return;
     if(!result.ok){if(result.authError)_publishKey='';throw new Error(result.error||'No se pudo organizar el dictado.');}

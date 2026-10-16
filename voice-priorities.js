@@ -31,6 +31,7 @@ function voiceStatus(text){const el=document.getElementById('voiceStatus');if(el
 function voiceOpen(){
   const panel=document.getElementById('voicePanel');if(!panel.hidden){voiceClose();return;}
   let draft={};try{draft=JSON.parse(localStorage.getItem(VOICE_DRAFT_KEY)||'{}');}catch(e){}
+  if(!draft||typeof draft!=='object'||Array.isArray(draft))draft={};
   const dates=priorityReportDays(),today=dStr(new Date()),owner=person(draft.owner)?draft.owner:curPerson().id,date=draft.date||(dates.includes(today)?today:dates[0]);
   panel.innerHTML='<header><h3>🎙 Dictar prioridades</h3><button class="btn ghost" id="voiceClose" aria-label="Cerrar dictado">✕</button></header><div class="voice-body">'+
     '<div class="voice-fields"><label>Persona<select id="voiceOwner">'+state.team.map(p=>'<option value="'+esc(p.id)+'"'+(p.id===owner?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></label><label>Día por defecto<input id="voiceDate" type="date" value="'+esc(date)+'"></label></div>'+

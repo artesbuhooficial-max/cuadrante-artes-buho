@@ -14,8 +14,30 @@ let current=fixture(),backup=fixture();current.team[1].grid.w={'1-9':{p:'school'
 let restored=S.restorePerson(current,backup,'a');assert.deepEqual(restored.team[1],current.team[1]);assert.equal(restored.team[0].priorities[0].id,'new');assert.equal(restored.team[0].grid.w['0-8'].n,'recuperado Ana');assert.deepEqual(restored.meta,current.meta);
 backup.team[0].salary=9999;assert.equal(S.restorePerson(current,backup,'a').team[0].salary,0);
 assert.ok(S.mergeUnknown(S.publicDoc(backup),S.publicDoc(current)).conflicts.some(c=>c.path[0]==='team'));
-const unknownLocal=copy(base),unknownRemote=copy(base);unknownLocal.tasks.push({id:'local-new',owner:'a',text:'local'});unknownRemote.tasks.push({id:'remote-new',owner:'b',text:'remote'});const unknown=S.mergeUnknown(unknownLocal,unknownRemote);assert.equal(unknown.value.tasks.some(x=>x.id==='remote-new'),true);const recoverChoices={[unknown.conflicts.find(x=>x.path[1]==='@local-new').key]:'mine'};assert.equal(S.mergeUnknown(unknownLocal,unknownRemote,recoverChoices).value.tasks.length,3);
+const unknownLocal=copy(base),unknownRemote=copy(base);unknownLocal.tasks.push({id:'local-new',owner:'a',text:'local'});unknownRemote.tasks.push({id:'remote-new',owner:'b',text:'remote'});const unknown=S.mergeUnknown(unknownLocal,unknownRemote);assert.equal(unknown.value.tasks.some(x=>x.id==='remote-new'),true);assert.equal(unknown.value.tasks.length,3);assert.equal(unknown.conflicts.length,0);
+// Migración antigua: conservar compañeros completos, datos publicados ausentes y
+// campos de la misma prioridad; preguntar solo por el bloque/campo coincidente.
+let ancient=copy(base),latest=copy(base);ancient.team[1].grid.w={stale:{p:'school',n:'no publicar'}};latest.team[1].grid.w={fresh:{p:'school',n:'compañero reciente'}};
+latest.team[0].grid.w['2-20']={p:'school',n:'bloque publicado que falta en la copia vieja'};ancient.team[0].grid.w['0-8'].n='mi corrección';ancient.team[0].grid.w['1-20']={p:'school',n:'nuevo mío'};
+ancient.team[0].priorities=[{id:'p',title:'Título local',progress:20}];latest.team[0].priorities=[{id:'p',title:'Título publicado',progress:50,actualHours:2}];
+latest.tasks.push({id:'only-server',owner:'a',text:'No eliminar'});ancient.tasks.push({id:'only-local',owner:'a',text:'Añadir'});ancient.tasks.push({id:'peer-stale',owner:'b',text:'No importar'});
+let scoped=S.legacyScope(ancient,latest,'a',false),review=S.mergeUnknown(scoped,latest);
+assert.deepEqual(review.value.team[1],latest.team[1]);assert.equal(review.value.team[0].grid.w['2-20'].n,latest.team[0].grid.w['2-20'].n);assert.ok(review.value.tasks.some(x=>x.id==='only-server'));assert.ok(review.value.tasks.some(x=>x.id==='only-local'));assert.equal(review.value.tasks.some(x=>x.id==='peer-stale'),false);
+assert.ok(review.conflicts.every(c=>c.path.length>3));assert.ok(review.conflicts.some(c=>c.path.at(-1)==='0-8'));assert.ok(review.conflicts.some(c=>c.path.at(-1)==='title'));assert.equal(review.value.team[0].priorities[0].actualHours,2);
+const chooseBlock=Object.fromEntries(review.conflicts.map(c=>[c.key,c.path.at(-1)==='0-8'?'mine':'theirs']));let combined=S.mergeUnknown(scoped,latest,chooseBlock).value;
+assert.equal(combined.team[0].grid.w['0-8'].n,'mi corrección');assert.equal(combined.team[0].priorities[0].progress,50);assert.equal(combined.team[0].priorities[0].title,'Título publicado');assert.deepEqual(combined.team[1],latest.team[1]);
+latest.tasks.push({id:'collision',owner:'b'});ancient.tasks.push({id:'collision',owner:'a'});assert.throws(()=>S.legacyScope(ancient,latest,'a'),/otra persona/);
+ancient=copy(base);latest=copy(base);latest.team[0].grid.w['0-8']={p:'school',n:'no borrar'};ancient.team[0].grid.w['0-8']=null;assert.equal(S.mergeUnknown(ancient,latest).value.team[0].grid.w['0-8'].n,'no borrar');
+const progressBase=copy(base),progressMine=copy(base),progressRemote=copy(base);
+progressBase.team[0].priorities=[{id:'progress',progress:50,done:false}];progressMine.team[0].priorities=[{id:'progress',progress:20,done:false}];progressRemote.team[0].priorities=[{id:'progress',progress:100,done:true}];
+for(const merge of [choices=>S.merge(progressBase,progressMine,progressRemote,choices),choices=>S.mergeUnknown(progressMine,progressRemote,choices)]){
+  const proposed=merge({});assert.equal(proposed.conflicts.length,1);assert.equal(proposed.conflicts[0].path.at(-1),'progress');
+  const chosen=merge({[proposed.conflicts[0].key]:'mine'}).value.team[0].priorities[0];assert.equal(chosen.progress,20);assert.equal(chosen.done,false);
+}
 backup.tasks=[{id:'t',owner:'b',text:'colisión'}];assert.throws(()=>S.restorePerson(current,backup,'b'),/otra persona/);
+backup.milestones=[{id:'h',ownerId:'a',title:'Entrega recuperada'}];current.milestones=[{id:'hb',ownerId:'b',title:'Entrega de Bruno'}];
+assert.deepEqual(S.restorePerson(current,backup,'a').milestones.map(x=>x.id),['hb','h']);
+backup.milestones=[{id:'hb',ownerId:'a',title:'Colisión de responsables'}];assert.throws(()=>S.restorePerson(current,backup,'a'),/otra persona/);
 const cache=new Map();let published=fixture(),sha=1,commits=0,reads=0,release=0,readFails=false,mutation=null;
 const ctx=vm.createContext({console,Date,Math,JSON,Object,Array,SafeSync:S,_get:(k,d)=>k==='PUBLISH_KEY'?'test-key':d,
   CacheService:{getScriptCache:()=>({get:k=>cache.get(k),put:(k,v)=>cache.set(k,v)})},LockService:{getScriptLock:()=>({tryLock:()=>true,releaseLock:()=>release++})},

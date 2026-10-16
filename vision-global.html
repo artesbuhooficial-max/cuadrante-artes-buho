@@ -484,11 +484,23 @@ function guessRama(name){
 // cada celda ocupada del grid equivale a media hora real, no a una hora
 const SLOT_HOURS=0.5;
 let cuad=null;
+let projectCatalogSource=null,projectCatalog=[],projectIndex=new Map(),globalSyncing=false;
 let local={mapping:{},forecasts:[],hidden:{},capacity:{},capDefault:30};
+let globalRecoveryRaw=null;
 let riverOffset=0, detailWeek=null;
 const RIVER_BACK=6, RIVER_FWD=10;
-function loadLocal(){try{const s=localStorage.getItem(LKEY);if(s)local=Object.assign(local,JSON.parse(s));}catch(e){}}
-function saveLocal(){try{localStorage.setItem(LKEY,JSON.stringify(local));}catch(e){}}
+function checkedLocal(source){
+  const obj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+  if(!obj(source))throw Error('Configuración local incorrecta');
+  const next=Object.assign({mapping:{},forecasts:[],hidden:{},capacity:{},capDefault:30},source);
+  if(!['mapping','hidden','capacity'].every(k=>obj(next[k]))||!Array.isArray(next.forecasts)||!next.forecasts.every(f=>obj(f)&&typeof f.id==='string'&&typeof f.title==='string'&&typeof f.week==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(f.week)&&Number.isFinite(Number(f.hours))))throw Error('Previsiones o configuración local incompletas');
+  return next;
+}
+function loadLocal(){
+  let raw;try{raw=localStorage.getItem(LKEY);if(raw)local=checkedLocal(JSON.parse(raw));}
+  catch(e){if(raw){globalRecoveryRaw=raw;const warning=document.createElement('div');warning.style.cssText='padding:16px;background:#fff2cf;color:#162c52';warning.textContent='La configuración local está dañada y no se ha sustituido. Descarga su copia original antes de hacer cambios. ';const button=document.createElement('button');button.textContent='Descargar copia original';button.onclick=exportLocal;warning.appendChild(button);document.body.prepend(warning);}}
+}
+function saveLocal(){if(globalRecoveryRaw){toast('Primero descarga la copia original. No se ha sobrescrito la configuración dañada.');return;}try{localStorage.setItem(LKEY,JSON.stringify(local));}catch(e){toast('No se pudo guardar en este navegador. Exporta una copia antes de cerrar.');}}
 
 /* ============ FECHAS ============ */
 function mondayOf(d){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);x.setHours(0,0,0,0);return x;}
@@ -506,21 +518,24 @@ function team(){return (cuad&&cuad.team)||[];}
 function bigEvents(){return (cuad&&cuad.bigEvents)||[];}
 function bigEventsInWeek(wk){const mon=parseD(wk),sun=addDays(mon,6);return bigEvents().filter(e=>{const d=parseD(e.date);return d>=mon&&d<=sun;});}
 function allProjects(){
+  if(projectCatalogSource===cuad)return projectCatalog;
   const seen={},out=[];
   team().forEach(p=>(p.projects||[]).forEach(pr=>{if(!seen[pr.id]){seen[pr.id]=1;out.push(pr);}}));
+  projectCatalogSource=cuad;projectCatalog=out;projectIndex=new Map(out.map(p=>[p.id,p]));
   return out;
 }
-function projName(id){const f=allProjects().find(p=>p.id===id);return f?f.name:'(proyecto)';}
+function projectById(id){allProjects();return projectIndex.get(id);}
+function projName(id){const f=projectById(id);return f?f.name:'(proyecto)';}
 function ramaOfProject(pid){
   if(local.mapping[pid])return local.mapping[pid];
   // los proyectos marcados como "bloquea el día completo" en el cuadrante (vacaciones,
   // bajas…) son la señal fiable de que no es carga de trabajo real, no solo el nombre.
-  const pr=allProjects().find(p=>p.id===pid);
+  const pr=projectById(pid);
   if(pr&&pr.fullDay)return 'noLaboral';
   return guessRama(projName(pid));
 }
 function cellProj(v){return (v&&typeof v==='object')?v.p:v;}
-function capOf(p){return local.capacity[p.id]!=null?+local.capacity[p.id]:local.capDefault;}
+function capOf(p){const value=Number(local.capacity[p.id]??local.capDefault);return Number.isFinite(value)&&value>0?value:30;}
 
 function realByWeek(){
   const out={};
@@ -539,7 +554,7 @@ function realByWeekPerson(){
     out[wk]=out[wk]||{};
     Object.values(cells).forEach(v=>{
       const pid=cellProj(v);if(!pid)return;
-      const pr=allProjects().find(x=>x.id===pid);
+      const pr=projectById(pid);
       if(pr&&pr.fullDay)return;
       out[wk][p.id]=(out[wk][p.id]||0)+SLOT_HOURS;
     });
@@ -554,7 +569,7 @@ function vacByWeekPerson(){
     out[wk]=out[wk]||{};
     Object.values(cells).forEach(v=>{
       const pid=cellProj(v);if(!pid)return;
-      const pr=allProjects().find(x=>x.id===pid);
+      const pr=projectById(pid);
       if(!(pr&&pr.fullDay))return;
       out[wk][p.id]=(out[wk][p.id]||0)+SLOT_HOURS;
     });
@@ -649,31 +664,41 @@ function computeConflicts(){
 /* ============ GATE / SYNC ============ */
 function tryGate(){
   const v=document.getElementById('gateInput').value.trim();
-  if(v===GATE_KEY){sessionStorage.setItem('ab_vg_gate','1');document.getElementById('gate').style.display='none';}
+  if(v===GATE_KEY){try{sessionStorage.setItem('ab_vg_gate','1');}catch(e){}document.getElementById('gate').style.display='none';}
   else document.getElementById('gateErr').style.display='block';
 }
-if(sessionStorage.getItem('ab_vg_gate')==='1')document.getElementById('gate').style.display='none';
+try{if(sessionStorage.getItem('ab_vg_gate')==='1')document.getElementById('gate').style.display='none';}catch(e){}
+
+function checkedCuadrante(doc){
+  const obj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+  if(!obj(doc)||!Array.isArray(doc.team)||!doc.team.length||!doc.team.every(p=>obj(p)&&typeof p.name==='string'&&Array.isArray(p.projects)&&obj(p.grid)&&Object.values(p.grid).every(obj)))throw Error('Copia del cuadrante incompleta');
+  if(doc.bigEvents!=null&&(!Array.isArray(doc.bigEvents)||!doc.bigEvents.every(obj)))throw Error('Eventos incompletos');
+  return doc;
+}
 
 async function syncData(manual){
+  if(globalSyncing)return;globalSyncing=true;
   const meta=document.getElementById('syncMeta');
   meta.textContent='sincronizando…';
+  try{
+  if(!cuad){try{const raw=localStorage.getItem(LKEY+'_cache');if(raw){cuad=checkedCuadrante(JSON.parse(raw));meta.textContent='copia local · comprobando novedades…';renderAll();}}catch(e){}}
   for(const base of DATA_URLS){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),7000);
     try{
-      const r=await fetch(base+'?t='+Date.now(),{cache:'no-store'});
+      const r=await fetch(base+'?t='+Date.now(),{cache:'no-store',signal:controller.signal});
       if(r.ok){
-        cuad=await r.json();
+        const next=checkedCuadrante(await r.json());cuad=next;
         const up=cuad.meta&&cuad.meta.updatedAt?new Date(cuad.meta.updatedAt):null;
         meta.textContent='cuadrante · '+(up?up.toLocaleDateString('es-ES',{day:'numeric',month:'short'})+' '+up.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'ok');
         try{localStorage.setItem(LKEY+'_cache',JSON.stringify(cuad));}catch(e){}
         if(manual)toast('✓ Datos del cuadrante actualizados');
         renderAll();return;
       }
-    }catch(e){}
+    }catch(e){}finally{clearTimeout(timer);}
   }
-  const cache=localStorage.getItem(LKEY+'_cache');
-  if(cache){cuad=JSON.parse(cache);meta.textContent='sin conexión · copia local';}
-  else meta.textContent='sin datos';
+  meta.textContent=cuad?'sin conexión · copia local':'sin datos · pulsa sincronizar para reintentar';
   renderAll();
+  }finally{globalSyncing=false;}
 }
 
 /* ============ NAV ============ */
@@ -1369,7 +1394,7 @@ function delForecast(id){local.forecasts=local.forecasts.filter(x=>x.id!==id);sa
 function openModal(html){document.getElementById('modalBody').innerHTML=html;document.getElementById('overlay').classList.add('on');}
 function closeModal(){document.getElementById('overlay').classList.remove('on');}
 function exportLocal(){
-  const blob=new Blob([JSON.stringify({vision_global:local,exported:new Date().toISOString()},null,2)],{type:'application/json'});
+  const blob=new Blob([globalRecoveryRaw||JSON.stringify({vision_global:local,exported:new Date().toISOString()},null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='vision-global-artesbuho.json';a.click();
   toast('✓ Configuración exportada');
 }
@@ -1378,7 +1403,7 @@ function importLocal(){
   inp.onchange=()=>{
     const f=inp.files[0];if(!f)return;
     const r=new FileReader();
-    r.onload=()=>{try{const d=JSON.parse(r.result);if(d.vision_global){local=Object.assign({mapping:{},forecasts:[],hidden:{},capacity:{},capDefault:30},d.vision_global);saveLocal();renderAll();toast('✓ Configuración importada');}else toast('Archivo no reconocido');}catch(e){toast('No se pudo leer el archivo');}};
+    r.onload=()=>{try{const d=JSON.parse(r.result);if(d.vision_global){const next=checkedLocal(d.vision_global);if(globalRecoveryRaw){toast('Descarga primero la copia original dañada; no se ha sustituido.');return;}local=next;saveLocal();renderAll();toast('✓ Configuración importada');}else toast('Archivo no reconocido');}catch(e){toast('No se pudo leer el archivo');}};
     r.readAsText(f);inp.value='';
   };
   inp.click();

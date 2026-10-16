@@ -30,11 +30,13 @@ var SafeSync=(function(){
       if(b!==missing&&equal(r,b))return l;
       var cell=path.length>=3&&path[path.length-3]==='grid';
       if(!cell&&object(l)&&object(r)&&(object(b)||b===missing)){
+        var priority=path[path.length-2]==='priorities'&&typeof l.progress==='number'&&typeof r.progress==='number';
         var out={},all=keys(r).concat(keys(l),b===missing?[]:keys(b));
         Array.from(new Set(all)).forEach(function(k){
+          if(priority&&k==='done')return;
           var v=walk(b!==missing&&Object.prototype.hasOwnProperty.call(b,k)?b[k]:missing,Object.prototype.hasOwnProperty.call(l,k)?l[k]:missing,Object.prototype.hasOwnProperty.call(r,k)?r[k]:missing,path.concat(k));
           if(v!==missing)out[k]=v;
-        });return out;
+        });if(priority)out.done=out.progress===100;return out;
       }
       var bi=indexed(b),li=indexed(l),ri=indexed(r);
       if(li&&ri&&(bi||b===missing)){
@@ -50,24 +52,43 @@ var SafeSync=(function(){
     return {value:clone(walk(base==null?missing:base,mine,theirs,[])),conflicts:conflicts};
   }
   function mergeUnknown(mine,theirs,choices){
-    var out=clone(theirs),conflicts=[];choices=choices||{};
-    var sections=Array.from(new Set(keys(mine).concat(keys(theirs))));
-    sections.forEach(function(section){
-      if(equal(mine[section],theirs[section]))return;
-      if(indexed(mine[section])&&indexed(theirs[section])){
-        var local=indexed(mine[section]),remote=indexed(theirs[section]);
-        var ids=Array.from(new Set(Object.keys(remote).concat(Object.keys(local))));out[section]=[];
-        ids.forEach(function(id){var l=local[id],r=remote[id],path=[section,'@'+id],key=JSON.stringify(path);
-          if(!l){out[section].push(clone(r));return;}
-          if(!equal(l,r)&&!choices[key])conflicts.push({key:key,path:path,mine:l||null,theirs:r||null,mineMissing:!l,theirsMissing:!r});
-          var chosen=choices[key]==='mine'?l:r;if(chosen)out[section].push(clone(chosen));
-        });
-      }else{
-        var path=[section],key=JSON.stringify(path);
-        if(!choices[key])conflicts.push({key:key,path:path,mine:mine[section]===undefined?null:clone(mine[section]),theirs:theirs[section]===undefined?null:clone(theirs[section]),mineMissing:mine[section]===undefined,theirsMissing:theirs[section]===undefined});
-        if(choices[key]==='mine'){if(mine[section]===undefined)delete out[section];else out[section]=clone(mine[section]);}
+    var conflicts=[];choices=choices||{};
+    function walk(l,r,path){
+      // Sin base no se puede inferir un borrado a partir de una ausencia antigua.
+      if(l===missing||l==null&&r!==missing)return r;
+      if(r===missing)return l;
+      if(equal(l,r))return r;
+      var cell=path.length>=3&&path[path.length-3]==='grid';
+      if(!cell&&object(l)&&object(r)){
+        var priority=path[path.length-2]==='priorities'&&typeof l.progress==='number'&&typeof r.progress==='number';
+        var out={};Array.from(new Set(keys(r).concat(keys(l)))).forEach(function(k){
+          if(priority&&k==='done')return;
+          var value=walk(Object.prototype.hasOwnProperty.call(l,k)?l[k]:missing,Object.prototype.hasOwnProperty.call(r,k)?r[k]:missing,path.concat(k));
+          if(value!==missing)out[k]=value;
+        });if(priority)out.done=out.progress===100;return out;
       }
-    });return {value:out,conflicts:conflicts};
+      var li=indexed(l),ri=indexed(r);
+      if(li&&ri){return Array.from(new Set(r.map(function(x){return x.id;}).concat(l.map(function(x){return x.id;})))).map(function(id){return walk(li[id]||missing,ri[id]||missing,path.concat('@'+id));});}
+      var key=JSON.stringify(path),choice=choices[key];
+      if(choice==='mine')return l;if(choice==='theirs')return r;
+      conflicts.push({key:key,path:path,mine:clone(l),theirs:clone(r),mineMissing:false,theirsMissing:false});return r;
+    }
+    return {value:clone(walk(mine,theirs,[])),conflicts:conflicts};
+  }
+  function legacyScope(mine,theirs,id,includeShared){
+    var out=clone(theirs),source=(mine.team||[]).find(function(p){return p.id===id;}),target=(out.team||[]).find(function(p){return p.id===id;});
+    if(!source||!target)throw Error('La persona elegida debe existir en ambas copias');
+    // No importar nombres, sueldos ni fichas ajenas de una copia sin base fiable.
+    ['grid','projects','priorities'].forEach(function(k){target[k]=clone(source[k]||(k==='grid'?{}:[]));});
+    ['tasks','recurring','extraTasks','objectives','milestones','notes'].forEach(function(k){
+      function owner(x){return k==='milestones'?(x.ownerId||x.owner):x.owner;}
+      function selected(x){return owner(x)===id||includeShared&&owner(x)==='empresa';}
+      var recovered=(mine[k]||[]).filter(selected);
+      recovered.forEach(function(x){var published=(theirs[k]||[]).find(function(y){return y.id===x.id;});if(published&&owner(published)!==owner(x))throw Error('El registro «'+(x.title||x.text||x.id)+'» pertenece a otra persona en lo publicado. No se ha cambiado.');});
+      out[k]=(theirs[k]||[]).filter(function(x){return !selected(x);}).concat(clone(recovered));
+    });
+    if(includeShared)out.bigEvents=clone(mine.bigEvents||[]);
+    return out;
   }
   function restorePerson(current,backup,id){
     var out=clone(current),target=(out.team||[]).find(function(p){return p.id===id;}),source=(backup.team||[]).find(function(p){return p.id===id;});
@@ -76,13 +97,15 @@ var SafeSync=(function(){
     keys(source.grid).forEach(function(week){target.grid[week]=target.grid[week]||{};keys(source.grid[week]).forEach(function(slot){target.grid[week][slot]=clone(source.grid[week][slot]);});});
     function overlay(existing,recovered){var map=indexed(existing||[]),incoming=indexed(recovered||[]);if(!map||!incoming)throw Error('Lista de trabajo inválida');var ids=Object.keys(map);Object.keys(incoming).forEach(function(k){if(!map[k])ids.push(k);map[k]=clone(incoming[k]);});return ids.map(function(k){return map[k];});}
     ['projects','priorities'].forEach(function(k){target[k]=overlay(target[k],source[k]);});
-    ['tasks','recurring','extraTasks','objectives','milestones','notes'].forEach(function(k){var owned=(backup[k]||[]).filter(function(x){return x.owner===id;});if(owned.length){
-      owned.forEach(function(x){var existing=(out[k]||[]).find(function(y){return y.id===x.id;});if(existing&&existing.owner!==id)throw Error('Un registro del backup coincide con el de otra persona. No se ha restaurado.');});
+    ['tasks','recurring','extraTasks','objectives','milestones','notes'].forEach(function(k){
+      function owner(x){return k==='milestones'?(x.ownerId||x.owner):x.owner;}
+      var owned=(backup[k]||[]).filter(function(x){return owner(x)===id;});if(owned.length){
+      owned.forEach(function(x){var existing=(out[k]||[]).find(function(y){return y.id===x.id;});if(existing&&owner(existing)!==id)throw Error('Un registro del backup coincide con el de otra persona. No se ha restaurado.');});
       out[k]=overlay(out[k],owned);
     }});
     return out;
   }
   function valid(doc){return object(doc)&&Array.isArray(doc.team)&&doc.team.length>0&&!!indexed(doc.team)&&doc.team.every(function(p){return object(p.grid||{})&&!!indexed(p.projects||[])&&!!indexed(p.priorities||[]);});}
-  return {clone:clone,equal:equal,publicDoc:publicDoc,merge:merge,mergeUnknown:mergeUnknown,restorePerson:restorePerson,valid:valid};
+  return {clone:clone,equal:equal,publicDoc:publicDoc,merge:merge,mergeUnknown:mergeUnknown,legacyScope:legacyScope,restorePerson:restorePerson,valid:valid};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=SafeSync;
