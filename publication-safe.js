@@ -40,8 +40,12 @@ function safeArchiveLegacy(){
   if(!saved)throw Error('No hay espacio para proteger tu copia original. Descarga un backup desde Ajustes antes de continuar.');
   safeSnapshot('Copia completa antes de incorporar trabajo antiguo');
 }
-function safeDownloadLegacy(){
+function safeLegacyRecord(){
   let record;for(const name of ['sessionStorage','localStorage']){try{record=JSON.parse(globalThis[name].getItem(SAFE_LEGACY_KEY)||'null');if(record)break;}catch(e){}}
+  return record;
+}
+function safeDownloadLegacy(){
+  const record=safeLegacyRecord();
   if(!record){toast('No se encuentra la copia original');return;}
   const url=URL.createObjectURL(new Blob([JSON.stringify(record.doc,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='cuadrante-antes-de-combinar-'+record.at+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
@@ -111,8 +115,8 @@ function safeChooseBackup(backup){
   modal('<div class="modal" style="max-width:520px"><header><h3>Recuperar trabajo de una persona</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body"><p>Se recuperan su horario, proyectos, prioridades y tareas. Se conserva el trabajo del resto del equipo y lo nuevo que no aparece en el backup.</p><p class="hint">Si el backup contiene otra versión del mismo bloque o tarea de la persona elegida, se recupera esa versión. Después podrás revisarla antes de publicar.</p><label>Persona<select id="safeRestorePerson">'+people.map(p=>'<option value="'+esc(p.id)+'"'+(p.id===state.ui.person?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></label></div><footer><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="safeRestoreBackup()">Recuperar esta persona</button></footer></div>');
 }
 function safeOpenHistory(){
-  const history=safeGet(SAFE_HISTORY_KEY)||[];if(!history.length){toast('Todavía no hay copias locales de recuperación');return;}
-  modal('<div class="modal" style="max-width:600px"><header><h3>Copias locales recientes</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+history.map((record,i)=>'<p>'+esc(new Date(record.at).toLocaleString('es-ES'))+' · '+esc(record.reason)+' <button class="btn" onclick="safeUseHistory('+i+')">Elegir persona</button></p>').join('')+'</div></div>');
+  const history=safeGet(SAFE_HISTORY_KEY)||[],original=safeLegacyRecord();if(!history.length&&!original){toast('Todavía no hay copias locales de recuperación');return;}
+  modal('<div class="modal" style="max-width:600px"><header><h3>Copias locales recientes</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+(original?'<p>La copia original anterior a la combinación inicial se conserva aparte de las copias recientes.</p><button class="btn" onclick="safeDownloadLegacy()">Descargar copia original protegida</button>':'')+history.map((record,i)=>'<p>'+esc(new Date(record.at).toLocaleString('es-ES'))+' · '+esc(record.reason)+' <button class="btn" onclick="safeUseHistory('+i+')">Elegir persona</button></p>').join('')+'</div></div>');
 }
 function safeUseHistory(index){try{const record=(safeGet(SAFE_HISTORY_KEY)||[])[index];if(!record)throw Error('Copia no disponible');safeChooseBackup(record.doc);}catch(e){toast(e.message);}}
 async function safeResolve(base,mine,theirs,scope){

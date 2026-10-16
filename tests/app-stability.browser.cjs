@@ -110,6 +110,8 @@ async function main(){
   assert.equal(simulator.posts.length,2);assert.ok(simulator.doc.tasks.some(x=>x.id==='qa-second-publish'));
   assert.equal(simulator.doc.team[1].grid[week]['4-22'].n,'Nuevo del compañero entre publicaciones');
   assert.equal(await t.page.locator('#safeLegacyPerson').count(),0);
+  await t.page.evaluate(()=>safeOpenHistory());assert.equal(await t.page.getByRole('button',{name:'Descargar copia original protegida',exact:true}).isVisible(),true);
+  await t.page.evaluate(()=>closeModal());
   assert.deepEqual(t.errors,[]);await t.context.close();
   console.log('OK navegador: publicación antigua simulada de principio a fin; compañero idéntico, corrección propia, bloques nuevos y remotos conservados, tareas unidas y copia original protegida.');
 }
