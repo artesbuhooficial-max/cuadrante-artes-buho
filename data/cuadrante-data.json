@@ -3478,18 +3478,6 @@
           "workNotes": "Dedicación aproximada validada por David. Preparación y creación de mensajes de primer contacto y seguimiento. Herramientas: Codex, Respond.io y Meta/WhatsApp. Dificultad: corregir el uso de Snippets para los primeros contactos; las siete plantillas quedaron aprobadas el martes."
         },
         {
-          "id": "xa07gw7",
-          "date": "2026-10-12",
-          "title": "Administración · IVA trimestral",
-          "estimatedHours": 0.5,
-          "progress": 100,
-          "done": true,
-          "order": 2,
-          "created": 1792147360093,
-          "actualHours": 0.5,
-          "workNotes": "Dedicación aproximada validada por David. Revisión de facturas y justificantes del tercer trimestre y preparación del resumen provisional. Herramientas: Codex, Drive y archivos PDF. Dificultades: documentación incompleta y validación de fechas y titularidad; cotejo posterior con el modelo presentado."
-        },
-        {
           "id": "x8wgald",
           "date": "2026-10-13",
           "title": "Escuela · recuperación y matrículas",
@@ -3572,18 +3560,6 @@
           "created": 1792147393881,
           "actualHours": 0.5,
           "workNotes": "Dedicación aproximada validada por David. Muestra de 15 casos con 463 mensajes para revisar estados, auditoría de la ventana de WhatsApp y revisión del tramo de contactos del plan. Herramientas: Codex, Respond.io, CSV y Chrome. Dificultades: estados ambiguos, adjuntos sin transcripción y ventana cerrada pese a respuestas recientes."
-        },
-        {
-          "id": "xdb256k",
-          "date": "2026-10-14",
-          "title": "Administración y soporte del equipo",
-          "estimatedHours": 0.5,
-          "progress": 100,
-          "done": true,
-          "order": 7,
-          "created": 1792147395264,
-          "actualHours": 0.5,
-          "workNotes": "Dedicación aproximada validada por David. Revisión del modelo 303 presentado y diagnóstico del touchpad, con pruebas del dispositivo I²C y ahorro de energía. Herramientas: Codex, documentos fiscales y Windows. La mejora del touchpad seguía pendiente de confirmación en uso."
         },
         {
           "id": "x0xxu8z",
@@ -13317,7 +13293,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792147566297,
+    "updatedAt": 1792147663497,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -13332,6 +13308,10 @@
       {
         "id": "f95101e2e01141229d660edcd6ddb923",
         "at": 1792147566297
+      },
+      {
+        "id": "7283a8418dd84aba9ea24ced2f94e4bf",
+        "at": 1792147663498
       }
     ]
   }
