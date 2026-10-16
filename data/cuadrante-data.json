@@ -3452,6 +3452,246 @@
           "order": 2,
           "created": 1792136040883,
           "source": "voice-ai"
+        },
+        {
+          "id": "xa9yg9w",
+          "date": "2026-10-12",
+          "title": "Pavoneo · Mario Cassado",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1792147181447,
+          "workNotes": "Dedicación aproximada validada por David. Cierre de Mario, recuperación de ocho publicaciones y ocho borradores Metricool. Herramientas: Codex, Drive, Metricool y GitHub Pages. Panel en blanco y vídeos duplicados corregidos; segundo corte pendiente.",
+          "actualHours": 1.5
+        },
+        {
+          "id": "x2mbooh",
+          "date": "2026-10-12",
+          "title": "Escuela · plantillas Respond.io",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1792147358208,
+          "actualHours": 1,
+          "workNotes": "Dedicación aproximada validada por David. Preparación y creación de mensajes de primer contacto y seguimiento. Herramientas: Codex, Respond.io y Meta/WhatsApp. Dificultad: corregir el uso de Snippets para los primeros contactos; las siete plantillas quedaron aprobadas el martes."
+        },
+        {
+          "id": "xa07gw7",
+          "date": "2026-10-12",
+          "title": "Administración · IVA trimestral",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1792147360093,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Revisión de facturas y justificantes del tercer trimestre y preparación del resumen provisional. Herramientas: Codex, Drive y archivos PDF. Dificultades: documentación incompleta y validación de fechas y titularidad; cotejo posterior con el modelo presentado."
+        },
+        {
+          "id": "x8wgald",
+          "date": "2026-10-13",
+          "title": "Escuela · recuperación y matrículas",
+          "estimatedHours": 2,
+          "progress": 100,
+          "done": true,
+          "order": 4,
+          "created": 1792147385480,
+          "actualHours": 2,
+          "workNotes": "Dedicación aproximada validada por David. 418 propuestas de recuperación y ocho casos de atención personal preparados sin enviar; cruce de matrículas, 112 contactos actualizados y ocho etiquetas de matrícula presentada. Herramientas: Codex, Respond.io y CSV. Dificultades: exportaciones sin mensajes completos, coincidencias parciales y carga de archivos desde Chrome."
+        },
+        {
+          "id": "xmj0r9g",
+          "date": "2026-10-13",
+          "title": "Noches de Neón · primera interfaz CRM",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 5,
+          "created": 1792147386786,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Demo de colas de llamadas, responsables, notas, estados y próximos contactos. Herramientas: Codex y HTML local. Quedaban pendientes la conexión con la hoja compartida y el etiquetado real en Respond.io."
+        },
+        {
+          "id": "x8gtbl9",
+          "date": "2026-10-13",
+          "title": "Mailing · preparación YAMM y plantillas HTML",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 6,
+          "created": 1792147388172,
+          "actualHours": 1.5,
+          "workNotes": "Dedicación aproximada validada por David. Lista FESTEJOS preparada, revisión de solapamientos, campaña CULTURA y enlace de baja publicado en las plantillas. Herramientas: Codex, app de mailing, YAMM, Gmail y Sheets. Dificultades: múltiples cuentas Google, ventanas de YAMM vacías y navegador sin respuesta; continuado el miércoles."
+        },
+        {
+          "id": "x991kcy",
+          "date": "2026-10-14",
+          "title": "Mailing · YAMM y reparación SMTP",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1792147389992,
+          "actualHours": 1.5,
+          "workNotes": "Dedicación aproximada validada por David. Borrador comercial y arranque del lote YAMM de 1.500 destinatarios; último avance comprobado en el chat: 14 enviados. Reparación de colas y reintentos SMTP 451. Herramientas: YAMM, Gmail, Sheets, Codex y VPS. Dificultades: perfiles Google y rechazos temporales; no se confirma el lote completo."
+        },
+        {
+          "id": "xtbhhtn",
+          "date": "2026-10-14",
+          "title": "Diseño · rótulos, portadas y copy de Mario",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 4,
+          "created": 1792147391313,
+          "actualHours": 1,
+          "workNotes": "Dedicación aproximada validada por David. Cuatro rótulos PDF de 10 × 4 cm para Linze, Altillo, Proyecto Ballena y Hammond York; propuestas con seis portadas en 99 × 69 cm y texto de Yo no soy él. Herramientas: Codex, diseño PDF e imágenes. Dificultad: dos portadas recibidas con resolución limitada; versión de revisión preparada."
+        },
+        {
+          "id": "x9ig28i",
+          "date": "2026-10-14",
+          "title": "Cuadrante · publicación segura",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 5,
+          "created": 1792147392550,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Recuperación por persona y protección de cambios al publicar, sincronizar y restaurar backups. Herramientas: Codex, GitHub Pages y Apps Script. Dificultad: una copia antigua podía sobrescribir cambios ajenos; implantada la revisión de conflictos."
+        },
+        {
+          "id": "x021mpg",
+          "date": "2026-10-14",
+          "title": "Respond.io · revisión comercial y operativa",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 6,
+          "created": 1792147393881,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Muestra de 15 casos con 463 mensajes para revisar estados, auditoría de la ventana de WhatsApp y revisión del tramo de contactos del plan. Herramientas: Codex, Respond.io, CSV y Chrome. Dificultades: estados ambiguos, adjuntos sin transcripción y ventana cerrada pese a respuestas recientes."
+        },
+        {
+          "id": "xdb256k",
+          "date": "2026-10-14",
+          "title": "Administración y soporte del equipo",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 7,
+          "created": 1792147395264,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Revisión del modelo 303 presentado y diagnóstico del touchpad, con pruebas del dispositivo I²C y ahorro de energía. Herramientas: Codex, documentos fiscales y Windows. La mejora del touchpad seguía pendiente de confirmación en uso."
+        },
+        {
+          "id": "x0xxu8z",
+          "date": "2026-10-15",
+          "title": "Pavoneo · presentación comercial",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1792147404113,
+          "actualHours": 1,
+          "workNotes": "Dedicación aproximada validada por David. Presentación HTML de 14 diapositivas con precios, financiación, notas y ajustes de legibilidad. Herramientas: Codex, HTML y materiales de Pavoneo. Dificultad: condiciones finales de seQura pendientes de confirmar antes de presentarlas a clientes."
+        },
+        {
+          "id": "xy6hwz6",
+          "date": "2026-10-15",
+          "title": "Noches de Neón · CRM compartido y guía de venta",
+          "estimatedHours": 3.5,
+          "progress": 100,
+          "done": true,
+          "order": 4,
+          "created": 1792147405311,
+          "actualHours": 3.5,
+          "workNotes": "Dedicación aproximada validada por David. Hoja compartida, antigüedad de solicitudes, despliegue y pruebas; guía con repertorios, precios 2027, documentos y materiales. Herramientas: Codex, Google Sheets, Apps Script, GitHub y Chrome. Dificultades: permisos Google, conversión del Excel y guardado compartido; cotejo y corrección continuados el viernes."
+        },
+        {
+          "id": "xuofnnw",
+          "date": "2026-10-15",
+          "title": "Diseño · composición de discos",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 5,
+          "created": 1792147406662,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Ajuste del fondo a naranja rojizo, nombres blancos y PDF ligero de revisión en 99 × 69 cm. Herramientas: Codex y diseño de imágenes/PDF. Conservada la disposición de las portadas; archivo preparado para revisar."
+        },
+        {
+          "id": "xdqhnpn",
+          "date": "2026-10-16",
+          "title": "Escuela · estados, leads e intentos de envío",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1792147408420,
+          "actualHours": 1.5,
+          "workNotes": "Dedicación aproximada validada por David. 139 estados Lifecycle actualizados. 216 leads auditados, 103 nuevos importados y una plantilla por contacto; diez fallos registrados sin reintentar. Herramientas: Codex, Meta Ads, Respond.io y CSV. Dificultades: carga de archivos en Chrome, duplicados y fallos WhatsApp. Pendientes 1.651 contactos de revisión de estados."
+        },
+        {
+          "id": "xx87ao5",
+          "date": "2026-10-16",
+          "title": "Mailing · estabilización de la app",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1792147409783,
+          "actualHours": 1.5,
+          "workNotes": "Dedicación aproximada validada por David. Reparación de falta de memoria, despliegue y recuperación de 69 destinatarios. Último avance comprobado: 138 enviados y 66 pendientes. Herramientas: Codex, Node, Coolify y VPS. Dificultades: reinicios, cola vacía y botón oculto; sincronización automática suspendida temporalmente, sin repetir envíos anteriores."
+        },
+        {
+          "id": "x1665s8",
+          "date": "2026-10-16",
+          "title": "Noches de Neón · cotejo y conexión",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1792147411056,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Corrección del guardado y conexión con la hoja compartida; cotejo de 158 conversaciones, 145 contactos con envío previo y 12 sin coincidencia. Herramientas: Codex, Respond.io, Sheets y Apps Script. Pendientes los 12 casos y la sincronización automática de mensajes nuevos."
+        },
+        {
+          "id": "xdcp3pg",
+          "date": "2026-10-16",
+          "title": "Diseño · simulación de cuadros",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1792147412403,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Montajes de los cuadros en la sala con perspectiva, grosor, sombras e iluminación. Herramientas: Codex y generación/edición de imágenes. Resultado: visualización para decidir la colocación; los detalles pequeños pueden diferir del original."
+        },
+        {
+          "id": "x51xnyf",
+          "date": "2026-10-16",
+          "title": "Pavoneo · leads para llamadas",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 4,
+          "created": 1792147413627,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Excel con dos contactos del anuncio PAVONEO v1, teléfono, interés y seguimiento de llamadas. Herramientas: Codex, Meta Ads y Excel. Dificultades: localizar la cuenta publicitaria y leer el CSV exportado. Entregado para llamadas, sin importarlo a Respond.io."
+        },
+        {
+          "id": "xg20rbh",
+          "date": "2026-10-16",
+          "title": "Cuadrante · fusión y semana de David",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 5,
+          "created": 1792147414876,
+          "actualHours": 0.5,
+          "workNotes": "Dedicación aproximada validada por David. Mejora de la fusión de bloques, tareas y prioridades por cambios concretos y publicación de la semana de David. Herramientas: Codex, GitHub Pages, Apps Script y Chrome. Dificultad: conservar cambios de otras personas al recuperar copias antiguas."
         }
       ]
     },
@@ -13077,7 +13317,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792136248242,
+    "updatedAt": 1792147566297,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -13088,6 +13328,10 @@
       {
         "id": "cc27937f31b04614865a7722c2715c6a",
         "at": 1792136248242
+      },
+      {
+        "id": "f95101e2e01141229d660edcd6ddb923",
+        "at": 1792147566297
       }
     ]
   }
