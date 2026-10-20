@@ -1,18 +1,50 @@
 /* Autoguardado compartido: conserva el formato, los datos y el servidor publish2. */
 var SharedAutosave=(function(){
-  const PREFIX='cuadrante_shared_outbox_v1_',TAB_KEY='cuadrante_shared_tab_v1';
+  const PREFIX='cuadrante_shared_outbox_v1_',TAB_KEY='cuadrante_shared_tab_v1',ACCESS_KEY='cuadrante_publish_access_v1';
   const DELAY=2500,MIN_SEND=10000,POLL=45000,LEASE=90000,EXPIRE=240000;
   let tabId='',started=false,initialized=false,booting=false,applying=0,running=false,reading=false,recovering=false;
   let timer=null,pollTimer=null,heartbeat=null,lastSend=0,retryAt=0,failures=0;
   let observed=null,observedBase=null,userChanged=false,attemptedAuth=false,review=false,recovery=null,error='',storageError=false,confirmedAt=0;
+  let rememberedKey='',accessWarning=false,accessEpoch=0;
   const originalStore=storeSet,originalSaveUI=updateSaveUI,originalInstall=safeInstall;
   const originalSet=safeSet,originalClear=safeClearPending,originalBoot=boot,originalPublish=publishViaAppsScript;
+  const originalAskKey=askPublishKey;
   const clone=x=>SafeSync.clone(x),pub=x=>SafeSync.publicDoc(x),same=(a,b)=>SafeSync.equal(a,b);
   function uid(){return crypto.randomUUID().replace(/-/g,'');}
   function online(){return typeof navigator==='undefined'||navigator.onLine!==false;}
   function visible(){return document.visibilityState!=='hidden';}
   function dirty(){return !!(safeBase&&!same(pub(state),safeBase));}
   function pending(){return safeGet(SAFE_PENDING_KEY);}
+  function loadKey(){
+    try{const key=localStorage.getItem(ACCESS_KEY)||'';rememberedKey=typeof key==='string'&&key.length<=1000?key:'';if(!_publishKey)_publishKey=rememberedKey;}catch(e){}
+  }
+  function rememberKey(key,epoch=accessEpoch){
+    if(epoch!==accessEpoch){_publishKey='';rememberedKey='';loadKey();return false;}
+    if(typeof key!=='string'||!key)return false;_publishKey=key;
+    try{
+      if(localStorage.getItem(ACCESS_KEY)!==key)localStorage.setItem(ACCESS_KEY,key);
+      rememberedKey=key;accessWarning=false;return true;
+    }catch(e){
+      if(!accessWarning)toast('El navegador no permite recordar la clave. El autoguardado funciona durante esta sesión; en la siguiente habrá que introducirla otra vez.');
+      accessWarning=true;return false;
+    }
+  }
+  function forgetKey(options={}){
+    accessEpoch++;
+    const rejected=Object.prototype.hasOwnProperty.call(options,'rejectedKey');let removed=true,stored='';
+    try{stored=localStorage.getItem(ACCESS_KEY)||'';if(!rejected||stored===options.rejectedKey)localStorage.removeItem(ACCESS_KEY);}catch(e){removed=false;}
+    if(!rejected||_publishKey===options.rejectedKey)_publishKey='';
+    if(!rejected||rememberedKey===options.rejectedKey)rememberedKey='';
+    if(rejected&&stored&&stored!==options.rejectedKey&&stored.length<=1000){_publishKey=stored;rememberedKey=stored;}
+    attemptedAuth=true;show();
+    if(!options.silent)toast(removed?'Clave olvidada en este navegador. No se ha borrado ningún horario, tarea ni cambio pendiente.':'No se pudo retirar la clave almacenada. Se ha desconectado esta sesión; revisa los permisos del navegador antes de volver a abrir. Tus datos se conservan.');
+  }
+  askPublishKey=async function(options={}){
+    const epoch=accessEpoch;
+    const key=await originalAskKey({hint:'Introduce la clave compartida de publicación. Se recordará en este navegador; quien use este navegador podrá publicar.',...options});
+    // Recordar también si luego falla la red. Un rechazo de autenticación la retira.
+    if(key)rememberKey(key,epoch);return key;
+  };
   function get(id){try{return JSON.parse(localStorage.getItem(PREFIX+id)||'null');}catch(e){return null;}}
   function put(record){localStorage.setItem(PREFIX+record.id,JSON.stringify(record));}
   function records(){
@@ -45,14 +77,14 @@ var SharedAutosave=(function(){
     else if(safePublishing||running)text='☁ Guardando en el servidor…';
     else if(!online())text='● Sin conexión · guardado en este dispositivo';
     else if(error)text='● Guardado local · reintentando conexión';
-    else if((dirty()||pending())&&attemptedAuth&&!_publishKey)text='● Guardado local · pulsa para introducir la clave';
+    else if(attemptedAuth&&!_publishKey)text='● Guardado local · introducir clave una sola vez';
     else if(!safeBase)text='● Revisión inicial · activar autoguardado';
-    else if((dirty()||pending())&&!_publishKey)text='● Guardado local · activar autoguardado';
+    else if(!_publishKey)text='● Introducir clave una sola vez por dispositivo';
     else if(dirty()||pending())text='☁ Cambios guardados localmente · envío pendiente';
     else if(confirmedAt)text='✓ Guardado en el servidor · '+new Date(confirmedAt).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-    else text='✓ Sin cambios pendientes';
-    pill.textContent=text; pill.title='Autoguardado compartido. Pulsa para conectar, reintentar o revisar. La clave compartida se solicita una vez por sesión y no se almacena.';
-    pill.className='save-pill '+(storageError||review||recovery||error||dirty()||pending()?'dirty':safeBase?'ok':'');
+    else text='✓ Autoguardado activo · sin cambios pendientes';
+    pill.textContent=text; pill.title='Guardado y sincronización automáticos. La clave se recuerda en este navegador, fuera de GitHub y de los backups. Puedes olvidarla en Ajustes. En equipos compartidos, cualquiera con acceso a este navegador podrá publicar.';
+    pill.className='save-pill '+(storageError||review||recovery||error||dirty()||pending()||!_publishKey?'dirty':safeBase?'ok':'');
     pill.setAttribute('aria-live','polite');
     pill.setAttribute('role','button');pill.setAttribute('tabindex','0');pill.style.cursor='pointer';pill.onclick=connect;
     pill.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();connect();}};
@@ -63,11 +95,11 @@ var SharedAutosave=(function(){
     timer=setTimeout(()=>{timer=null;flush().catch(e=>failed(e.message));},Math.max(delay,retryAt-Date.now(),lastSend+MIN_SEND-Date.now(),0));
   }
   function failed(message){error=String(message||'Conexión pendiente');failures++;retryAt=Date.now()+Math.min(300000,5000*Math.pow(2,Math.min(failures,6)));show();arm();}
-  function handle(result){
+  function handle(result,authKey,currentAccess=true){
     if(!result)return;
-    if(result.ok){error='';failures=0;retryAt=0;review=false;confirmedAt=result.updatedAt||Date.now();persistDraft();}
+    if(result.ok){error='';failures=0;retryAt=0;review=false;confirmedAt=result.updatedAt||Date.now();if(_publishKey)rememberKey(_publishKey);persistDraft();}
     else if(result.code==='CONFLICT'||result.code==='REVIEW'){review=true;error='';}
-    else if(result.code==='AUTH'){_publishKey='';attemptedAuth=true;error='';}
+    else if(result.code==='AUTH'){if(currentAccess)forgetKey({silent:true,rejectedKey:authKey||rememberedKey});attemptedAuth=true;error='';}
     else if(result.code==='RETRY')failed(result.error);
     show();
   }
@@ -169,7 +201,7 @@ var SharedAutosave=(function(){
       // Nunca se le inventa una base que pueda convertir ausencias en borrados.
       if(!safeBase&&!(await safeRebase()))return;
       await recover(true);if(recovery){toast('La copia recuperable sigue protegida en Ajustes → Copias locales recientes.');return;}
-      if(!_publishKey){const key=await askPublishKey({title:'Activar autoguardado compartido',button:'Conectar',hint:'Introduce la clave compartida de publicación de la oficina. Se usa solo durante esta sesión y no se guarda en el navegador.'});if(!key)return;_publishKey=key;}
+      if(!_publishKey){const key=await askPublishKey({title:'Configurar autoguardado una sola vez',button:'Conectar',hint:'Introduce la clave compartida de publicación de la oficina. Se recordará en este navegador para guardar y sincronizar automáticamente al volver a abrir el cuadrante. Quien use este navegador podrá publicar.'});if(!key)return;_publishKey=key;}
       const result=await publishViaAppsScript();
       if(result&&result.ok){review=false;userChanged=false;}
     }catch(e){failed(e.message);}
@@ -238,11 +270,12 @@ var SharedAutosave=(function(){
     }finally{safeSyncing=false;show();}
   }
   publishViaAppsScript=async function(options={}){
-    let result;
+    let result;const authKey=_publishKey,epoch=accessEpoch;
     try{result=await checkOldPending(options)||await originalPublish(options);}
     catch(e){result={ok:false,code:'RETRY',error:e.message};}
     if(result&&!result.unchanged&&!['BUSY','CANCELLED','SETUP'].includes(result.code))lastSend=Date.now();
-    handle(result);
+    if(epoch!==accessEpoch){_publishKey='';rememberedKey='';loadKey();}
+    handle(result,authKey,epoch===accessEpoch);
     if(!options.automatic&&result&&result.ok){
       review=false;error='';
       // Una revisión explícita ya terminada no vuelve a atascarse con su copia
@@ -253,12 +286,12 @@ var SharedAutosave=(function(){
     return result;
   };
   boot=async function(){
-    await owner();booting=true;const work=originalBoot();booting=false;started=true;observed=pub(state);observedBase=safeBase;show();
+    loadKey();await owner();booting=true;const work=originalBoot();booting=false;started=true;observed=pub(state);observedBase=safeBase;show();
     await work;
     if(!AppStability.isFatal()){
       await refresh();await recover();show();
       startTimers();
-      if(pending())arm();
+      if(pending()||dirty()&&_publishKey)arm();
     }
     initialized=true;
   };
@@ -280,6 +313,12 @@ var SharedAutosave=(function(){
     const url=URL.createObjectURL(new Blob([JSON.stringify(r.doc,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='cuadrante-autoguardado-'+r.at+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
   if(typeof window.addEventListener==='function'){
+    window.addEventListener('storage',e=>{
+      if(e.key!==ACCESS_KEY)return;
+      accessEpoch++;
+      if(typeof e.newValue==='string'&&e.newValue&&e.newValue.length<=1000){rememberedKey=e.newValue;_publishKey=e.newValue;attemptedAuth=false;error='';show();if(dirty()||pending())arm(0);}
+      else{if(_publishKey===e.oldValue)_publishKey='';rememberedKey='';attemptedAuth=true;show();}
+    });
     window.addEventListener('online',()=>{retryAt=0;error='';refresh().finally(()=>arm(0));});
     window.addEventListener('offline',show);
     window.addEventListener('focus',()=>{refresh().finally(()=>arm());});
@@ -288,6 +327,7 @@ var SharedAutosave=(function(){
     window.addEventListener('beforeunload',e=>{if(started&&(dirty()||pending())){persistDraft();e.preventDefault();e.returnValue='';}});
     document.addEventListener('visibilitychange',()=>{if(!visible()){flushInput();if(_publishKey)flush();}else refresh().finally(()=>arm(0));});
   }
-  return {flush,refresh,connect,recover,afterPublish,blockPending,recoveryCopies,useCopy,downloadCopy,records,
+  return {flush,refresh,connect,recover,afterPublish,blockPending,recoveryCopies,useCopy,downloadCopy,records,rememberKey,forgetKey,
+    accessVersion:()=>accessEpoch,
     status:()=>({started,initialized,booting,reading,tabId,running,review,recovery,error,storageError,confirmedAt})};
 })();

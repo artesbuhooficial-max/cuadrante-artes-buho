@@ -19,11 +19,14 @@ const ctx=vm.createContext({console,Date,Number,Promise,AbortController,setTimeo
   dStr:()=> '2026-10-08',esc:s=>s,uid:()=> 'i'+p.priorities.length,prioritiesForDay:(p,d)=>p.priorities.filter(x=>x.date===d),markDirty(){},save(){saved++;},renderPriorityBoard(){},toast(){}});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'..','voice-ai.js'),'utf8'),ctx);
 const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(resolve));
+const rememberedAccess=[],forgottenAccess=[];
+ctx.SharedAutosave={accessVersion:()=>1,rememberKey:(key,epoch)=>rememberedAccess.push({key,epoch}),forgetKey:options=>forgottenAccess.push(options)};
 const sample={date:'2026-10-08',title:'Terminar cartel',workNotes:'Cartel de Escuela finalizado.',actualHours:.5,estimatedHours:null,progress:100,sourceQuote:'Terminé el cartel'};
 async function main(){
   element('voiceText').value='Terminé el cartel en media hora.';element('voiceDate').value='2026-10-08';element('voiceOwner').value='u1';
   answer={ok:true,items:[sample,{...sample,title:'Revisar correo',actualHours:null,progress:null}],warnings:['Revisar la fecha.']};
   await run('voiceOrganize()');assert.equal(saved,0);assert.equal(rows.length,2);assert.equal(element('voiceSave').hidden,false);
+  assert.deepEqual(rememberedAccess[0],{key:'office-test',epoch:1});
   assert.equal(corsCalls,1);assert.equal(jsonpCalls,0);
   const request=JSON.parse(posted[0].options.body);assert.equal(request.publishKey,'office-test');assert.equal(request.text,element('voiceText').value);assert.equal(JSON.stringify(request).includes('9999'),false);
   assert.equal(posted[0].options.mode,'no-cors');assert.equal(posted[0].url.includes('office-test'),false);
@@ -35,6 +38,7 @@ async function main(){
   run('voiceCommit()');assert.equal(p.priorities.length,2);
   element('voiceText').value='Otro relato';requestKey='';await run('voiceOrganize()');assert.equal(posted.length,1);assert.ok(element('voiceStatus').textContent.includes('cancelada'));
   requestKey='wrong';answer={ok:false,authError:true,error:'Clave incorrecta'};await run('voiceOrganize()');assert.equal(run('_publishKey'),'');assert.equal(element('voiceText').value,'Otro relato');assert.equal(element('voiceSave').hidden,true);
+  assert.equal(forgottenAccess.at(-1).rejectedKey,'wrong');
   requestKey='office-test';answer={ok:true,items:[sample],warnings:[]};
   corsErrorsRemaining=3;jsonpErrorsRemaining=2;const beforeRetry=jsonpCalls;await run('voiceOrganize()');assert.equal(jsonpCalls-beforeRetry,3);assert.equal(rows.length,1);
   run('voiceStart();voiceCapture.onend()');await flush();assert.equal(ended,1);assert.equal(rows.length,1);

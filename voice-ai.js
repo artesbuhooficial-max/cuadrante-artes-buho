@@ -9,7 +9,7 @@ voiceOpen=function(){
   document.getElementById('voiceReview').onclick=voiceOrganize;
   const hint=document.querySelector('#voicePanel .voice-hint');
   if(hint)hint.textContent='Cuenta tu jornada con naturalidad. Al detener el dictado, la IA ordena las acciones por día. Revisa el resultado antes de guardarlo.';
-  const notice=document.createElement('p');notice.className='voice-hint';notice.textContent='El audio se transcribe con Google y el texto se envía a Claude mediante Apps Script para organizarlo. No se adjuntan sueldos ni costes del cuadrante. Guardar no publica los cambios.';
+  const notice=document.createElement('p');notice.className='voice-hint';notice.textContent='El audio se transcribe con Google y el texto se envía a Claude mediante Apps Script para organizarlo. No se adjuntan sueldos ni costes del cuadrante. Revisa la propuesta antes de guardar; al guardarla, se sincroniza cuando el autoguardado está conectado.';
   document.getElementById('voicePreview').before(notice);
 };
 voiceClose=function(){voiceAiGeneration++;voiceAiBusy=false;voiceOriginalClose();};
@@ -40,6 +40,7 @@ async function voiceOrganize(){
     const key=await askPublishKey({title:'Organizar jornada con IA',button:'Organizar',hint:'Usa la clave compartida de publicación. No se publicará ningún cambio.'});
     if(generation!==voiceAiGeneration)return;
     if(!key){voiceStatus('Organización cancelada. El dictado sigue guardado como borrador.');return;}
+    const accessEpoch=typeof SharedAutosave==='undefined'?null:SharedAutosave.accessVersion();
     const id=crypto.randomUUID().replace(/-/g,'');
     voiceStatus('La IA está ordenando tu jornada…');
     const controller=new AbortController(),postTimer=setTimeout(()=>controller.abort(),45000);
@@ -47,8 +48,8 @@ async function voiceOrganize(){
     finally{clearTimeout(postTimer);}
     const result=await voiceWaitForResult(url,id,generation);
     if(generation!==voiceAiGeneration)return;
-    if(!result.ok){if(result.authError)_publishKey='';throw new Error(result.error||'No se pudo organizar el dictado.');}
-    _publishKey=key;voiceAiRender(result);
+    if(!result.ok){if(result.authError){_publishKey='';if(typeof SharedAutosave!=='undefined')SharedAutosave.forgetKey({silent:true,rejectedKey:key});}throw new Error(result.error||'No se pudo organizar el dictado.');}
+    _publishKey=key;if(typeof SharedAutosave!=='undefined')SharedAutosave.rememberKey(key,accessEpoch);voiceAiRender(result);
   }catch(e){if(generation===voiceAiGeneration){
     voiceStatus('['+VOICE_AI_VERSION+'] '+e.message+' El texto original se conserva.');
     const link=document.createElement('a');link.href=VOICE_APPS_URL+'?action=ping';link.target='_blank';link.rel='noopener';link.className='btn';link.textContent='Abrir comprobación de conexión';

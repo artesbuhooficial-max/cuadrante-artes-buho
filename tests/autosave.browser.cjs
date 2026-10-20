@@ -2,14 +2,14 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),S=require('../safe-sync.js');
 const root=path.join(__dirname,'..'),published=JSON.parse(fs.readFileSync(path.join(root,'data/cuadrante-data.json'),'utf8'));
-const KEY='cuadrante_artesbuho_v2',WORK='cuadrante_work_copy_v3',PREFIX='cuadrante_shared_outbox_v1_';
+const KEY='cuadrante_artesbuho_v2',WORK='cuadrante_work_copy_v3',PREFIX='cuadrante_shared_outbox_v1_',ACCESS='cuadrante_publish_access_v1';
 const files=['index.html','priorities-report.js','priorities-report.css','voice-priorities.js','voice-priorities.css','voice-ai.js','safe-sync.js','app-stability.js','publication-safe.js','autosave-shared.js'];
 let browser,contexts=[],externalWrites=0;const times=new WeakMap();
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function until(predicate,label){const end=Date.now()+12000;while(Date.now()<end){if(await predicate())return;await sleep(30);}throw Error('Tiempo agotado: '+label);}
 function simulator(){return {doc:S.clone(published),posts:[],results:new Map(),offline:false,lost:false,hold:null,commits:0};}
 async function setup(sim,options={}){
-  const context=await browser.newContext();contexts.push(context);const errors=[];
+  const context=await browser.newContext(options.storageState?{storageState:options.storageState}:{});contexts.push(context);const errors=[];
   context.on('page',page=>page.on('pageerror',e=>errors.push(e.message)));
   await context.route('**/*',async route=>{
     const req=route.request(),url=new URL(req.url());
@@ -41,13 +41,15 @@ async function setup(sim,options={}){
     return route.abort();
   });
   const page=await context.newPage();
-  await page.addInitScript(({doc,base,unknown,blocked})=>{
+  await page.addInitScript(({doc,base,unknown,blocked,remembered,blockedAccess})=>{
     if(!localStorage.getItem('cuadrante_artesbuho_v2')){
       localStorage.setItem('cuadrante_artesbuho_v2',JSON.stringify(doc));
       if(!unknown)localStorage.setItem('cuadrante_work_copy_v3',JSON.stringify({version:3,doc,base}));
+      if(remembered)localStorage.setItem('cuadrante_publish_access_v1',remembered);
     }
     if(blocked){const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k.startsWith('cuadrante_shared_outbox_v1_'))throw Error('QuotaExceededError');return set.call(this,k,v);};}
-  },{doc:options.local||sim.doc,base:S.publicDoc(sim.doc),unknown:options.unknown,blocked:options.blocked});
+    if(blockedAccess){const set=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='cuadrante_publish_access_v1')throw Error('Access denied');return set.call(this,k,v);};}
+  },{doc:options.local||sim.doc,base:S.publicDoc(sim.doc),unknown:options.unknown,blocked:options.blocked,remembered:options.remembered,blockedAccess:options.blockedAccess});
   await page.goto('https://cuadrante.test/');await ready(page);
   return {context,page,errors};
 }
@@ -56,7 +58,7 @@ async function idle(page){await until(()=>page.evaluate(()=>!safePublishing&&!Sh
 async function tick(page){const time=(times.get(page)||Date.now())+60000;times.set(page,time);await page.clock.setFixedTime(new Date(time));}
 async function edit(page,id,personIndex=0){await page.evaluate(({id,personIndex})=>{state.tasks.push({id,owner:state.team[personIndex].id,text:'Trabajo '+id});save();},{id,personIndex});}
 async function send(page){await sleep(30);await until(()=>page.evaluate(()=>!SharedAutosave.status().reading&&!SharedAutosave.status().running),'conexión libre');await tick(page);await page.evaluate(()=>SharedAutosave.flush());await idle(page);}
-async function authorize(page){await page.evaluate(()=>{_publishKey='clave-ficticia-prueba';});}
+async function authorize(page){await page.evaluate(()=>SharedAutosave.rememberKey('clave-ficticia-prueba'));}
 function has(sim,id){return sim.doc.tasks.some(x=>x.id===id);}
 async function main(){
   browser=await chromium.launch({channel:'chrome',headless:true});
@@ -65,6 +67,8 @@ async function main(){
   await edit(t.page,'auto-primero');await t.page.waitForSelector('#publishKeyInput');
   await t.page.locator('#publishKeyInput').fill('clave-ficticia-prueba');await t.page.getByRole('button',{name:'Conectar',exact:true}).click();
   await until(()=>has(sim,'auto-primero'),'primer guardado con clave');await idle(t.page);assert.equal(sim.posts.length,1);
+  assert.equal(await t.page.evaluate(key=>localStorage.getItem(key),ACCESS),'clave-ficticia-prueba');
+  assert.equal(await t.page.evaluate(()=>JSON.stringify({doc:state,base:safeBase,pending:safeGet(SAFE_PENDING_KEY),history:safeGet(SAFE_HISTORY_KEY),copies:SharedAutosave.records()}).includes('clave-ficticia-prueba')),false,'La clave recordada no entra en datos, backups ni diarios');
   await t.page.evaluate(()=>{state.ui.person=state.team[1].id;save();});await send(t.page);assert.equal(sim.posts.length,1,'Cambiar de persona no publica');
   await edit(t.page,'auto-segundo');await edit(t.page,'auto-tercero');await t.page.evaluate(()=>{state.team[0].salary=999;state.team[0].rate=99;});
   await send(t.page);assert.equal(sim.posts.length,2);assert.ok(has(sim,'auto-segundo')&&has(sim,'auto-tercero'));
@@ -88,8 +92,21 @@ async function main(){
   await t.context.setOffline(true);sim.offline=true;const before=sim.posts.length;await edit(t.page,'sin-red');await t.page.evaluate(()=>SharedAutosave.flush());
   assert.equal(sim.posts.length,before);assert.ok(await t.page.evaluate(()=>SharedAutosave.records().some(r=>r.doc.tasks.some(x=>x.id==='sin-red'))));
   sim.offline=false;await t.context.setOffline(false);await send(t.page);assert.ok(has(sim,'sin-red'));
-  assert.deepEqual(t.errors,[]);await t.context.close();
+  assert.deepEqual(t.errors,[]);const rememberedState=await t.context.storageState();await t.context.close();
   console.log('OK autoguardado: copia duradera sin conexión y reanudación posterior.');
+
+  sim.doc.tasks.push({id:'novedad-al-reabrir',owner:sim.doc.team[1].id,text:'Publicado por compañero'});
+  t=await setup(sim,{storageState:rememberedState});
+  assert.equal(await t.page.evaluate(()=>_publishKey==='clave-ficticia-prueba'),true);
+  assert.equal(await t.page.evaluate(()=>state.tasks.some(x=>x.id==='novedad-al-reabrir')),true);
+  await edit(t.page,'automático-al-reabrir');await until(()=>has(sim,'automático-al-reabrir'),'guardado sin pedir clave ni pulsar botones después de reabrir');await idle(t.page);
+  assert.equal(await t.page.locator('#publishKeyInput').count(),0);
+  const beforeForget=await t.page.evaluate(()=>JSON.stringify(SafeSync.publicDoc(state)));
+  await t.page.evaluate(()=>openSettings());await t.page.getByRole('button',{name:'Olvidar clave de este dispositivo',exact:true}).click();
+  assert.equal(await t.page.evaluate(key=>localStorage.getItem(key),ACCESS),null);assert.equal(await t.page.evaluate(()=>_publishKey),'');
+  assert.equal(await t.page.evaluate(()=>JSON.stringify(SafeSync.publicDoc(state))),beforeForget);
+  await t.page.evaluate(()=>closeModal());assert.deepEqual(t.errors,[]);await t.context.close();
+  console.log('OK acceso recordado: reabre con sincronización y guardado totalmente automáticos, sin diálogo; olvidar la clave no borra trabajo.');
 
   // Dos dispositivos parten de la misma base y guardan personas y celdas distintas.
   sim=simulator();let a=await setup(sim),b=await setup(sim);await authorize(a.page);await authorize(b.page);
@@ -114,10 +131,10 @@ async function main(){
   console.log('OK autoguardado: dos dispositivos, personas distintas y celdas distintas sin pérdida; la misma celda exige revisión y conserva ambas versiones.');
 
   // Dos pestañas no deben apropiarse de los borradores activos de la otra.
-  sim=simulator();t=await setup(sim);await authorize(t.page);await edit(t.page,'pestaña-A');
-  const second=await t.context.newPage();await second.goto('https://cuadrante.test/');await ready(second);await authorize(second);
+  sim=simulator();t=await setup(sim);await edit(t.page,'pestaña-A');
+  const second=await t.context.newPage();await second.goto('https://cuadrante.test/');await ready(second);
   assert.notEqual(await t.page.evaluate(()=>SharedAutosave.status().tabId),await second.evaluate(()=>SharedAutosave.status().tabId));
-  await edit(second,'pestaña-B');await Promise.all([send(t.page),send(second)]);assert.ok(has(sim,'pestaña-A')&&has(sim,'pestaña-B'));
+  await authorize(t.page);await edit(second,'pestaña-B');await send(t.page);await until(()=>second.evaluate(()=>_publishKey==='clave-ficticia-prueba'),'clave disponible en otra pestaña');await send(second);assert.ok(has(sim,'pestaña-A')&&has(sim,'pestaña-B'));
   // Cerrar una pestaña offline y continuar con la otra preserva el diario huérfano.
   await t.context.setOffline(true);sim.offline=true;await edit(t.page,'cerrado-sin-red');await t.page.close();
   sim.offline=false;await t.context.setOffline(false);await second.evaluate(()=>SharedAutosave.recover());await send(second);
@@ -134,11 +151,13 @@ async function main(){
   assert.deepEqual(t.errors,[]);await t.context.close();
   console.log('OK autoguardado: cerrar y volver a abrir sin sesión recupera el mismo envío y también lo editado después.');
 
-  sim=simulator();t=await setup(sim);await t.page.evaluate(()=>{_publishKey='incorrecta-ficticia';});await edit(t.page,'clave-equivocada');await send(t.page);
+  sim=simulator();t=await setup(sim,{remembered:'incorrecta-ficticia'});await edit(t.page,'clave-equivocada');await send(t.page);
   assert.equal(has(sim,'clave-equivocada'),false);assert.equal(await t.page.evaluate(()=>_publishKey),'');
+  assert.equal(await t.page.evaluate(key=>localStorage.getItem(key),ACCESS),null);
   const authId=sim.posts.at(-1).requestId;await t.page.locator('#saveStatus').click();await t.page.waitForSelector('#publishKeyInput');
   await t.page.locator('#publishKeyInput').fill('clave-ficticia-prueba');await t.page.getByRole('button',{name:'Conectar',exact:true}).click();
   await until(()=>has(sim,'clave-equivocada'),'reintento con clave correcta');await idle(t.page);assert.equal(sim.posts.at(-1).requestId,authId);
+  assert.equal(await t.page.evaluate(key=>localStorage.getItem(key),ACCESS),'clave-ficticia-prueba');
   assert.deepEqual(t.errors,[]);await t.context.close();
   console.log('OK autoguardado: una clave incorrecta no pierde el borrador y permite reintentar el mismo envío con la correcta.');
 
@@ -171,6 +190,20 @@ async function main(){
   assert.equal(sim.posts.length,0,'No publicar una copia antigua sin revisar su procedencia');assert.equal(await t.page.evaluate(()=>safeBase),null);
   assert.deepEqual(t.errors,[]);await t.context.close();assert.equal(externalWrites,0);
   console.log('OK autoguardado: bloqueo seguro sin espacio y copias antiguas sin base nunca se publican sin revisión. Cero escrituras externas.');
+
+  sim=simulator();t=await setup(sim,{blockedAccess:true});await authorize(t.page);await edit(t.page,'clave-no-recordable');await send(t.page);
+  assert.ok(has(sim,'clave-no-recordable'));assert.equal(await t.page.evaluate(key=>localStorage.getItem(key),ACCESS),null);
+  assert.equal(await t.page.evaluate(()=>SharedAutosave.status().storageError),false);assert.deepEqual(t.errors,[]);await t.context.close();
+  console.log('OK acceso recordado: si solo se bloquea recordar la clave, el guardado sigue funcionando en la sesión sin borrar nada.');
+
+  // Olvidar mientras termina un envío no debe volver a guardar la clave al recibir el éxito.
+  sim=simulator();t=await setup(sim);await authorize(t.page);
+  let releaseForget;sim.hold=new Promise(resolve=>releaseForget=resolve);await edit(t.page,'envío-antes-de-olvidar');await tick(t.page);
+  const forgetSending=t.page.evaluate(()=>SharedAutosave.flush());await until(()=>sim.posts.length===1,'envío antes de olvidar');
+  await t.page.evaluate(()=>SharedAutosave.forgetKey({silent:true}));releaseForget();sim.hold=null;await forgetSending;await idle(t.page);
+  assert.equal(await t.page.evaluate(key=>localStorage.getItem(key),ACCESS),null);assert.equal(await t.page.evaluate(()=>_publishKey),'');
+  assert.ok(has(sim,'envío-antes-de-olvidar'));assert.deepEqual(t.errors,[]);await t.context.close();
+  console.log('OK acceso recordado: olvidar durante una petición no reactiva la clave al llegar su respuesta.');
 
   sim=simulator();t=await setup(sim);
   await t.page.evaluate(()=>openSettings());sim.doc.tasks.push({id:'novedad-del-equipo',owner:sim.doc.team[1].id,text:'No interrumpir el formulario'});

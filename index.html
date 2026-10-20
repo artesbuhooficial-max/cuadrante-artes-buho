@@ -591,7 +591,7 @@
 <script src="priorities-report.js"></script>
 <link rel="stylesheet" href="voice-priorities.css">
 <script src="voice-priorities.js?v=20261016-1"></script>
-<script src="voice-ai.js?v=20261016-1"></script>
+<script src="voice-ai.js?v=20261020-2"></script>
 <script>
 /* ============ STORAGE ============ */
 const KEY='cuadrante_artesbuho_v2';
@@ -731,7 +731,7 @@ async function guardStalePublish(){
   if(proceed)await pullRemote(true);
   return false;
 }
-// La clave de publicación vive solo en memoria durante esta visita.
+// Copia en memoria; SharedAutosave recuerda el acceso por dispositivo, fuera de los datos.
 let _publishKey='';
 let _publishKeyResolve=null;
 function askPublishKey(options={}){
@@ -1782,6 +1782,8 @@ function openSettings(){const c=state.config;const gh=ghGet();
     '<div class="divider"></div>'+
     '<label class="hint" style="font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;font-size:.7rem">Publicación protegida</label>'+
     '<p class="hint">Publicar combina tus cambios con la última versión del equipo. Si dos copias cambian el mismo dato, podrás revisar ambas versiones. La publicación se realiza a través de Apps Script.</p>'+
+    '<p class="hint">La clave compartida se recuerda en este navegador para guardar y sincronizar automáticamente. No se incluye en GitHub ni en los backups. En un equipo compartido, cualquiera que use este navegador podrá publicar.</p>'+
+    (typeof SharedAutosave!=='undefined'?'<div class="inp row"><button class="btn" onclick="SharedAutosave.forgetKey()">Olvidar clave de este dispositivo</button></div>':'')+
     '<div hidden><div class="inp"><label>Token de GitHub</label><input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="'+esc(gh.token||'')+'"></div>'+
     '<div class="inp row"><div><label>Usuario / Org</label><input id="ghOwner" value="'+esc(gh.owner||'artesbuhooficial-max')+'"></div><div><label>Repositorio</label><input id="ghRepo" value="'+esc(gh.repo||'cuadrante-artes-buho')+'"></div></div>'+
     '<div class="inp"><label>Rama</label><input id="ghBranch" value="'+esc(gh.branch||'master')+'"></div></div>'+
@@ -2297,7 +2299,7 @@ async function pullRemote(skipConfirm){
 <script src="safe-sync.js?v=20261016-1"></script>
 <script src="app-stability.js?v=20261016-1"></script>
 <script src="publication-safe.js?v=20261020-1"></script>
-<script src="autosave-shared.js?v=20261020-1"></script>
+<script src="autosave-shared.js?v=20261020-2"></script>
 <script>
 if(typeof AppStability!=='undefined'&&typeof SafeSync!=='undefined'&&typeof safeReadRemote==='function')boot().catch(e=>AppStability.fail(e));
 else document.getElementById('appHealthText').textContent='No se han cargado todos los archivos. Reintenta la carga; tus datos locales no se han borrado.';
