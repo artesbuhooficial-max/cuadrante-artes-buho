@@ -443,9 +443,9 @@
       <button class="btn ghost spacer" onclick="weekToday()">Semana actual</button>
     </div>
     <div class="person-strip" id="personStrip"></div>
-    <section class="priority-board" id="priorityBoard" aria-label="Prioridades diarias"></section>
     <div class="paste-bar" id="pasteBar" style="display:none"></div>
     <div class="grid-card"><div class="grid-scroll"><table class="grid" id="gridTable"></table></div></div>
+    <section class="priority-board" id="priorityBoard" aria-label="Prioridades diarias"></section>
     <div class="below">
       <div class="panel">
         <h3>📊 Totales de la semana <span style="color:var(--muted);font-weight:500;font-size:.78rem">(se recalculan solos)</span></h3>
@@ -2296,7 +2296,8 @@ async function pullRemote(skipConfirm){
 </script>
 <script src="safe-sync.js?v=20261016-1"></script>
 <script src="app-stability.js?v=20261016-1"></script>
-<script src="publication-safe.js?v=20261016-1"></script>
+<script src="publication-safe.js?v=20261020-1"></script>
+<script src="autosave-shared.js?v=20261020-1"></script>
 <script>
 if(typeof AppStability!=='undefined'&&typeof SafeSync!=='undefined'&&typeof safeReadRemote==='function')boot().catch(e=>AppStability.fail(e));
 else document.getElementById('appHealthText').textContent='No se han cargado todos los archivos. Reintenta la carga; tus datos locales no se han borrado.';

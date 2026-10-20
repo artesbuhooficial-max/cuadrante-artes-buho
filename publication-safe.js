@@ -115,8 +115,8 @@ function safeChooseBackup(backup){
   modal('<div class="modal" style="max-width:520px"><header><h3>Recuperar trabajo de una persona</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body"><p>Se recuperan su horario, proyectos, prioridades y tareas. Se conserva el trabajo del resto del equipo y lo nuevo que no aparece en el backup.</p><p class="hint">Si el backup contiene otra versión del mismo bloque o tarea de la persona elegida, se recupera esa versión. Después podrás revisarla antes de publicar.</p><label>Persona<select id="safeRestorePerson">'+people.map(p=>'<option value="'+esc(p.id)+'"'+(p.id===state.ui.person?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></label></div><footer><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="safeRestoreBackup()">Recuperar esta persona</button></footer></div>');
 }
 function safeOpenHistory(){
-  const history=safeGet(SAFE_HISTORY_KEY)||[],original=safeLegacyRecord();if(!history.length&&!original){toast('Todavía no hay copias locales de recuperación');return;}
-  modal('<div class="modal" style="max-width:600px"><header><h3>Copias locales recientes</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+(original?'<p>La copia original anterior a la combinación inicial se conserva aparte de las copias recientes.</p><button class="btn" onclick="safeDownloadLegacy()">Descargar copia original protegida</button>':'')+history.map((record,i)=>'<p>'+esc(new Date(record.at).toLocaleString('es-ES'))+' · '+esc(record.reason)+' <button class="btn" onclick="safeUseHistory('+i+')">Elegir persona</button></p>').join('')+'</div></div>');
+  const history=safeGet(SAFE_HISTORY_KEY)||[],original=safeLegacyRecord(),autosaves=typeof SharedAutosave==='undefined'?[]:SharedAutosave.recoveryCopies();if(!history.length&&!original&&!autosaves.length){toast('Todavía no hay copias locales de recuperación');return;}
+  modal('<div class="modal" style="max-width:600px"><header><h3>Copias locales recientes</h3><button class="btn ghost" onclick="closeModal()">✕</button></header><div class="body">'+(original?'<p>La copia original anterior a la combinación inicial se conserva aparte de las copias recientes.</p><button class="btn" onclick="safeDownloadLegacy()">Descargar copia original protegida</button>':'')+history.map((record,i)=>'<p>'+esc(new Date(record.at).toLocaleString('es-ES'))+' · '+esc(record.reason)+' <button class="btn" onclick="safeUseHistory('+i+')">Elegir persona</button></p>').join('')+autosaves.map(r=>'<p>'+esc(new Date(r.at).toLocaleString('es-ES'))+' · '+esc(r.reason)+' <button class="btn" data-autosave-id="'+esc(r.id)+'" onclick="SharedAutosave.useCopy(this.dataset.autosaveId)">Elegir persona</button> <button class="btn" data-autosave-id="'+esc(r.id)+'" onclick="SharedAutosave.downloadCopy(this.dataset.autosaveId)">Descargar</button></p>').join('')+'</div></div>');
 }
 function safeUseHistory(index){try{const record=(safeGet(SAFE_HISTORY_KEY)||[])[index];if(!record)throw Error('Copia no disponible');safeChooseBackup(record.doc);}catch(e){toast(e.message);}}
 async function safeResolve(base,mine,theirs,scope){
@@ -163,19 +163,24 @@ async function safeWaitPublish(id){
   }
   throw Error('El servidor aún no confirma la publicación. El envío se conserva para comprobarlo al reintentar.');
 }
-publishViaAppsScript=async function(){
-  if(safePublishing||safeSyncing){toast('Hay otra operación en curso. Tus cambios se conservan.');return;}safePublishing=true;const btn=document.getElementById('publishBtn');if(btn){btn.disabled=true;btn.textContent='⏳ Comprobando…';}
+publishViaAppsScript=async function(options={}){
+  const automatic=options.automatic===true;
+  if(safePublishing||safeSyncing){if(!automatic)toast('Hay otra operación en curso. Tus cambios se conservan.');return {ok:false,code:'BUSY'};}
+  if(automatic&&(!safeBase||safeStoragePaused||AppStability.isFatal()))return {ok:false,code:'SETUP'};
+  if(automatic&&!_publishKey)return {ok:false,code:'AUTH'};
+  safePublishing=true;const btn=document.getElementById('publishBtn');if(btn){btn.disabled=true;btn.textContent=automatic?'☁ Guardando…':'⏳ Comprobando…';}updateSaveUI();
   try{
     let envelope=safeGet(SAFE_PENDING_KEY);
     if(!envelope){
-      if(!(await safeRebase()))return;
-      if(SafeSync.equal(SafeSync.publicDoc(state),safeBase)){toast('Todo el trabajo está ya publicado');return;}
-      safeSnapshot('Antes de publicar');
-      envelope={action:'publish2',requestId:crypto.randomUUID().replace(/-/g,''),state:SafeSync.clone(state),base:SafeSync.clone(safeBase)};
+      if(!automatic&&!(await safeRebase()))return {ok:false,code:'CANCELLED'};
+      if(SafeSync.equal(SafeSync.publicDoc(state),safeBase)){if(!automatic)toast('Todo el trabajo está ya publicado');return {ok:true,unchanged:true};}
+      if(!automatic)safeSnapshot('Antes de publicar');
+      // Los importes privados siguen usando su publicación explícita habitual.
+      envelope={action:'publish2',requestId:crypto.randomUUID().replace(/-/g,''),createdAt:Date.now(),state:automatic?SafeSync.publicDoc(state):SafeSync.clone(state),base:SafeSync.clone(safeBase)};
       // Si no se puede conservar el envío, se bloquea antes de mandarlo.
       safeSet(SAFE_PENDING_KEY,envelope);
     }
-    const key=await askPublishKey();if(!key)return;
+    const key=automatic?_publishKey:await askPublishKey();if(!key)return {ok:false,code:'CANCELLED'};
     if(btn)btn.textContent='⏳ Publicando…';
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
     try{await fetch(SAFE_APPS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},signal:controller.signal,body:JSON.stringify({...envelope,publishKey:key})});}
@@ -184,15 +189,21 @@ publishViaAppsScript=async function(){
     if(!result.ok){
       if(result.authError)_publishKey='';
       if(result.code==='CONFLICT'){
-        safeClearPending();toast('Hay cambios simultáneos que revisar');await safeRebase();return;
+        safeSnapshot('Cambios simultáneos pendientes de revisar');
+        if(typeof SharedAutosave!=='undefined')SharedAutosave.blockPending('conflict');
+        safeClearPending();if(!automatic){toast('Hay cambios simultáneos que revisar');await safeRebase();}return {ok:false,code:'CONFLICT'};
       }
+      if(result.authError)return {ok:false,code:'AUTH',error:result.error};
       throw Error(result.error||'El servidor no confirmó la publicación');
     }
     _publishKey=key;
     // Un éxito confirmado se registra antes de refrescar; una caída posterior no repite el envío.
-    safeClearPending();
     const sent=SafeSync.publicDoc(envelope.state);
     safeSaveBase(sent);lastKnownRemoteAt=result.updatedAt||lastKnownRemoteAt;
+    // Guardar primero la base confirmada junto a las ediciones posteriores.
+    storeSet(state);
+    safeClearPending();
+    if(automatic)return {ok:true,updatedAt:result.updatedAt,requestId:envelope.requestId};
     let refreshed=false;
     try{
       const remote=await safeReadRemote(),theirs=SafeSync.publicDoc(remote.state),merged=await safeResolveLive(sent,theirs);
@@ -203,8 +214,9 @@ publishViaAppsScript=async function(){
     if(result.econWarning)message+=' No se confirmó la actualización de los datos económicos.';
     toast(message);
     updateSaveUI();
-  }catch(e){toast('Publicación pendiente: '+e.message);}
-  finally{safePublishing=false;if(btn){btn.disabled=false;btn.textContent='☁ Publicar';}}
+    return {ok:true,updatedAt:result.updatedAt,requestId:envelope.requestId};
+  }catch(e){if(!automatic)toast('Publicación pendiente: '+e.message);return {ok:false,code:'RETRY',error:e.message};}
+  finally{safePublishing=false;if(btn){btn.disabled=false;btn.textContent='☁ Publicar';}updateSaveUI();if(typeof SharedAutosave!=='undefined')SharedAutosave.afterPublish();}
 };
 publishToGitHub=function(){return publishViaAppsScript();};
 guardStalePublish=function(){return safeRebase();};

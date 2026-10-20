@@ -4,7 +4,7 @@ const {chromium}=require('playwright');
 const root=path.join(__dirname,'..'),S=require('../safe-sync.js');
 const published=JSON.parse(fs.readFileSync(path.join(root,'data/cuadrante-data.json'),'utf8'));
 const KEY='cuadrante_artesbuho_v2',BASE='cuadrante_safe_base_v2';
-const files=['index.html','vision-global.html','priorities-report.js','priorities-report.css','voice-priorities.js','voice-priorities.css','voice-ai.js','safe-sync.js','app-stability.js','publication-safe.js'];
+const files=['index.html','vision-global.html','priorities-report.js','priorities-report.css','voice-priorities.js','voice-priorities.css','voice-ai.js','safe-sync.js','app-stability.js','publication-safe.js','autosave-shared.js'];
 let browser,writes=0;
 async function setup(options={}){
   const context=await browser.newContext(),page=await context.newPage(),errors=[];
