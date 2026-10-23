@@ -3850,7 +3850,8 @@
           "progress": 100,
           "done": true,
           "order": 1,
-          "created": 1792764440840
+          "created": 1792764440840,
+          "workNotes": "13 contactos añadidos sin duplicado"
         }
       ]
     },
@@ -14781,7 +14782,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764468022,
+    "updatedAt": 1792764558788,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14912,6 +14913,10 @@
       {
         "id": "b880cc6a065142f9865003b3394e203e",
         "at": 1792764468022
+      },
+      {
+        "id": "3057ef70b30f4a7fa55c749f40557352",
+        "at": 1792764558788
       }
     ]
   }
