@@ -3840,7 +3840,8 @@
           "progress": 100,
           "done": true,
           "order": 0,
-          "created": 1792764316823
+          "created": 1792764316823,
+          "actualHours": 1
         },
         {
           "id": "xmhdmtx",
@@ -14782,7 +14783,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764558788,
+    "updatedAt": 1792764577641,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14917,6 +14918,10 @@
       {
         "id": "3057ef70b30f4a7fa55c749f40557352",
         "at": 1792764558788
+      },
+      {
+        "id": "a4cb959dd12d44e2b657909878460644",
+        "at": 1792764577641
       }
     ]
   }
