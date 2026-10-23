@@ -4033,7 +4033,7 @@
           "done": false,
           "order": 4,
           "created": 1792765105236,
-          "actualHours": 2
+          "actualHours": 2.5
         }
       ]
     },
@@ -14964,7 +14964,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765117682,
+    "updatedAt": 1792765140669,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15183,6 +15183,10 @@
       {
         "id": "d279f4f86246487fbdcfa02d9fa98c26",
         "at": 1792765117682
+      },
+      {
+        "id": "33a7439e1b10488b8c6df70b68ec77f6",
+        "at": 1792765140669
       }
     ]
   }
