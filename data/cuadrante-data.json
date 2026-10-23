@@ -4033,7 +4033,8 @@
           "done": false,
           "order": 4,
           "created": 1792765105236,
-          "actualHours": 2.5
+          "actualHours": 2.5,
+          "workNotes": "Reeditados clips 16, 31 y 32 desde originales: audio reparado y subtítulos sincronizados en zona segura. Clip 32 cargado y programado en Metricool para las 21:30 del jueves; publicación efectiva no confirmada. La programación del clip 16 quedó bloqueada por la subida. Herramientas: vídeo, audio, subtítulos y Metricool."
         }
       ]
     },
@@ -14964,7 +14965,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765140669,
+    "updatedAt": 1792765161185,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15187,6 +15188,10 @@
       {
         "id": "33a7439e1b10488b8c6df70b68ec77f6",
         "at": 1792765140669
+      },
+      {
+        "id": "0a439a4877374fc296cfa18985ef9276",
+        "at": 1792765161185
       }
     ]
   }
