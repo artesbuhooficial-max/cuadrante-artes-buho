@@ -3855,6 +3855,30 @@
           "created": 1792764440840,
           "workNotes": "Incorporados 13 contactos nuevos al CRM compartido, sin duplicados. Publicadas las funciones Agendar y Agendados, con retorno a Por llamar al vencer la fecha. Cinco fechas incompletas quedaron señaladas. Herramientas: CRM Noches de Neón y GitHub Pages.",
           "actualHours": 1
+        },
+        {
+          "id": "xu73pw4",
+          "date": "2026-10-19",
+          "title": "Documentación y coordinación del mailing",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1792764642658,
+          "actualHours": 1.5,
+          "workNotes": "Preparado paquete de migración de ArtesWU con código, configuración, errores y recuperación; ocho grupos de pruebas locales superados. Creado panel de coordinación Mailing/YAMM. Limitación: el panel local no se comparte automáticamente entre equipos. Herramientas: documentación, aplicación local y YAMM."
+        },
+        {
+          "id": "x97bko5",
+          "date": "2026-10-19",
+          "title": "Texto promocional de Mario Cassado para Pavoneo",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1792764645477,
+          "actualHours": 0.5,
+          "workNotes": "Ampliado el texto de presentación con influencias y proyecto pop de Mario Cassado para Pavoneo. Material preparado; publicación no confirmada en este proceso. Herramientas: documentación musical y redacción."
         }
       ]
     },
@@ -14785,7 +14809,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764620703,
+    "updatedAt": 1792764653608,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14932,6 +14956,10 @@
       {
         "id": "f73087682e06431e900b8e8a9f2d2c7a",
         "at": 1792764620703
+      },
+      {
+        "id": "8eac39b0675d45089086bc278ba67fbf",
+        "at": 1792764653608
       }
     ]
   }
