@@ -4020,7 +4020,20 @@
           "progress": 100,
           "done": true,
           "order": 3,
-          "created": 1792765087042
+          "created": 1792765087042,
+          "actualHours": 0.5,
+          "workNotes": "Preparado PDF con opciones de trío, cuarteto, quinteto y orquesta y repertorio Rumbatón. Propuesta provisional: faltan dirección definitiva, desplazamiento y totales finales. Herramientas: documentación comercial y PDF."
+        },
+        {
+          "id": "x4i8cdz",
+          "date": "2026-10-22",
+          "title": "Edición y programación de vídeos de Pavoneo",
+          "estimatedHours": 2.5,
+          "progress": 90,
+          "done": false,
+          "order": 4,
+          "created": 1792765105236,
+          "actualHours": 2
         }
       ]
     },
@@ -14951,7 +14964,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765096523,
+    "updatedAt": 1792765117682,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15166,6 +15179,10 @@
       {
         "id": "d2d39539c45a4f148f6038051fb24439",
         "at": 1792765096523
+      },
+      {
+        "id": "d279f4f86246487fbdcfa02d9fa98c26",
+        "at": 1792765117682
       }
     ]
   }
