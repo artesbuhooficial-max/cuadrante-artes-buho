@@ -3945,12 +3945,24 @@
           "date": "2026-10-21",
           "title": "Difusión Bella Bestia y cierre de etapas NDN",
           "estimatedHours": 1,
-          "progress": 100,
-          "done": true,
+          "progress": 25,
+          "done": false,
           "order": 0,
           "created": 1792764981555,
           "actualHours": 1,
           "workNotes": "Difusión única de Bella Bestia a 101 destinatarios: 98 enviados, 3 fallidos y 94 entregados en la última revisión. Pendiente identificar la causa de los tres fallos. Verificada la etapa primer_contacto_enviado de los 24 NDN sin reenviar. Herramienta: Respond.io."
+        },
+        {
+          "id": "xdpjor3",
+          "date": "2026-10-21",
+          "title": "Mailing FESTEJOS y plantilla HTML de Bella Bestia",
+          "estimatedHours": 1.5,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1792764998439,
+          "actualHours": 1.5,
+          "workNotes": "Iniciado el lote YAMM de 1.500 destinatarios; último registro: 329/1.500, sin cierre completo confirmado. Resueltos problemas de sesión de Google y corregido el enlace WhatsApp de la plantilla Bella Bestia. Herramientas: YAMM, Google Sheets y HTML."
         }
       ]
     },
@@ -14881,7 +14893,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764997477,
+    "updatedAt": 1792765021581,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15080,6 +15092,10 @@
       {
         "id": "aa74d3b6e37f4653bd4960a0cd24cb28",
         "at": 1792764997477
+      },
+      {
+        "id": "b8f260c1fb994b37a8f28bd145cacdc8",
+        "at": 1792765021581
       }
     ]
   }
