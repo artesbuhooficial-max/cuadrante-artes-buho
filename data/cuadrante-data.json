@@ -3841,7 +3841,8 @@
           "done": true,
           "order": 0,
           "created": 1792764316823,
-          "actualHours": 1.5
+          "actualHours": 1.5,
+          "workNotes": "32 contactos importados sin duplicados tras cruce de Meta, Bodas.net y Respond.io. Enviados 24 primeros mensajes una vez: 23 entregados y 0 fallidos en la última revisión; una entrega pendiente. Incidencias de acceso al navegador y disponibilidad de la plantilla. Herramientas: Respond.io, Meta y Sheets."
         },
         {
           "id": "xmhdmtx",
@@ -3852,7 +3853,8 @@
           "done": true,
           "order": 1,
           "created": 1792764440840,
-          "workNotes": "13 contactos añadidos sin duplicado"
+          "workNotes": "Incorporados 13 contactos nuevos al CRM compartido, sin duplicados. Publicadas las funciones Agendar y Agendados, con retorno a Por llamar al vencer la fecha. Cinco fechas incompletas quedaron señaladas. Herramientas: CRM Noches de Neón y GitHub Pages.",
+          "actualHours": 1
         }
       ]
     },
@@ -14783,7 +14785,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764600259,
+    "updatedAt": 1792764620703,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14926,6 +14928,10 @@
       {
         "id": "1c91360828354be39b1c1393c74f8155",
         "at": 1792764600259
+      },
+      {
+        "id": "f73087682e06431e900b8e8a9f2d2c7a",
+        "at": 1792764620703
       }
     ]
   }
