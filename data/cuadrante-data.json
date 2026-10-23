@@ -10240,28 +10240,28 @@
             "p": "xk6kruc"
           },
           "4-22": {
-            "p": "xk6kruc"
+            "p": "p8"
           },
           "4-23": {
-            "p": "xk6kruc"
+            "p": "p8"
           },
           "4-24": {
-            "p": "x21oppt"
+            "p": "p8"
           },
           "4-25": {
-            "p": "x21oppt"
+            "p": "p8"
           },
           "4-26": {
-            "p": "x21oppt"
+            "p": "p8"
           },
           "4-27": {
-            "p": "x21oppt"
+            "p": "p8"
           },
           "4-28": {
-            "p": "p1"
+            "p": "p8"
           },
           "4-29": {
-            "p": "p1"
+            "p": "p8"
           },
           "2-34": {
             "p": "p3"
@@ -10521,6 +10521,26 @@
           "done": true,
           "order": 8,
           "created": 1790756271351
+        },
+        {
+          "id": "x3g3iav",
+          "date": "2026-10-19",
+          "title": "Revisar el embudo",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1792393047638
+        },
+        {
+          "id": "xvi7zng",
+          "date": "2026-10-19",
+          "title": "Preparar envio para avisar de los dos lunes de fiesta",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1792396354529
         }
       ]
     },
@@ -14730,7 +14750,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792753405029,
+    "updatedAt": 1792756963696,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14821,6 +14841,10 @@
       {
         "id": "bb71926b6f7643d88ed57e1f4b0cdbf7",
         "at": 1792753405029
+      },
+      {
+        "id": "ae524baa638b47f1b974884a9ff41a2b",
+        "at": 1792756963696
       }
     ]
   }
