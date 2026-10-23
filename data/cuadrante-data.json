@@ -3999,6 +3999,28 @@
           "created": 1792765060322,
           "actualHours": 1.5,
           "workNotes": "Revisadas indicaciones de Román y contactos anteriores; publicada guía comercial de once áreas. Preparados mensajes diferenciados para Adrián, Román y David; sin envío confirmado. Herramientas: notas de reunión, CRM, documentos y web Pavoneo."
+        },
+        {
+          "id": "xzesveq",
+          "date": "2026-10-22",
+          "title": "Landing de bodas De Todo Un Poco",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1792765069983,
+          "actualHours": 1.5,
+          "workNotes": "Landing publicada y comprobada en móvil y escritorio, con marca, fotografías y formulario hacia WhatsApp. Pendiente validar formatos, desplazamientos y vídeos con Sergio. Herramientas: HTML/CSS, materiales de Drive y GitHub Pages."
+        },
+        {
+          "id": "x4sz06u",
+          "date": "2026-10-22",
+          "title": "Propuesta de boda para Marta y repertorio Rumbatón",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1792765087042
         }
       ]
     },
@@ -14929,7 +14951,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765072252,
+    "updatedAt": 1792765096523,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15140,6 +15162,10 @@
       {
         "id": "fa7fa221ed974fd9b3b845e579d629b1",
         "at": 1792765072252
+      },
+      {
+        "id": "d2d39539c45a4f148f6038051fb24439",
+        "at": 1792765096523
       }
     ]
   }
