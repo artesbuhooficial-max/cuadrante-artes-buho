@@ -3889,7 +3889,8 @@
           "done": true,
           "order": 0,
           "created": 1792764709075,
-          "actualHours": 0.5
+          "actualHours": 0.5,
+          "workNotes": "Entregados PDF y Word revisados: propuesta de 700 € con dos live sessions, asesoría, formación y landing de regalo; dos pagos de 350 €. Herramientas: maquetación y documentación Pavoneo."
         }
       ]
     },
@@ -14820,7 +14821,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764734846,
+    "updatedAt": 1792764758235,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14979,6 +14980,10 @@
       {
         "id": "59acd0c4831e4011a04b3e1c10681850",
         "at": 1792764734846
+      },
+      {
+        "id": "fe4111c2b42e4d2b87eebcf62cfb25ab",
+        "at": 1792764758235
       }
     ]
   }
