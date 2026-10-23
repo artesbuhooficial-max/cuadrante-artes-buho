@@ -3903,6 +3903,16 @@
           "created": 1792764825231,
           "actualHours": 1.5,
           "workNotes": "Publicados autoguardado compartido, copia local, reintento sin conexión y revisión de conflictos. Prioridades trasladadas debajo de la rejilla. Investigada la ausencia de información de Miriam del 12 al 16; recuperación no confirmada. Herramientas: web del cuadrante y GitHub."
+        },
+        {
+          "id": "xlcjpq2",
+          "date": "2026-10-20",
+          "title": "Auditoría e importación de leads de Bella Bestia",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1792764865301
         }
       ]
     },
@@ -14833,7 +14843,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764851084,
+    "updatedAt": 1792764870118,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15004,6 +15014,10 @@
       {
         "id": "f5206f848d2b4f3db539775182539cce",
         "at": 1792764851084
+      },
+      {
+        "id": "2959ab6a66f747f6a79a04800ef9b90b",
+        "at": 1792764870118
       }
     ]
   }
