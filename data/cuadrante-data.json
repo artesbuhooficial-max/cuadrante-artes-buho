@@ -3897,10 +3897,12 @@
           "date": "2026-10-20",
           "title": "Mejoras técnicas del cuadrante del equipo",
           "estimatedHours": 1.5,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 1,
-          "created": 1792764825231
+          "created": 1792764825231,
+          "actualHours": 1.5,
+          "workNotes": "Publicados autoguardado compartido, copia local, reintento sin conexión y revisión de conflictos. Prioridades trasladadas debajo de la rejilla. Investigada la ausencia de información de Miriam del 12 al 16; recuperación no confirmada. Herramientas: web del cuadrante y GitHub."
         }
       ]
     },
@@ -14831,7 +14833,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764830731,
+    "updatedAt": 1792764851084,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14998,6 +15000,10 @@
       {
         "id": "63f46d0e3e3b441bb256d9272c953241",
         "at": 1792764830731
+      },
+      {
+        "id": "f5206f848d2b4f3db539775182539cce",
+        "at": 1792764851084
       }
     ]
   }
