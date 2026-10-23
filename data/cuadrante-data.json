@@ -3936,7 +3936,9 @@
           "progress": 70,
           "done": false,
           "order": 4,
-          "created": 1792764917657
+          "created": 1792764917657,
+          "actualHours": 0.5,
+          "workNotes": "Entregados un proyecto Ableton Live 12 (.als) y una pista MIDI con secciones y cambios de compás. La reorganización y el coloreado de pistas quedaron pendientes tras una interrupción. Herramientas: Ableton Live y MIDI."
         }
       ]
     },
@@ -14867,7 +14869,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764947813,
+    "updatedAt": 1792764968652,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15058,6 +15060,10 @@
       {
         "id": "6841b0b13fc74d8daee04e0377e08f64",
         "at": 1792764947813
+      },
+      {
+        "id": "d1a87b08329b45698f870c91e125d05a",
+        "at": 1792764968652
       }
     ]
   }
