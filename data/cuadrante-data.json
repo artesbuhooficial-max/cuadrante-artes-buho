@@ -3963,6 +3963,30 @@
           "created": 1792764998439,
           "actualHours": 1.5,
           "workNotes": "Iniciado el lote YAMM de 1.500 destinatarios; último registro: 329/1.500, sin cierre completo confirmado. Resueltos problemas de sesión de Google y corregido el enlace WhatsApp de la plantilla Bella Bestia. Herramientas: YAMM, Google Sheets y HTML."
+        },
+        {
+          "id": "xhng67k",
+          "date": "2026-10-21",
+          "title": "Materiales y propuestas comerciales de Noches de Neón",
+          "estimatedHours": 2,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1792765020935,
+          "actualHours": 2,
+          "workNotes": "Preparados tres repertorios individuales y PDF conjunto de tarifas 2027; plantilla WhatsApp de seguimiento tras llamadas aprobada, sin envíos a clientes desde esta tarea. Entregadas propuestas para María José y Fernando. Herramientas: PDF, Spotify y Respond.io."
+        },
+        {
+          "id": "xidxh0l",
+          "date": "2026-10-22",
+          "title": "BIME · cierre de agendas y networking con alumnos de prácticas (10:00–14:00)",
+          "estimatedHours": 4,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1792765039284,
+          "actualHours": 4,
+          "workNotes": "Prioridad completa realizada el jueves 22 de octubre de 10:00 a 14:00 junto a los alumnos de prácticas. Revisión de los cierres de agenda de las personas que se conocerán en BIME y coordinación de los encuentros para networking. Herramientas: plataforma y agendas BIME, contactos de Artes Búho."
         }
       ]
     },
@@ -14893,7 +14917,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765021581,
+    "updatedAt": 1792765051243,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15096,6 +15120,10 @@
       {
         "id": "b8f260c1fb994b37a8f28bd145cacdc8",
         "at": 1792765021581
+      },
+      {
+        "id": "ed3916bc1b1c45898ac6af13584b7de7",
+        "at": 1792765051243
       }
     ]
   }
