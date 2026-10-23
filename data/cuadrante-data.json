@@ -3987,6 +3987,18 @@
           "created": 1792765039284,
           "actualHours": 4,
           "workNotes": "Prioridad completa realizada el jueves 22 de octubre de 10:00 a 14:00 junto a los alumnos de prácticas. Revisión de los cierres de agenda de las personas que se conocerán en BIME y coordinación de los encuentros para networking. Herramientas: plataforma y agendas BIME, contactos de Artes Búho."
+        },
+        {
+          "id": "x68wzp1",
+          "date": "2026-10-22",
+          "title": "Preparación comercial y guía de BIME",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1792765060322,
+          "actualHours": 1.5,
+          "workNotes": "Revisadas indicaciones de Román y contactos anteriores; publicada guía comercial de once áreas. Preparados mensajes diferenciados para Adrián, Román y David; sin envío confirmado. Herramientas: notas de reunión, CRM, documentos y web Pavoneo."
         }
       ]
     },
@@ -14917,7 +14929,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765051243,
+    "updatedAt": 1792765072252,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15124,6 +15136,10 @@
       {
         "id": "ed3916bc1b1c45898ac6af13584b7de7",
         "at": 1792765051243
+      },
+      {
+        "id": "fa7fa221ed974fd9b3b845e579d629b1",
+        "at": 1792765072252
       }
     ]
   }
