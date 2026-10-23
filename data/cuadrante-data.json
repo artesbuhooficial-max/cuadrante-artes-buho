@@ -3915,6 +3915,16 @@
           "created": 1792764865301,
           "actualHours": 1,
           "workNotes": "Revisados 165 leads del CSV; excluidas coincidencias y teléfonos inválidos. Importados 102 contactos nuevos y preparado segmento para primer contacto. El envío se completó el miércoles. Incidencia: acceso intermitente al navegador. Herramientas: CSV y Respond.io."
+        },
+        {
+          "id": "xaakovp",
+          "date": "2026-10-20",
+          "title": "CRM y documentación comercial de Noches de Neón",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 3,
+          "created": 1792764889006
         }
       ]
     },
@@ -14845,7 +14855,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764888358,
+    "updatedAt": 1792764906895,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15024,6 +15034,10 @@
       {
         "id": "5d6e5130489442d5829c38152f7c289a",
         "at": 1792764888358
+      },
+      {
+        "id": "0f1e0fcf23c54120bcb33e1ad6c2adbf",
+        "at": 1792764906895
       }
     ]
   }
