@@ -3203,6 +3203,11 @@
           "rate": null,
           "billable": true,
           "fullDay": false
+        },
+        {
+          "id": "xbbcx3x",
+          "name": "BIME",
+          "color": "#0ea5e9"
         }
       ],
       "priorities": [
@@ -14750,7 +14755,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764163584,
+    "updatedAt": 1792764254329,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14857,6 +14862,10 @@
       {
         "id": "82193ac3dbf64b629007a6dc2cac0a32",
         "at": 1792764163584
+      },
+      {
+        "id": "a292cb3d7d1e416ba07c3e3c04a6967a",
+        "at": 1792764254329
       }
     ]
   }
