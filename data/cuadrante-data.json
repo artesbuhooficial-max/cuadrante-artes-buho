@@ -3939,6 +3939,18 @@
           "created": 1792764917657,
           "actualHours": 0.5,
           "workNotes": "Entregados un proyecto Ableton Live 12 (.als) y una pista MIDI con secciones y cambios de compás. La reorganización y el coloreado de pistas quedaron pendientes tras una interrupción. Herramientas: Ableton Live y MIDI."
+        },
+        {
+          "id": "xrjfye8",
+          "date": "2026-10-21",
+          "title": "Difusión Bella Bestia y cierre de etapas NDN",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1792764981555,
+          "actualHours": 1,
+          "workNotes": "Difusión única de Bella Bestia a 101 destinatarios: 98 enviados, 3 fallidos y 94 entregados en la última revisión. Pendiente identificar la causa de los tres fallos. Verificada la etapa primer_contacto_enviado de los 24 NDN sin reenviar. Herramienta: Respond.io."
         }
       ]
     },
@@ -14869,7 +14881,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764968652,
+    "updatedAt": 1792764997477,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15064,6 +15076,10 @@
       {
         "id": "d1a87b08329b45698f870c91e125d05a",
         "at": 1792764968652
+      },
+      {
+        "id": "aa74d3b6e37f4653bd4960a0cd24cb28",
+        "at": 1792764997477
       }
     ]
   }
