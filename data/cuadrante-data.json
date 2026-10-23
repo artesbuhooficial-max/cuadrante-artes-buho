@@ -3945,8 +3945,8 @@
           "date": "2026-10-21",
           "title": "Difusión Bella Bestia y cierre de etapas NDN",
           "estimatedHours": 1,
-          "progress": 25,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 0,
           "created": 1792764981555,
           "actualHours": 1,
@@ -14965,7 +14965,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765161185,
+    "updatedAt": 1792765234327,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15192,6 +15192,10 @@
       {
         "id": "0a439a4877374fc296cfa18985ef9276",
         "at": 1792765161185
+      },
+      {
+        "id": "5b9712b799fd4bd0a70ec7549eaad944",
+        "at": 1792765234327
       }
     ]
   }
