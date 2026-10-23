@@ -3841,6 +3841,16 @@
           "done": true,
           "order": 0,
           "created": 1792764316823
+        },
+        {
+          "id": "xmhdmtx",
+          "date": "2026-10-19",
+          "title": "CRM y organización de llamadas de Noches de Neón",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1792764440840
         }
       ]
     },
@@ -14771,7 +14781,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764347071,
+    "updatedAt": 1792764445903,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14894,6 +14904,10 @@
       {
         "id": "226511b74e1f455b9e0d8e99e09e8cf9",
         "at": 1792764347071
+      },
+      {
+        "id": "660c019fd2f44c8d8ca0180c83c3fb98",
+        "at": 1792764445903
       }
     ]
   }
