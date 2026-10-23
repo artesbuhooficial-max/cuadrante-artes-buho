@@ -3831,6 +3831,16 @@
           "created": 1792163362539,
           "actualHours": 0.5,
           "workNotes": "Dedicación aproximada de 30 min validada por David. Título y descripción de Mario Cassado — Yo no soy él con créditos y hashtags adaptados al vídeo de referencia. Programado para el 16/10/2026 a las 18:00, hora de Madrid. Herramientas: Codex, Chrome y YouTube Studio. Dificultad: conexión inicial a canales incorrectos, resuelta. Programación confirmada en el chat y estado Programado contrastado en Studio. Fuente: https://studio.youtube.com/video/VcWNVeULSrY/edit"
+        },
+        {
+          "id": "xbuq90a",
+          "date": "2026-10-19",
+          "title": "Captación y primer contacto de Noches de Neón",
+          "estimatedHours": 1.5,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1792764316823
         }
       ]
     },
@@ -14761,7 +14771,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764274282,
+    "updatedAt": 1792764321835,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -14876,6 +14886,10 @@
       {
         "id": "db3d7219593d42acbe39318c0d945e13",
         "at": 1792764274282
+      },
+      {
+        "id": "0e08691a336e49b0a6b2027b874e0821",
+        "at": 1792764321835
       }
     ]
   }
