@@ -3957,7 +3957,7 @@
           "date": "2026-10-21",
           "title": "Mailing FESTEJOS y plantilla HTML de Bella Bestia",
           "estimatedHours": 1.5,
-          "progress": 0,
+          "progress": 25,
           "done": false,
           "order": 1,
           "created": 1792764998439,
@@ -14965,7 +14965,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792765234327,
+    "updatedAt": 1792765255696,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15196,6 +15196,10 @@
       {
         "id": "5b9712b799fd4bd0a70ec7549eaad944",
         "at": 1792765234327
+      },
+      {
+        "id": "596ec190bb5e44eea6d2a74daca01911",
+        "at": 1792765255696
       }
     ]
   }
