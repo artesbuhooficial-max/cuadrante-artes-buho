@@ -3933,7 +3933,7 @@
           "date": "2026-10-20",
           "title": "Marcadores de estructura para Ableton Live",
           "estimatedHours": 0.5,
-          "progress": 0,
+          "progress": 70,
           "done": false,
           "order": 4,
           "created": 1792764917657
@@ -14867,7 +14867,7 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1792764925921,
+    "updatedAt": 1792764947813,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
@@ -15054,6 +15054,10 @@
       {
         "id": "b909ae4e6fb048aca4a4c61e0e93c6a3",
         "at": 1792764925921
+      },
+      {
+        "id": "6841b0b13fc74d8daee04e0377e08f64",
+        "at": 1792764947813
       }
     ]
   }
