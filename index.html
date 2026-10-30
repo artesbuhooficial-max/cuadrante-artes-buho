@@ -900,7 +900,8 @@ function mondayOf(d){const x=new Date(d);x.setHours(0,0,0,0);const dow=(x.getDay
 function weekId(monday){return dStr(monday);}
 function weekInfo(monday){const thu=addDays(monday,3);return {month:thu.getMonth(),year:thu.getFullYear(),weekNum:Math.ceil(thu.getDate()/7),monday:new Date(monday)};}
 function weeksOfMonth(y,m){const set={};const dim=new Date(y,m+1,0).getDate();for(let d=1;d<=dim;d++){const mon=mondayOf(new Date(y,m,d));set[weekId(mon)]=mon;}
-  return Object.keys(set).map(id=>({id,mon:set[id],info:weekInfo(set[id])})).filter(w=>w.info.month===m&&w.info.year===y).sort((a,b)=>a.mon-b.mon);}
+  // Incluye todas las semanas que tocan el mes; cada cómputo filtra por fecha.
+  return Object.keys(set).map(id=>({id,mon:set[id],info:weekInfo(set[id])})).sort((a,b)=>a.mon-b.mon);}
 function monthName(y,m){return new Date(y,m,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});}
 function uid(){return 'x'+Math.random().toString(36).slice(2,8);}
 
@@ -1388,16 +1389,18 @@ function scopePeople(){return state.ui.monthScope==='empresa'?state.team:[curPer
 
 function renderMonth(){
   const {y,m}=state.ui.monthRef;const ppl=scopePeople();
+  const monthStart=new Date(y,m,1),monthEnd=new Date(y,m+1,0);
   const empresa=state.ui.monthScope==='empresa';const M=empresa?mt:money;const MC=empresa?'tv':'mv';
   document.getElementById('mesTitle').textContent=monthName(y,m);
   document.getElementById('scPerson').classList.toggle('active',state.ui.monthScope==='person');
   document.getElementById('scEmpresa').classList.toggle('active',state.ui.monthScope==='empresa');
   // weeks
   const weeks=weeksOfMonth(y,m);let totH=0,totC=0;
-  let wh='<thead><tr><th>Semana</th><th>Rango</th><th>Horas</th><th class="'+MC+'">Coste</th></tr></thead><tbody>';
-  weeks.forEach(w=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){const pr=proj(v.p,p);if(!projFullDay(pr))h+=SLOT_HOURS;if(projBillable(pr))c+=projEffRate(pr,p)*SLOT_HOURS;}}});});totH+=h;totC+=c;
-    const r1=w.mon.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=addDays(w.mon,6).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    wh+='<tr><td>Semana '+w.info.weekNum+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+M(c)+'</td></tr>';});
+  let wh='<caption style="text-align:left;padding:0 0 12px;color:var(--muted)">Cómputo exclusivo del '+monthStart.toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})+' al '+monthEnd.toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})+'.</caption><thead><tr><th>Semana</th><th>Días computados del mes</th><th>Horas</th><th class="'+MC+'">Coste</th></tr></thead><tbody>';
+  weeks.forEach((w,index)=>{let h=0,c=0;ppl.forEach(p=>{const gc=p.grid[w.id]||{};Object.keys(gc).forEach(k=>{const v=gc[k];if(v&&v.p){const di=parseInt(k.split('-')[0]);const date=addDays(w.mon,di);if(date.getFullYear()===y&&date.getMonth()===m){const pr=proj(v.p,p);if(!projFullDay(pr))h+=SLOT_HOURS;if(projBillable(pr))c+=projEffRate(pr,p)*SLOT_HOURS;}}});});totH+=h;totC+=c;
+    const from=w.mon<monthStart?monthStart:w.mon,end=addDays(w.mon,6),to=end>monthEnd?monthEnd:end;
+    const r1=from.toLocaleDateString('es-ES',{day:'numeric',month:'short'});const r2=to.toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+    wh+='<tr><td>Semana '+(index+1)+'</td><td class="num" style="text-align:left;color:var(--muted)">'+r1+' – '+r2+'</td><td class="num">'+num(h)+' h</td><td class="num">'+M(c)+'</td></tr>';});
   wh+='</tbody><tfoot><tr><td>TOTAL MES</td><td></td><td>'+num(totH)+' h</td><td>'+M(totC)+'</td></tr></tfoot>';
   document.getElementById('mesWeeks').innerHTML=wh;
   // totals strip
