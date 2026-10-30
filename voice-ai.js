@@ -1,6 +1,6 @@
-/* Dictado organizado por Claude mediante Apps Script, sin claves API en el cliente. */
+/* Dictado organizado por OpenAI mediante Apps Script, sin claves API en el cliente. */
 const VOICE_APPS_URL='https://script.google.com/macros/s/AKfycbyi_g5j2wYXzxd2qPML3x-kTJy3H4wWvi_9CKWH4aymy-X9d1dpaHkmel7_04UX4eXS9w/exec';
-const VOICE_AI_VERSION='IA-4';
+const VOICE_AI_VERSION='IA-OpenAI-1';
 let voiceAiBusy=false,voiceAiGeneration=0;
 const voiceOriginalOpen=voiceOpen,voiceOriginalClose=voiceClose,voiceOriginalCommit=voiceCommit,voiceOriginalStart=voiceStart;
 voiceOpen=function(){
@@ -9,7 +9,7 @@ voiceOpen=function(){
   document.getElementById('voiceReview').onclick=voiceOrganize;
   const hint=document.querySelector('#voicePanel .voice-hint');
   if(hint)hint.textContent='Cuenta tu jornada con naturalidad. Al detener el dictado, la IA ordena las acciones por día. Revisa el resultado antes de guardarlo.';
-  const notice=document.createElement('p');notice.className='voice-hint';notice.textContent='El audio se transcribe con Google y el texto se envía a Claude mediante Apps Script para organizarlo. No se adjuntan sueldos ni costes del cuadrante. Revisa la propuesta antes de guardar; al guardarla, se sincroniza cuando el autoguardado está conectado.';
+  const notice=document.createElement('p');notice.className='voice-hint';notice.textContent='El audio se transcribe con Google y el texto se envía a OpenAI mediante Apps Script para organizarlo. No se adjuntan sueldos ni costes del cuadrante. Revisa la propuesta antes de guardar; al guardarla, se sincroniza cuando el autoguardado está conectado.';
   document.getElementById('voicePreview').before(notice);
 };
 voiceClose=function(){voiceAiGeneration++;voiceAiBusy=false;voiceOriginalClose();};

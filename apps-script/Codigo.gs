@@ -17,9 +17,8 @@
  *     MASTER_KEY     (la clave maestra de Roman; ve todos los sueldos)
  *     PUBLISH_KEY    (clave compartida de publicación; distinta de MASTER_KEY)
  *     PINS           {"u1":"1234","u2":"5678","u3":"0000"}   (opcional)
- *     ANTHROPIC_API_KEY  sk-ant-...  (opcional: activa el asistente de
- *                        Visión Global — icono flotante que interpreta el
- *                        cuadrante con Claude. Créala en console.anthropic.com)
+ *     OPENAI_API_KEY    clave privada de la API de OpenAI (dictado y Visión Global)
+ *     OPENAI_MODEL      opcional; por defecto gpt-4.1-mini
  *     DRIVE_BACKUP_FOLDER_ID  (opcional: cada publicación guarda además una copia
  *                        SIN sueldos en un archivo cuadrante-backup.json dentro de
  *                        esa carpeta de Drive — compártela con el equipo para tener
@@ -70,7 +69,7 @@ function doGet(e){
   }
 
   if (action === 'ping'){
-    return _out({ ok: true, protocol:2, msg: 'Cuadrante Web App activo · publicación protegida' }, cb);
+    return _out({ ok: true, protocol:2, msg: 'Cuadrante Web App activo · publicación protegida',voiceAI:{provider:'openai',configured:!!_get('OPENAI_API_KEY',''),model:_get('OPENAI_MODEL','gpt-4.1-mini')} }, cb);
   }
 
   if (action === 'publishStatus'){
@@ -98,20 +97,19 @@ function doGet(e){
   }
 
   if (action === 'ask'){
-    return _out(_askClaude(p.q || '', p.view || '', p.ctx || ''), cb);
+    return _out(_askOfficeAI(p.q || '', p.view || '', p.ctx || ''), cb);
   }
 
   return _out({ ok: false, error: 'Acción desconocida' }, cb);
 }
 
-/* ---- Asistente de Visión Global: interpreta el cuadrante con Claude ---- */
-function _askClaude(question, view, ctx){
+/* ---- Asistente de Visión Global: interpreta el cuadrante con OpenAI ---- */
+function _askOfficeAI(question, view, ctx){
   question = String(question || '').trim();
   if (!question) return { ok: false, error: 'Falta la pregunta' };
   if (question.length > 800) return { ok: false, error: 'Pregunta demasiado larga (máx. 800 caracteres)' };
 
-  var apiKey = _get('ANTHROPIC_API_KEY', '');
-  if (!apiKey) return { ok: false, error: 'Falta ANTHROPIC_API_KEY en las Propiedades del script' };
+  if (!_get('OPENAI_API_KEY', '')) return { ok: false, code:'OPENAI_KEY_MISSING', error: 'Falta OPENAI_API_KEY en las Propiedades del script' };
 
   // 1) Traer el cuadrante público tal cual lo ve cualquier visitante
   //    (ya sin sueldos ni precios/hora — publishToGitHub/publishViaAppsScript los quita antes de commitear).
@@ -127,12 +125,12 @@ function _askClaude(question, view, ctx){
 
   // 1b) Contexto ya calculado por Visión Global (mapa de calor, capacidades por
   //     persona, etc.): cosas que la propia app calcula en el navegador a partir
-  //     de ajustes locales que NO viajan en el JSON público. Sin esto, Claude no
+  //     de ajustes locales que NO viajan en el JSON público. Sin esto, la IA no
   //     podía explicar ni recalcular visualizaciones como el mapa de calor.
   ctx = String(ctx || '');
   if (ctx.length > 6000) ctx = ctx.slice(0, 6000);
 
-  // 2) Preguntar a Claude, restringido EXCLUSIVAMENTE a estos datos.
+  // 2) Preguntar a OpenAI, restringido EXCLUSIVAMENTE a estos datos.
   var system = 'Eres Romeo 🦉, el búho asistente de "Visión Global" del cuadrante de horas de Artes Búho. ' +
     'Hablas de forma afable y con gracia, cercano y con un puntito de humor — pero SIEMPRE centrado en ' +
     'responder exactamente lo que te preguntan, sin irte por las ramas ni alargarte. Empieza SIEMPRE tu ' +
@@ -150,38 +148,9 @@ function _askClaude(question, view, ctx){
     (view ? '\n\nLa persona está mirando ahora mismo la pestaña "' + view + '" de Visión Global.' : '') +
     '\n\nPREGUNTA: ' + question;
 
-  var payload = {
-    model: 'claude-sonnet-5',
-    max_tokens: 500,
-    thinking: { type: 'disabled' },
-    system: system,
-    messages: [{ role: 'user', content: userContent }]
-  };
-
-  var aiR = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
-    method: 'post',
-    contentType: 'application/json',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true
-  });
-
-  var code = aiR.getResponseCode();
-  if (code !== 200){
-    return { ok: false, error: 'Claude API ' + code + ': ' + aiR.getContentText().slice(0, 200) };
-  }
-  var data = JSON.parse(aiR.getContentText());
-  if (data.stop_reason === 'refusal'){
-    return { ok: false, error: 'No se pudo generar una respuesta a esta pregunta.' };
-  }
-  var answer = '';
-  for (var i = 0; i < (data.content || []).length; i++){
-    if (data.content[i].type === 'text') answer += data.content[i].text;
-  }
-  return { ok: true, answer: answer.trim() };
+  var result=_openAIRequest(system,userContent,null,700);
+  if(!result.ok)return result;
+  return {ok:true,answer:result.text.trim()};
 }
 
 /* ---- Escrituras: publish y setpins ---- */

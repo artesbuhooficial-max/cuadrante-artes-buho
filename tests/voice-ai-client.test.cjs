@@ -43,7 +43,7 @@ async function main(){
   corsErrorsRemaining=3;jsonpErrorsRemaining=2;const beforeRetry=jsonpCalls;await run('voiceOrganize()');assert.equal(jsonpCalls-beforeRetry,3);assert.equal(rows.length,1);
   run('voiceStart();voiceCapture.onend()');await flush();assert.equal(ended,1);assert.equal(rows.length,1);
   const before=posted.length;run("voiceStart();voiceCapture.onerror({error:'not-allowed'});voiceCapture.onend()");await flush();assert.equal(captureError,true);assert.equal(posted.length,before);
-  pingFails=true;await run('voiceOrganize()');assert.equal(posted.length,before);assert.ok(element('voiceStatus').textContent.includes('[IA-4]'));assert.ok(element('voiceStatus').textContent.includes('Failed to fetch'));assert.equal(element('voiceText').value,'Otro relato');
+  pingFails=true;await run('voiceOrganize()');assert.equal(posted.length,before);assert.ok(element('voiceStatus').textContent.includes('[IA-OpenAI-1]'));assert.ok(element('voiceStatus').textContent.includes('Failed to fetch'));assert.equal(element('voiceText').value,'Otro relato');
   run('voiceClose()');assert.equal(closed,1);assert.equal(run('voiceAiBusy'),false);
   console.log('OK: propuesta sin autoguardado, transporte privado, vacíos, edición, guardado único, cancelación, errores y organización automática al detener.');
 }

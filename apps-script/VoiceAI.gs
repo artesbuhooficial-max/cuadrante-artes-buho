@@ -18,8 +18,6 @@ function _voiceOrganize(body){
   var text=String(body.text||'').trim();
   if(!text||text.length>12000)return {ok:false,error:'El dictado debe contener entre 1 y 12.000 caracteres'};
   if(!['defaultDate','today','weekStart'].every(function(k){return _voiceDate(body[k]);}))return {ok:false,error:'Fechas de referencia inválidas'};
-  var key=_get('ANTHROPIC_API_KEY','');
-  if(!key)return {ok:false,error:'Falta configurar la clave de IA en Apps Script'};
   var number={type:['number','null']};
   var schema={type:'object',additionalProperties:false,required:['items','warnings'],properties:{
     warnings:{type:'array',items:{type:'string'}},
@@ -34,18 +32,36 @@ function _voiceOrganize(body){
     'Hoy/ayer/mañana se calculan respecto a today. Días de semana sin fecha se resuelven dentro de los ocho días que comienzan en weekStart (lunes a lunes); próximo lunes significa el lunes de cierre. Sin referencia usa defaultDate. '+
     'Ante contradicción o ambigüedad usa defaultDate y advierte en warnings para revisión. Conserva plazos en notas sin confundirlos con el día de trabajo. Cada sourceQuote es un fragmento literal del relato que respalda la acción. '+
     'Máximo 30 acciones, títulos 180 caracteres, notas 1000, citas 500. Incluye advertencia si hay que dividir el relato o datos dudosos. Si no hay trabajo identificable devuelve items vacío. No incluyas datos económicos en la respuesta.';
-  var response=UrlFetchApp.fetch('https://api.anthropic.com/v1/messages',{
-    method:'post',contentType:'application/json',muteHttpExceptions:true,
-    headers:{'x-api-key':key,'anthropic-version':'2023-06-01'},
-    payload:JSON.stringify({model:_get('VOICE_AI_MODEL','claude-sonnet-4-6'),max_tokens:6000,system:system,
-      output_config:{format:{type:'json_schema',schema:schema}},
-      messages:[{role:'user',content:JSON.stringify({today:body.today,defaultDate:body.defaultDate,weekStart:body.weekStart,relato:text})}]})
-  });
-  if(response.getResponseCode()!==200)return {ok:false,error:'El servicio de IA no está disponible (HTTP '+response.getResponseCode()+'). Revisa la configuración o reintenta.'};
-  var envelope=JSON.parse(response.getContentText());
-  if(envelope.stop_reason!=='end_turn')return {ok:false,error:'La IA no terminó el relato. Divídelo en partes más cortas.'};
-  var answer=JSON.parse(envelope.content.filter(function(c){return c.type==='text';}).map(function(c){return c.text;}).join(''));
+  var response=_openAIRequest(system,JSON.stringify({today:body.today,defaultDate:body.defaultDate,weekStart:body.weekStart,relato:text}),schema,6000);
+  if(!response.ok)return response;
+  var answer;try{answer=JSON.parse(response.text);}catch(e){return {ok:false,error:'La IA devolvió un formato no válido. El relato se conserva; reintenta.'};}
   return _voiceValidate(answer,text);
+}
+/* Única conexión de IA. La clave permanece en las Propiedades del script. */
+function _openAIRequest(instructions,input,schema,limit){
+  var key=String(_get('OPENAI_API_KEY','')).trim();
+  if(!key)return {ok:false,code:'OPENAI_KEY_MISSING',error:'Falta OPENAI_API_KEY en Apps Script → Configuración del proyecto → Propiedades del script. La clave debe ser de la API de OpenAI.'};
+  var payload={model:_get('OPENAI_MODEL','gpt-4.1-mini'),store:false,max_output_tokens:limit,instructions:instructions,input:[{role:'user',content:input}]};
+  if(schema)payload.text={format:{type:'json_schema',name:'jornada_oficina',strict:true,schema:schema}};
+  var response;
+  try{response=UrlFetchApp.fetch('https://api.openai.com/v1/responses',{method:'post',contentType:'application/json',muteHttpExceptions:true,headers:{Authorization:'Bearer '+key},payload:JSON.stringify(payload)});}
+  catch(e){return {ok:false,code:'OPENAI_CONNECTION',error:'No se pudo conectar con OpenAI. El texto se conserva; vuelve a intentarlo.'};}
+  var status=response.getResponseCode(),data;
+  try{data=JSON.parse(response.getContentText());}catch(e){return {ok:false,code:'OPENAI_RESPONSE',error:'OpenAI devolvió una respuesta no válida (HTTP '+status+'). Reintenta.'};}
+  if(status!==200){
+    var code=String(data.error&&data.error.code||'');
+    if(code==='insufficient_quota'||status===402)return {ok:false,code:'OPENAI_QUOTA',error:'La API de OpenAI no tiene saldo o ha alcanzado su límite. Revisa la facturación y los límites de tu proyecto en platform.openai.com. El texto se conserva.'};
+    if(status===401)return {ok:false,code:'OPENAI_KEY_INVALID',error:'La clave OPENAI_API_KEY no es válida o ha caducado. Revísala en las Propiedades del script. No cambies la clave compartida de publicación.'};
+    if(status===403||status===404)return {ok:false,code:'OPENAI_ACCESS',error:'La clave de OpenAI no tiene acceso al modelo o al servicio configurado. Revisa los permisos de la API y OPENAI_MODEL.'};
+    if(status===429)return {ok:false,code:'OPENAI_RATE_LIMIT',error:'OpenAI ha limitado temporalmente las peticiones. Espera un momento y reintenta; el texto se conserva.'};
+    return {ok:false,code:'OPENAI_HTTP',error:'OpenAI no pudo completar la petición (HTTP '+status+'). Revisa la configuración o reintenta. El texto se conserva.'};
+  }
+  if(data.status!=='completed')return {ok:false,code:'OPENAI_INCOMPLETE',error:'La IA no terminó la respuesta. Divide el relato en partes más cortas; el texto original se conserva.'};
+  var text='',refused=false;
+  (data.output||[]).forEach(function(message){if(message.type==='message')(message.content||[]).forEach(function(part){if(part.type==='output_text')text+=part.text||'';if(part.type==='refusal')refused=true;});});
+  if(refused)return {ok:false,code:'OPENAI_REFUSAL',error:'La IA no pudo procesar esa petición. Revisa o reformula el relato; no se ha guardado nada.'};
+  if(!text.trim())return {ok:false,code:'OPENAI_EMPTY',error:'OpenAI no devolvió texto. Reintenta; el relato original se conserva.'};
+  return {ok:true,text:text};
 }
 function _voiceValidate(answer,text){
   if(!answer||!Array.isArray(answer.items)||answer.items.length>30||!Array.isArray(answer.warnings))return {ok:false,error:'La IA devolvió un formato no válido. Reintenta.'};
