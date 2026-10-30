@@ -10,6 +10,11 @@ ctx.esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&q
 vm.runInContext(source,ctx);const run=s=>vm.runInContext(s,ctx);
 ctx.jsonp=async()=>{if(networkError)throw Error('offline');return reply;};
 async function main(){
+  let reads=0;ctx.safeJSON=async()=>{reads++;if(reads===1)throw Error('fallo transitorio');return {ok:true,econ:{}};};
+  assert.equal((await run("unlockOnline('u1','test-only',null)")).ok,true);assert.equal(reads,2);
+  reads=0;ctx.safeJSON=async()=>{reads++;return {ok:false,error:'Clave incorrecta'};};
+  assert.equal((await run("unlockOnline('u1','test-only',null)")).ok,false);assert.equal(reads,1);
+  ctx.safeJSON=async()=>{if(networkError)throw Error('offline');return reply;};
   form();run("openEconomicPin('u1')");assert.ok(ctx.markup.includes('PIN económico de David'));assert.ok(!ctx.markup.includes('Compañera'));assert.ok(ctx.markup.includes('Clave maestra de Román'));
   fields.get('econPinNew').value='123';await run("saveEconomicPin('u1')");assert.equal(posted.length,0);
   fields.get('econPinNew').value='123456';fields.get('econPinRepeat').value='654321';await run("saveEconomicPin('u1')");assert.equal(posted.length,0);

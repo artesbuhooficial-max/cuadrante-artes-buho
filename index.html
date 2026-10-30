@@ -640,13 +640,20 @@ function jsonp(url){return new Promise((res,rej)=>{
 async function unlockOnline(pid,pin,master){
   const u=ghGet().appsUrl;
   const q='action=unlock'+(master?'&master='+encodeURIComponent(master):'&pid='+encodeURIComponent(pid)+'&pin='+encodeURIComponent(pin));
-  return jsonp(u+(u.indexOf('?')>=0?'&':'?')+q);
+  // El mismo transporte que sincronizar: lectura directa y alternativa JSONP.
+  // Solo se reintenta un fallo de red; una clave incorrecta se devuelve tal cual.
+  for(let attempt=0;attempt<2;attempt++){
+    try{
+      const url=u+(u.indexOf('?')>=0?'&':'?')+q+'&t='+Date.now();
+      return await (typeof safeJSON==='function'?safeJSON(url):jsonp(url));
+    }catch(e){if(attempt===1)throw new Error('No se pudo conectar con el servidor económico.');}
+  }
 }
 function applyEcon(econ){if(!econ)return;Object.keys(econ).forEach(id=>{const p=person(id);if(p&&econ[id]){p.salary=econ[id].salary||0;p.rate=econ[id].rate||0;}});}
 async function testAppsScript(){
   const u=ghGet().appsUrl;if(!u){toast('Pega primero la URL');return;}
   toast('Probando conexión…');
-  try{const d=await jsonp(u+(u.indexOf('?')>=0?'&':'?')+'action=ping');
+  try{const url=u+(u.indexOf('?')>=0?'&':'?')+'action=ping&t='+Date.now();const d=await (typeof safeJSON==='function'?safeJSON(url):jsonp(url));
     toast(d&&d.ok?'✓ Conexión correcta con Apps Script':'Respuesta inesperada');
   }catch(e){toast('No se pudo conectar: '+e.message);}
 }
