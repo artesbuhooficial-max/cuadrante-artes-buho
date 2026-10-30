@@ -676,7 +676,8 @@ function tryUnlock(pid){
   const p=person(pid);if(!p)return;
   modal('<div class="modal" style="max-width:340px"><header><h3>🔒 '+esc(p.name)+'</h3><button class="btn ghost" onclick="closeModal()">✕</button></header>'+
     '<div class="body"><p class="hint">Introduce el PIN para ver los datos económicos de <b>'+esc(p.name)+'</b>.</p>'+
-    '<div class="inp"><label>PIN</label><input id="pinInput" type="password" placeholder="••••" autocomplete="off" onkeydown="if(event.key===\'Enter\')confirmPin(\''+pid+'\')"></div></div>'+
+    '<div class="inp"><label>PIN</label><input id="pinInput" type="password" placeholder="••••" autocomplete="off" onkeydown="if(event.key===\'Enter\')confirmPin(\''+pid+'\')"></div>'+
+    (appsMode()?'<button class="btn ghost" onclick="openEconomicPin(\''+pid+'\')">Crear o cambiar el PIN de '+esc(p.name)+'</button>':'')+'</div>'+
     '<footer><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="confirmPin(\''+pid+'\')">Desbloquear</button></footer></div>');
   setTimeout(()=>{const el=document.getElementById('pinInput');if(el)el.focus();},80);}
 async function confirmPin(pid){
@@ -691,6 +692,38 @@ async function confirmPin(pid){
   if(el.value===_pins[pid]){_unlocked[pid]=true;closeModal();updateLockClass();render();
     toast(person(pid)&&person(pid).master?'✓ Clave maestra correcta — ves todo el equipo':'✓ Datos económicos desbloqueados');}
   else{toast('PIN incorrecto');el.value='';el.focus();}}
+
+/* Cambio de un único PIN: no guarda el cuadrante ni envía datos económicos. */
+function openEconomicPin(pid){
+  const p=person(pid);if(!p||!appsMode())return;
+  modal('<div class="modal" style="max-width:440px"><header><h3>PIN económico de '+esc(p.name)+'</h3><button class="btn ghost" onclick="closeModal()">✕</button></header>'+
+    '<div class="body"><p class="hint">Este PIN permite consultar solo los datos económicos de '+esc(p.name)+'. Para crearlo o cambiarlo hace falta la clave maestra de Román.</p>'+
+    '<div class="inp"><label for="econPinNew">Nuevo PIN (4 a 12 dígitos)</label><input id="econPinNew" type="password" inputmode="numeric" minlength="4" maxlength="12" autocomplete="new-password"></div>'+
+    '<div class="inp"><label for="econPinRepeat">Repite el PIN</label><input id="econPinRepeat" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password"></div>'+
+    '<div class="inp"><label for="econPinMaster">Clave maestra de Román</label><input id="econPinMaster" type="password" autocomplete="off"></div>'+
+    '<p id="econPinStatus" class="hint" role="status" aria-live="polite">Se cambia únicamente este PIN. Los demás PIN, las tarifas y el trabajo se conservan.</p></div>'+
+    '<footer><button class="btn" onclick="tryUnlock(\''+pid+'\')">Volver</button><button class="btn primary" id="econPinSave" onclick="saveEconomicPin(\''+pid+'\')">Guardar mi PIN</button></footer></div>');
+}
+async function saveEconomicPin(pid){
+  const p=person(pid),btn=document.getElementById('econPinSave'),status=document.getElementById('econPinStatus');
+  if(!p||!appsMode()||!btn||btn.disabled||!status)return;
+  const pin=document.getElementById('econPinNew').value,repeat=document.getElementById('econPinRepeat').value,master=document.getElementById('econPinMaster').value;
+  if(!/^[0-9]{4,12}$/.test(pin)){status.textContent='Elige un PIN de 4 a 12 dígitos.';return;}
+  if(pin!==repeat){status.textContent='Los dos PIN no coinciden.';return;}
+  if(!master){status.textContent='Hace falta la clave maestra de Román para autorizar el cambio.';return;}
+  btn.disabled=true;status.textContent='Guardando y comprobando tu PIN…';
+  try{
+    const pins={};pins[pid]=pin;
+    await fetch(ghGet().appsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'setpins',master,pins})});
+    const check=await unlockOnline(pid,pin,null);
+    if(document.getElementById('econPinSave')!==btn)return;
+    if(!check||!check.ok){status.textContent='No se ha podido confirmar el PIN. Comprueba la clave maestra y vuelve a intentarlo.';return;}
+    document.getElementById('econPinNew').value='';document.getElementById('econPinRepeat').value='';document.getElementById('econPinMaster').value='';
+    if(check.econ&&check.econ[pid]){const own={};own[pid]=check.econ[pid];applyEcon(own);_unlocked[pid]=true;}
+    closeModal();render();toast('✓ PIN de '+p.name+' guardado y comprobado');
+  }catch(e){if(document.getElementById('econPinSave')===btn)status.textContent='No se pudo comprobar la conexión. Conserva este PIN y reintenta: el envío puede haberse guardado.';}
+  finally{if(document.getElementById('econPinSave')===btn)btn.disabled=false;}
+}
 
 // Devuelve el meta.updatedAt de la última versión publicada que este navegador ha visto
 // realmente (al arrancar, al sincronizar, o justo después de publicar) — a diferencia de
@@ -1365,7 +1398,8 @@ function renderMonth(){
   document.getElementById('mesTotals').innerHTML=
     '<div class="mt-card"><div class="k">Ámbito</div><div class="v">'+esc(scopeLabel)+'</div></div>'+
     '<div class="mt-card"><div class="k">Horas de oficina · mes</div><div class="v">'+num(totH)+' h</div></div>'+
-    '<div class="mt-card gold '+MC+'"><div class="k">Coste total · mes</div><div class="v blue">'+M(totC)+'</div></div>';
+    '<div class="mt-card gold '+MC+'"><div class="k">Coste total · mes</div><div class="v blue">'+M(totC)+'</div></div>'+
+    (!empresa&&isLocked(curPerson().id)?'<div class="mt-card"><div class="k">Acceso económico personal</div><button class="btn primary" onclick="tryUnlock(\''+curPerson().id+'\')">Introducir o configurar mi PIN</button></div>':'');
   // day distribution
   const dowHost=document.getElementById('mesDow');if(!dowHost.innerHTML){DAYS.forEach(d=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=d;dowHost.appendChild(e);});}
   const first=new Date(y,m,1);const startDow=(first.getDay()+6)%7;const dim=new Date(y,m+1,0).getDate();
@@ -2301,7 +2335,12 @@ async function pullRemote(skipConfirm){
 <script src="publication-safe.js?v=20261020-1"></script>
 <script src="autosave-shared.js?v=20261020-2"></script>
 <script>
-if(typeof AppStability!=='undefined'&&typeof SafeSync!=='undefined'&&typeof safeReadRemote==='function')boot().catch(e=>AppStability.fail(e));
+if(typeof AppStability!=='undefined'&&typeof SafeSync!=='undefined'&&typeof safeReadRemote==='function')boot().then(()=>{
+  const pinPerson=new URLSearchParams(location.search).get('economicPin');
+  if(pinPerson&&person(pinPerson)&&appsMode()){
+    state.ui.person=pinPerson;state.ui.monthScope='person';switchTab('mes');openEconomicPin(pinPerson);
+  }
+}).catch(e=>AppStability.fail(e));
 else document.getElementById('appHealthText').textContent='No se han cargado todos los archivos. Reintenta la carga; tus datos locales no se han borrado.';
 </script>
 </body>

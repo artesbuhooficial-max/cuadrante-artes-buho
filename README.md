@@ -16,6 +16,8 @@ Identidad corporativa de Artes Búho (azul cobalto + dorado sobre crema). No req
 - **Prioridades por día.** Debajo del horario, cada persona dispone de su informe de prioridades: acciones, porcentaje de avance, tiempo dedicado y notas por día. Se mantienen los controles de edición y las vistas adicionales.
 - **Resumen de empresa (privado).** Tabla mensual con salario, €/hora, horas, coste y delta por persona. **Solo lo ve Roman (master)** con su clave maestra; cada persona ve únicamente sus propios datos económicos. En la vista *Mes · Empresa*, el coste del equipo también queda reservado al master.
 
+Para crear o cambiar un PIN individual: selecciona la persona → **Introducir PIN → Crear o cambiar el PIN**. También hay acceso desde **Mes · horas y coste → Persona → Introducir o configurar mi PIN**. El formulario pide el nuevo PIN dos veces y la clave maestra de Román; envía únicamente el PIN de esa persona y lo verifica antes de confirmar. No modifica tarifas, horarios, otros PIN ni la clave maestra, ni publica el cuadrante. El PIN se introduce directamente en la app; no debe compartirse en conversaciones. El coste del mes usa los bloques del mes y las tarifas de los proyectos que computan al coste; esta vista no emite una factura.
+
 ## Guardado
 
 - **Automático en el navegador** (localStorage) en cada cambio.
