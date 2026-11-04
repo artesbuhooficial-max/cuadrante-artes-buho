@@ -409,9 +409,6 @@
           "2-22": {
             "p": "p2"
           },
-          "2-23": {
-            "p": "p6"
-          },
           "2-24": {
             "p": "p2"
           },
@@ -3469,16 +3466,6 @@
           "id": "p4",
           "name": "Noches de Neón",
           "color": "#db2777"
-        },
-        {
-          "id": "p5",
-          "name": "Marketing / RRSS",
-          "color": "#16a34a"
-        },
-        {
-          "id": "p6",
-          "name": "M.A.P.A. Musical",
-          "color": "#7c3aed"
         },
         {
           "id": "p8",
@@ -16418,14 +16405,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793737386431,
+    "updatedAt": 1793786287083,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "05b214536b8d4faba172b1633086dcc0",
-        "at": 1792999230044
-      },
       {
         "id": "1f9c19c1ca234cfe8e676e4c03798200",
         "at": 1793005238615
@@ -16677,6 +16660,10 @@
       {
         "id": "b20a1f02ec02413fa1621bddd3b7394c",
         "at": 1793737386431
+      },
+      {
+        "id": "334f5e7351f448c18f970c7a882b58b4",
+        "at": 1793786287083
       }
     ]
   }
