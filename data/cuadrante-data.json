@@ -4380,6 +4380,16 @@
           "created": 1793970803608,
           "actualHours": 1.5,
           "workNotes": "YAMM terminó FESTEJOS: 2.691 envíos confirmados y 90 rebotes. Conciliados con la app: cobertura de 2.698/2.789; un contacto reservado para evitar duplicados. Herramientas: YAMM, Google Sheets y app de Mailing."
+        },
+        {
+          "id": "xz3mgnz",
+          "date": "2026-11-03",
+          "title": "CRM y primer contacto de Noches de Neón",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 1,
+          "created": 1793970839454
         }
       ]
     },
@@ -16425,14 +16435,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970833591,
+    "updatedAt": 1793970853080,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "470bd599b94f450ab70dde9d93fa90dd",
-        "at": 1793005312057
-      },
       {
         "id": "0c7a9b4cf40d450a90b66cebb3566cb9",
         "at": 1793005335461
@@ -16684,6 +16690,10 @@
       {
         "id": "8f057e7009c240a28e0fa052d3a44652",
         "at": 1793970833591
+      },
+      {
+        "id": "b3a1a036cee44ef8825636dec1347dbd",
+        "at": 1793970853080
       }
     ]
   }
