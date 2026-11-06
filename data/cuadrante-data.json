@@ -4392,6 +4392,18 @@
           "created": 1793970839454,
           "actualHours": 1,
           "workNotes": "Añadidos diez contactos verificados al CRM y enviada una sola vez la plantilla a Lesli; entrega aún sin confirmar. Una consulta sin datos suficientes y otra con fechas contradictorias. Herramientas: CRM y Respond.io."
+        },
+        {
+          "id": "xjolstp",
+          "date": "2026-11-03",
+          "title": "Presupuestos de Noches de Neón para Ana y Sara",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1793970891945,
+          "actualHours": 1.5,
+          "workNotes": "Preparados PDF para Ana y Sara Segura con formatos, repertorios, desplazamiento y condiciones. Envío al cliente no confirmado. Herramientas: PDF, mapas y Spotify."
         }
       ]
     },
@@ -16437,14 +16449,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970878057,
+    "updatedAt": 1793970899278,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "1d73c01111624838ac0d7edf990bb293",
-        "at": 1793005368475
-      },
       {
         "id": "9ae429cdf21a4374a8608fabaebabe30",
         "at": 1793005385964
@@ -16696,6 +16704,10 @@
       {
         "id": "52b59bab0b7141eb9bdf2a1fdee80ed8",
         "at": 1793970878057
+      },
+      {
+        "id": "081f59d301bf48a193b8ba832c806927",
+        "at": 1793970899278
       }
     ]
   }
