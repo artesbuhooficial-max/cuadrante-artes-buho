@@ -4452,6 +4452,54 @@
           "created": 1793970938113,
           "actualHours": 1.5,
           "workNotes": "Dos PDF finales para cliente: pack completo 590 € y solo grabación 480 €, ambos sin IVA. Retirados costes internos de las versiones de presentación. Herramientas: documentación comercial y PDF."
+        },
+        {
+          "id": "xehnwfc",
+          "date": "2026-11-04",
+          "title": "Web y editor de De Todo Un Poco",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1793970945473,
+          "actualHours": 1.5,
+          "workNotes": "Publicados la web y su editor en Cloudflare; permite cambiar textos, fotos y enlaces. Pendiente activar el dominio definitivo cuando esté disponible. Herramientas: Cloudflare Pages y GitHub."
+        },
+        {
+          "id": "x80d9nz",
+          "date": "2026-11-04",
+          "title": "Revisión inicial de ciberseguridad",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 3,
+          "created": 1793970948588,
+          "actualHours": 1,
+          "workNotes": "Informe con recomendaciones y plan gradual de protección de cuentas y accesos. No consta la aplicación de todos los cambios propuestos. Herramientas: documentación y auditoría."
+        },
+        {
+          "id": "x9jq8r7",
+          "date": "2026-11-05",
+          "title": "Flyer de Bella Bestia para imprenta",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 0,
+          "created": 1793970963473,
+          "actualHours": 1.5,
+          "workNotes": "PDF A6 vertical con sangrado, ofertas, logotipo y QR. Archivo final preparado para imprimir. Herramientas: diseño gráfico y PDF."
+        },
+        {
+          "id": "xsnc8b8",
+          "date": "2026-11-05",
+          "title": "Recuperación del envío de Bella Bestia",
+          "estimatedHours": 2,
+          "progress": 75,
+          "done": false,
+          "order": 1,
+          "created": 1793970966571,
+          "actualHours": 2,
+          "workNotes": "Reparados reintentos y reanudado el motor sin duplicar envíos. Última cifra comunicada: 179 correos aceptados; pausa por cuota diaria de 100. Persisten cortes intermitentes de conexión. Herramientas: app de Mailing, VPS y registros SMTP."
         }
       ]
     },
@@ -16497,14 +16545,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970945286,
+    "updatedAt": 1793970977400,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "afacb96d3cbe45a8866febce6f21c1b2",
-        "at": 1793005464074
-      },
       {
         "id": "eff2a0cb66ce4d69ad771680aee0c125",
         "at": 1793005483980
@@ -16756,6 +16800,10 @@
       {
         "id": "09a7f2ad510a45fba476c45e34743b7f",
         "at": 1793970945286
+      },
+      {
+        "id": "08e0e025d606421389055e64482806c3",
+        "at": 1793970977400
       }
     ]
   }
