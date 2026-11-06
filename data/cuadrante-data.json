@@ -4428,6 +4428,30 @@
           "created": 1793970905861,
           "actualHours": 1.5,
           "workNotes": "PDF de impresión final a 99 × 69 cm con el pie corregido. Dos portadas tienen resolución de origen limitada y pueden verse menos nítidas al imprimir. Herramientas: diseño vectorial y PDF."
+        },
+        {
+          "id": "xon6vdo",
+          "date": "2026-11-04",
+          "title": "Seguimiento comercial BIME",
+          "estimatedHours": 1.5,
+          "progress": 75,
+          "done": false,
+          "order": 0,
+          "created": 1793970931798,
+          "actualHours": 1.5,
+          "workNotes": "Revisados 17 contactos del calendario, enriquecida la ficha de Ivón y anotados próximos pasos. Algunas identificaciones siguen por confirmar. Herramientas: Google Calendar, notas y PDF."
+        },
+        {
+          "id": "xbxd3lg",
+          "date": "2026-11-04",
+          "title": "Presupuestos Pavoneo 360 para Jalea",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1793970938113,
+          "actualHours": 1.5,
+          "workNotes": "Dos PDF finales para cliente: pack completo 590 € y solo grabación 480 €, ambos sin IVA. Retirados costes internos de las versiones de presentación. Herramientas: documentación comercial y PDF."
         }
       ]
     },
@@ -16473,14 +16497,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970917732,
+    "updatedAt": 1793970945286,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "1b2a2c79ad6b4dd7b570291ae27afef9",
-        "at": 1793005403119
-      },
       {
         "id": "afacb96d3cbe45a8866febce6f21c1b2",
         "at": 1793005464074
@@ -16732,6 +16752,10 @@
       {
         "id": "91954371cb0a4c508f53fdf37906d2a8",
         "at": 1793970917732
+      },
+      {
+        "id": "09a7f2ad510a45fba476c45e34743b7f",
+        "at": 1793970945286
       }
     ]
   }
