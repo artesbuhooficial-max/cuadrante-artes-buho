@@ -4386,10 +4386,12 @@
           "date": "2026-11-03",
           "title": "CRM y primer contacto de Noches de Neón",
           "estimatedHours": 1,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 1,
-          "created": 1793970839454
+          "created": 1793970839454,
+          "actualHours": 1,
+          "workNotes": "Añadidos diez contactos verificados al CRM y enviada una sola vez la plantilla a Lesli; entrega aún sin confirmar. Una consulta sin datos suficientes y otra con fechas contradictorias. Herramientas: CRM y Respond.io."
         }
       ]
     },
@@ -16435,14 +16437,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970853080,
+    "updatedAt": 1793970878057,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "0c7a9b4cf40d450a90b66cebb3566cb9",
-        "at": 1793005335461
-      },
       {
         "id": "1d73c01111624838ac0d7edf990bb293",
         "at": 1793005368475
@@ -16694,6 +16692,10 @@
       {
         "id": "b3a1a036cee44ef8825636dec1347dbd",
         "at": 1793970853080
+      },
+      {
+        "id": "52b59bab0b7141eb9bdf2a1fdee80ed8",
+        "at": 1793970878057
       }
     ]
   }
