@@ -4500,6 +4500,42 @@
           "created": 1793970966571,
           "actualHours": 2,
           "workNotes": "Reparados reintentos y reanudado el motor sin duplicar envíos. Última cifra comunicada: 179 correos aceptados; pausa por cuota diaria de 100. Persisten cortes intermitentes de conexión. Herramientas: app de Mailing, VPS y registros SMTP."
+        },
+        {
+          "id": "x2iwvfq",
+          "date": "2026-11-06",
+          "title": "Incidencia SMTP con Hostinger",
+          "estimatedHours": 1,
+          "progress": 75,
+          "done": false,
+          "order": 0,
+          "created": 1793970984086,
+          "actualHours": 1,
+          "workNotes": "Preparadas evidencias y escalada la consulta a revisión humana. Hostinger confirmó un límite de cinco correos por minuto, pero no explicó los cortes; cambiar de puerto requiere un servidor de envío autorizado. Herramientas: Hostinger, registros de red y app de Mailing."
+        },
+        {
+          "id": "xe5c2vg",
+          "date": "2026-11-06",
+          "title": "Directorio de webs de Artes Búho",
+          "estimatedHours": 1,
+          "progress": 100,
+          "done": true,
+          "order": 1,
+          "created": 1793970990034,
+          "actualHours": 1,
+          "workNotes": "Publicado y verificado el directorio público con enlaces a De Todo Un Poco y al dossier de Mario Cassado; comprobada la edición de la foto de fondo. Herramientas: Cloudflare Pages y editor web."
+        },
+        {
+          "id": "xk3ptg2",
+          "date": "2026-11-06",
+          "title": "Solución de QR para rotulación permanente",
+          "estimatedHours": 0.5,
+          "progress": 100,
+          "done": true,
+          "order": 2,
+          "created": 1793970992777,
+          "actualHours": 0.5,
+          "workNotes": "Propuesta de QR con dominio controlado por Artes Búho para cambiar el destino futuro sin sustituir el vinilo. QR final aún no generado ni impreso. Herramientas: análisis de dominios y redirecciones."
         }
       ]
     },
@@ -16545,14 +16581,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970977400,
+    "updatedAt": 1793971000085,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "eff2a0cb66ce4d69ad771680aee0c125",
-        "at": 1793005483980
-      },
       {
         "id": "f640a56975fb43f4a69a2e9539cadde4",
         "at": 1793005504111
@@ -16804,6 +16836,10 @@
       {
         "id": "08e0e025d606421389055e64482806c3",
         "at": 1793970977400
+      },
+      {
+        "id": "7079804918394ef18c722d56c6b46842",
+        "at": 1793971000085
       }
     ]
   }
