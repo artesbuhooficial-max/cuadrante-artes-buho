@@ -4368,6 +4368,16 @@
           "created": 1792765105236,
           "actualHours": 2.5,
           "workNotes": "Reeditados clips 16, 31 y 32 desde originales: audio reparado y subtítulos sincronizados en zona segura. Clip 32 cargado y programado en Metricool para las 21:30 del jueves; publicación efectiva no confirmada. La programación del clip 16 quedó bloqueada por la subida. Herramientas: vídeo, audio, subtítulos y Metricool."
+        },
+        {
+          "id": "xoawktl",
+          "date": "2026-11-03",
+          "title": "Cierre del mailing de FESTEJOS",
+          "estimatedHours": 1.5,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1793970803608
         }
       ]
     },
@@ -16413,14 +16423,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970695611,
+    "updatedAt": 1793970808817,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "1c3537c0fb6c41d6b5f189f248a8d741",
-        "at": 1793005275524
-      },
       {
         "id": "d8b4829c44f84d9d8e189c979a93e3fd",
         "at": 1793005293333
@@ -16672,6 +16678,10 @@
       {
         "id": "70ecb7d643824c3e9cee4984d73fd9a2",
         "at": 1793970695611
+      },
+      {
+        "id": "a8fd42f87340488ea5a8d7552140cfe8",
+        "at": 1793970808817
       }
     ]
   }
