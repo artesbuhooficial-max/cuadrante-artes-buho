@@ -4404,6 +4404,30 @@
           "created": 1793970891945,
           "actualHours": 1.5,
           "workNotes": "Preparados PDF para Ana y Sara Segura con formatos, repertorios, desplazamiento y condiciones. Envío al cliente no confirmado. Herramientas: PDF, mapas y Spotify."
+        },
+        {
+          "id": "xir0jis",
+          "date": "2026-11-03",
+          "title": "Contactos BIME y comunidad",
+          "estimatedHours": 1,
+          "progress": 75,
+          "done": false,
+          "order": 3,
+          "created": 1793970900236,
+          "actualHours": 1,
+          "workNotes": "Organizadas fichas y pendientes de networking; cuatro de siete contactos iniciales reconstruidos con seguridad. Comprobado el registro de comunidad: dos contactos reales aparte del técnico de prueba. Herramientas: notas, calendario y Brevo."
+        },
+        {
+          "id": "x4f7xsx",
+          "date": "2026-11-03",
+          "title": "Composición gráfica de discos",
+          "estimatedHours": 1.5,
+          "progress": 100,
+          "done": true,
+          "order": 4,
+          "created": 1793970905861,
+          "actualHours": 1.5,
+          "workNotes": "PDF de impresión final a 99 × 69 cm con el pie corregido. Dos portadas tienen resolución de origen limitada y pueden verse menos nítidas al imprimir. Herramientas: diseño vectorial y PDF."
         }
       ]
     },
@@ -16449,14 +16473,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970899278,
+    "updatedAt": 1793970917732,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "9ae429cdf21a4374a8608fabaebabe30",
-        "at": 1793005385964
-      },
       {
         "id": "1b2a2c79ad6b4dd7b570291ae27afef9",
         "at": 1793005403119
@@ -16708,6 +16728,10 @@
       {
         "id": "081f59d301bf48a193b8ba832c806927",
         "at": 1793970899278
+      },
+      {
+        "id": "91954371cb0a4c508f53fdf37906d2a8",
+        "at": 1793970917732
       }
     ]
   }
