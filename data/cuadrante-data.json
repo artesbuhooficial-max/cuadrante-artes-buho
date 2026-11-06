@@ -4374,10 +4374,12 @@
           "date": "2026-11-03",
           "title": "Cierre del mailing de FESTEJOS",
           "estimatedHours": 1.5,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 0,
-          "created": 1793970803608
+          "created": 1793970803608,
+          "actualHours": 1.5,
+          "workNotes": "YAMM terminó FESTEJOS: 2.691 envíos confirmados y 90 rebotes. Conciliados con la app: cobertura de 2.698/2.789; un contacto reservado para evitar duplicados. Herramientas: YAMM, Google Sheets y app de Mailing."
         }
       ]
     },
@@ -16423,14 +16425,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1793970808817,
+    "updatedAt": 1793970833591,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "d8b4829c44f84d9d8e189c979a93e3fd",
-        "at": 1793005293333
-      },
       {
         "id": "470bd599b94f450ab70dde9d93fa90dd",
         "at": 1793005312057
@@ -16682,6 +16680,10 @@
       {
         "id": "a8fd42f87340488ea5a8d7552140cfe8",
         "at": 1793970808817
+      },
+      {
+        "id": "8f057e7009c240a28e0fa052d3a44652",
+        "at": 1793970833591
       }
     ]
   }
