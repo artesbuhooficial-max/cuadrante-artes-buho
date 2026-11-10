@@ -12311,6 +12311,16 @@
           "done": false,
           "order": 1,
           "created": 1792396354529
+        },
+        {
+          "id": "xt605yr",
+          "date": "2026-11-11",
+          "title": "Revisar nuevas matriculaciones y pagos.",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1794333012870
         }
       ]
     },
@@ -17293,14 +17303,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1794319103465,
+    "updatedAt": 1794333020095,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "e388e536987948f4973ea947fb81cae4",
-        "at": 1793696783263
-      },
       {
         "id": "31fc0e81dba549519b92b666e6c89cd9",
         "at": 1793696803338
@@ -17552,6 +17558,10 @@
       {
         "id": "ffd91131e539460ebedfd1341729816a",
         "at": 1794319103465
+      },
+      {
+        "id": "9b76805c902a4590bcce78fd6b5997c9",
+        "at": 1794333020095
       }
     ]
   }
