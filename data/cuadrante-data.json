@@ -414,6 +414,15 @@
           },
           "2-25": {
             "p": "p2"
+          },
+          "2-23": {
+            "p": "p6"
+          },
+          "2-26": {
+            "p": "p3"
+          },
+          "2-27": {
+            "p": "p3"
           }
         },
         "2026-07-13": {
@@ -3765,6 +3774,21 @@
           "rate": null,
           "billable": true,
           "fullDay": false
+        },
+        {
+          "id": "p3",
+          "name": "Bella Bestia · eventos",
+          "color": "#0891b2"
+        },
+        {
+          "id": "p5",
+          "name": "Marketing / RRSS",
+          "color": "#16a34a"
+        },
+        {
+          "id": "p6",
+          "name": "M.A.P.A. Musical",
+          "color": "#7c3aed"
         }
       ],
       "priorities": [
@@ -3774,9 +3798,9 @@
           "title": "App de Mailing para empezar la semana que viene",
           "estimatedHours": null,
           "progress": 20,
-          "done": false,
           "order": 0,
-          "created": 1789113600000
+          "created": 1789113600000,
+          "done": false
         },
         {
           "id": "prio-20260911-2",
@@ -17451,14 +17475,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1794592256500,
+    "updatedAt": 1794815228580,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "49b5c15b5f70474fbd58053cf4cdc446",
-        "at": 1793737349371
-      },
       {
         "id": "d1b8ffcd01cd49f5a1b6b3c9b0d02433",
         "at": 1793737367869
@@ -17710,6 +17730,10 @@
       {
         "id": "d10a8519764442f19dc35cdca53b6776",
         "at": 1794592256500
+      },
+      {
+        "id": "276fca35b10e4cb39bc2b9376ddde3bd",
+        "at": 1794815228580
       }
     ]
   }
