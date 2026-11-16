@@ -12659,6 +12659,16 @@
           "done": false,
           "order": 1,
           "created": 1794333036470
+        },
+        {
+          "id": "xkxo4qx",
+          "date": "2026-11-17",
+          "title": "Crear entradas y envio de whatssap",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1794837791255
         }
       ]
     },
@@ -17913,14 +17923,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1794837758099,
+    "updatedAt": 1794837797127,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "d298ac3312f74285aa2f8ea33c223ea5",
-        "at": 1794300476164
-      },
       {
         "id": "402c5ec28000466cbc8070923175464e",
         "at": 1794300494134
@@ -18172,6 +18178,10 @@
       {
         "id": "b620555a46714e0080e6861029738c89",
         "at": 1794837758099
+      },
+      {
+        "id": "8b950507053c420f821f57d55aeaa2d3",
+        "at": 1794837797127
       }
     ]
   }
