@@ -17844,6 +17844,15 @@
       "deadline": "2026-11-16",
       "status": "pend",
       "created": 1794826383999
+    },
+    {
+      "id": "xs4v70f",
+      "text": "Reunión revisión pagos.",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-11-20",
+      "status": "pend",
+      "created": 1794826477699
     }
   ],
   "milestones": [],
@@ -17898,14 +17907,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1794826471511,
+    "updatedAt": 1794826485349,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "9e091c10617d4bcb951eacc7dd9b083d",
-        "at": 1794300424192
-      },
       {
         "id": "ed5bc69d767a47a8b2db9e16bd762a7e",
         "at": 1794300444621
@@ -18157,6 +18162,10 @@
       {
         "id": "64a2797e9dc64e7ca9ffe9867b4ed3df",
         "at": 1794826471511
+      },
+      {
+        "id": "d3ec39b4c89e415a84dd8a8b59f954c2",
+        "at": 1794826485349
       }
     ]
   }
