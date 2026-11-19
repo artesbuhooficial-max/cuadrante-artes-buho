@@ -17959,6 +17959,15 @@
       "deadline": "2026-11-20",
       "status": "pend",
       "created": 1794826477699
+    },
+    {
+      "id": "xb59o6j",
+      "text": "Reunión Partner NDN",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-11-20",
+      "status": "pend",
+      "created": 1795082798989
     }
   ],
   "milestones": [],
@@ -18013,14 +18022,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795082787328,
+    "updatedAt": 1795082805101,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "cd0ef768680649b7b92f9357d6df0325",
-        "at": 1794306198148
-      },
       {
         "id": "3e80f218497348abb438314c12e34cb5",
         "at": 1794306212203
@@ -18272,6 +18277,10 @@
       {
         "id": "b8b0b3b46c0343edba2b5675c0c2a907",
         "at": 1795082787328
+      },
+      {
+        "id": "8e4d7e0f793c4a03aeacafb800c3383c",
+        "at": 1795082805101
       }
     ]
   }
