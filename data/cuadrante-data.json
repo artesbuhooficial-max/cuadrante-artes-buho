@@ -3598,18 +3598,6 @@
           "3-27": {
             "p": "xle8jpb"
           },
-          "4-22": {
-            "p": "xle8jpb"
-          },
-          "4-23": {
-            "p": "xle8jpb"
-          },
-          "4-24": {
-            "p": "x9hd0o0"
-          },
-          "4-25": {
-            "p": "x9hd0o0"
-          },
           "4-26": {
             "p": "x9hd0o0"
           },
@@ -3663,6 +3651,12 @@
           },
           "4-33": {
             "p": "xle8jpb"
+          },
+          "4-38": {
+            "p": "xvwxylq"
+          },
+          "4-39": {
+            "p": "xvwxylq"
           }
         },
         "2026-11-16": {
@@ -3866,9 +3860,9 @@
           "title": "App de Mailing para empezar la semana que viene",
           "estimatedHours": null,
           "progress": 20,
+          "done": false,
           "order": 0,
-          "created": 1789113600000,
-          "done": false
+          "created": 1789113600000
         },
         {
           "id": "prio-20260911-2",
@@ -17923,14 +17917,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1794837797127,
+    "updatedAt": 1795079897185,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "402c5ec28000466cbc8070923175464e",
-        "at": 1794300494134
-      },
       {
         "id": "4fa35fc16e4848f5b1dc3919adceec27",
         "at": 1794303510269
@@ -18182,6 +18172,10 @@
       {
         "id": "8b950507053c420f821f57d55aeaa2d3",
         "at": 1794837797127
+      },
+      {
+        "id": "e6f7d6e020524ea4a3658fa71e929cdf",
+        "at": 1795079897185
       }
     ]
   }
