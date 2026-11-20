@@ -17659,6 +17659,15 @@
       "done": false,
       "createdBy": "u3",
       "created": 1790706255392
+    },
+    {
+      "id": "xzxd9k6",
+      "text": "Reunion Grupal",
+      "owner": "u1",
+      "deadline": "2026-11-20",
+      "done": true,
+      "createdBy": "u1",
+      "created": 1795170034964
     }
   ],
   "recurring": [],
@@ -18058,14 +18067,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795170015702,
+    "updatedAt": 1795170042089,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "be6533c1b0fd4506ab0456e1ea0d7765",
-        "at": 1794310885119
-      },
       {
         "id": "4115a34cee904e7abc13eb37d7bb1018",
         "at": 1794310903817
@@ -18317,6 +18322,10 @@
       {
         "id": "3b3dc862e21f46db9ce8842a56f8e4a7",
         "at": 1795170015702
+      },
+      {
+        "id": "4f7d8f897374474085e68c98b8232025",
+        "at": 1795170042089
       }
     ]
   }
