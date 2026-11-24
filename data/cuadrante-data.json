@@ -18386,6 +18386,15 @@
       "deadline": "2026-11-23",
       "status": "pend",
       "created": 1795514761646
+    },
+    {
+      "id": "xqtrg9g",
+      "text": "Reunión Eventoría",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-11-24",
+      "status": "pend",
+      "created": 1795514837430
     }
   ],
   "milestones": [],
@@ -18440,14 +18449,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795514830317,
+    "updatedAt": 1795514849743,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "7883c02ee2ca46f2a291ce190f51ad9d",
-        "at": 1794567485622
-      },
       {
         "id": "089a475e49c64d898152b37465e53224",
         "at": 1794567503720
@@ -18699,6 +18704,10 @@
       {
         "id": "a20c53a2940740088a1b77d27cd2e6c5",
         "at": 1795514830317
+      },
+      {
+        "id": "b2c1ab236f304b78b683fb2345d3a94a",
+        "at": 1795514849743
       }
     ]
   }
