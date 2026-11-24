@@ -16865,6 +16865,24 @@
           },
           "0-27": {
             "p": "xy15wdb"
+          },
+          "0-34": {
+            "p": "xbbk50l"
+          },
+          "0-35": {
+            "p": "xbbk50l"
+          },
+          "0-36": {
+            "p": "xmom4jb"
+          },
+          "0-37": {
+            "p": "xmom4jb"
+          },
+          "0-38": {
+            "p": "xmom4jb"
+          },
+          "0-39": {
+            "p": "xmom4jb"
           }
         }
       },
@@ -18329,6 +18347,15 @@
       "deadline": "2026-11-20",
       "status": "pend",
       "created": 1795082798989
+    },
+    {
+      "id": "x54d08o",
+      "text": "Reunión Interna de Equipo",
+      "owner": "xasd2wb",
+      "orderedBy": "empresa",
+      "deadline": "2026-11-23",
+      "status": "pend",
+      "created": 1795514761646
     }
   ],
   "milestones": [],
@@ -18383,14 +18410,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795514759919,
+    "updatedAt": 1795514790268,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "aaedf87be7d7488f8165e20369d6726c",
-        "at": 1794505365208
-      },
       {
         "id": "f60516e4263543c0ad634d934d30fd1e",
         "at": 1794505655013
@@ -18642,6 +18665,10 @@
       {
         "id": "0df9e8c8508042308b4b3cf20a7aaa05",
         "at": 1795514759919
+      },
+      {
+        "id": "850e82042b824a4dbb7814d0f071ccb6",
+        "at": 1795514790268
       }
     ]
   }
