@@ -13124,6 +13124,16 @@
           "done": false,
           "order": 0,
           "created": 1794837791255
+        },
+        {
+          "id": "xlvilts",
+          "date": "2026-11-27",
+          "title": "Redes sociales de la escuela",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 0,
+          "created": 1795704211410
         }
       ]
     },
@@ -18746,14 +18756,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795697989457,
+    "updatedAt": 1795704217567,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "23e88ca29b2e46ac8f268d365741a6bb",
-        "at": 1794815867644
-      },
       {
         "id": "8bd3b21e4f034540816ca7061d33187b",
         "at": 1794815890717
@@ -19005,6 +19011,10 @@
       {
         "id": "e9e69d6846a0405ea05bd2390d61efb9",
         "at": 1795697989457
+      },
+      {
+        "id": "7e3360a1b9cd43d894428af3eebe2fae",
+        "at": 1795704217567
       }
     ]
   }
