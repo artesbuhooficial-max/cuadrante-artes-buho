@@ -13154,6 +13154,16 @@
           "done": false,
           "order": 2,
           "created": 1795704273052
+        },
+        {
+          "id": "xxmcmf2",
+          "date": "2026-11-27",
+          "title": "Actualizar Jam con alumnos de Oscar y de Jenny",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 3,
+          "created": 1795704324795
         }
       ]
     },
@@ -18776,14 +18786,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795704316267,
+    "updatedAt": 1795704407339,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "33b78130e38a4da9909b73828e8fc6cf",
-        "at": 1794823769162
-      },
       {
         "id": "77383485a81e451697926d52a5705315",
         "at": 1794826368780
@@ -19035,6 +19041,10 @@
       {
         "id": "c394bf81129d488ab4d370742d784e92",
         "at": 1795704316267
+      },
+      {
+        "id": "9a01e22c390a42c38735a7917ab225dc",
+        "at": 1795704407339
       }
     ]
   }
