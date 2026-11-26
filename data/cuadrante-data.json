@@ -13144,6 +13144,16 @@
           "done": false,
           "order": 1,
           "created": 1795704252858
+        },
+        {
+          "id": "xte1c1o",
+          "date": "2026-11-27",
+          "title": "Reunion",
+          "estimatedHours": 1,
+          "progress": 0,
+          "done": false,
+          "order": 2,
+          "created": 1795704273052
         }
       ]
     },
@@ -18766,14 +18776,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795704259700,
+    "updatedAt": 1795704316267,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "56f7c7e0af2d45b5a0eca9b1388f6b15",
-        "at": 1794823748171
-      },
       {
         "id": "33b78130e38a4da9909b73828e8fc6cf",
         "at": 1794823769162
@@ -19025,6 +19031,10 @@
       {
         "id": "879d19f843094fe8a4f7eb617028aa19",
         "at": 1795704259700
+      },
+      {
+        "id": "c394bf81129d488ab4d370742d784e92",
+        "at": 1795704316267
       }
     ]
   }
