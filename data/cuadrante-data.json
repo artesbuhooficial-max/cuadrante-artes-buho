@@ -13140,8 +13140,8 @@
           "date": "2026-11-27",
           "title": "Duplicar el documento de pagos",
           "estimatedHours": 0.5,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 1,
           "created": 1795704252858
         },
@@ -18786,14 +18786,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795704407339,
+    "updatedAt": 1795776373097,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "77383485a81e451697926d52a5705315",
-        "at": 1794826368780
-      },
       {
         "id": "9660a46f743d4c798eb6707d1ff0eccf",
         "at": 1794826389475
@@ -19045,6 +19041,10 @@
       {
         "id": "9a01e22c390a42c38735a7917ab225dc",
         "at": 1795704407339
+      },
+      {
+        "id": "1778d0ef60c949b5b804cf1207930b83",
+        "at": 1795776373097
       }
     ]
   }
