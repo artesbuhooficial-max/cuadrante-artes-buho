@@ -13150,8 +13150,8 @@
           "date": "2026-11-27",
           "title": "Reunion",
           "estimatedHours": 1,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 2,
           "created": 1795704273052
         },
@@ -13160,8 +13160,8 @@
           "date": "2026-11-27",
           "title": "Actualizar Jam con alumnos de Oscar y de Jenny",
           "estimatedHours": 1,
-          "progress": 0,
-          "done": false,
+          "progress": 100,
+          "done": true,
           "order": 3,
           "created": 1795704324795
         }
@@ -18786,14 +18786,10 @@
     "priorityDate": "2026-10-12"
   },
   "meta": {
-    "updatedAt": 1795776373097,
+    "updatedAt": 1795778710779,
     "dirtyPeople": [],
     "safePublishVersion": 2,
     "publishReceipts": [
-      {
-        "id": "9660a46f743d4c798eb6707d1ff0eccf",
-        "at": 1794826389475
-      },
       {
         "id": "9085f3b33c5d454497b00a520deda29d",
         "at": 1794826411984
@@ -19045,6 +19041,10 @@
       {
         "id": "1778d0ef60c949b5b804cf1207930b83",
         "at": 1795776373097
+      },
+      {
+        "id": "63dace783d994aee8ad7ec2007f03683",
+        "at": 1795778710779
       }
     ]
   }
